@@ -1,12 +1,23 @@
 // import { useState } from 'react'
-import Navbar from './Components/Navbar'
+import { ToastContainer } from 'react-toastify'
+import UserRoutes from './Routes/UserRoutes'
+import AdminRoutes from './Routes/AdminRoutes'
+import SellerRoutes from './Routes/SellerRoutes'
+import './App.css'
+import { createBrowserRouter ,RouterProvider} from 'react-router-dom'
 
 
 function App() {
+  const router = createBrowserRouter([
+    {path:"/*",element:<UserRoutes/>},
+    {path:"/seller/*",element:<SellerRoutes/>},
+    {path:"/admin/*",element:<AdminRoutes/>}
+  ])
 
   return (
     <>
-      <Navbar/>
+      <ToastContainer/>
+      <RouterProvider router={router}/>
     </>
   )
 }
