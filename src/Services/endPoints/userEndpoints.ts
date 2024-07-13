@@ -1,6 +1,10 @@
-export const userRoutes = {
+export const  userEndPoints = {
   signUp : "/api/register",
   signIn : "/api/login",
   verifyOtp : "/api/verifyOtp",
-  forgotPassword : "/api/forgotPassword"
+  forgotPassword : "/api/forgotPassword",
+  logout : "/api/logout",
+  getToken : "/api/getToken",
+  resendOtp : "/api/resendOtp",
+  googleAuth: "/api/googleLogin"
 }

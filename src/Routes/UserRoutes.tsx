@@ -1,15 +1,17 @@
 // import React from 'react'
-import { Routes,Route } from 'react-router-dom'
-// import Navbar from '../components/layouts/Navbar'
+import { Routes,Route, useNavigate } from 'react-router-dom'
+import Navbar from '../components/layouts/Navbar'
 import Login from '../pages/user/Login'
 import Otp from '../components/user/Otp'
+import ProtectLogin from './Private/protectLogin'
 
 const UserRoutes = () => {
   return (
     <>
       <Routes>
-        <Route path='/' element={<Login/>}/>
-        <Route path='/verifyOtp' element={<Otp/>}/>
+        <Route path='/' element={<Navbar/>}/>
+        <Route path='/login' element={<ProtectLogin><Login/></ProtectLogin>}/>
+        <Route path='/verifyOtp' element={<ProtectLogin><Otp/></ProtectLogin>}/>
       </Routes>
     </>
   )

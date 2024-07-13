@@ -1,17 +1,31 @@
 // import React from 'react'
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { signUp } from "../../api/userApi";
 
 const RegisterForm = () => {
+
+  interface formData {
+    name : string
+    email:string
+    password:string
+    confirmPassword : string
+  }
+
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<formData>();
 
   const password = watch("password");
-  const validateConfirmPassword = (value:string) => {
+
+  // validating the confirm password field
+  const validateConfirmPassword = (value:string) => {    
     if (value === password) {
       return true; 
     } else {
@@ -19,11 +33,28 @@ const RegisterForm = () => {
     }
   };
 
-  const onSubmit = (data: object) => {
-    console.log(data);
-    
-  };
 
+  // Handling Form submiting
+  const onSubmit:SubmitHandler<formData> = async (data:formData) => {
+      try {
+        const {name,email,password} = data
+
+        const res = await signUp({
+          name,
+          email,
+          password,
+        })
+
+        if(res.data.message == "User created and otp sended successfully"&& res.data.status){
+          localStorage.setItem("otpTimer","60")
+          navigate('/verifyOtp')
+        }
+
+      } catch (error) {
+        
+      } 
+  };
+ 
   return (
     <>
       <div className="w-full justify-center ">
@@ -37,18 +68,23 @@ const RegisterForm = () => {
           <div className="mt-5 w-80">
             <input
               type="text"
-              placeholder="username"
+              placeholder="name"
               className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full"
-              {...register("userName", {
+              {...register("name", {
                 required: true,
-                onChange: (e) => setValue("userName", e.target.value.trim()),
+                minLength: {
+                  value: 4,
+                  message: "Name must be at least 4 characters long",
+                },
+                onChange: (e) => setValue("name", e.target.value.trim()),
               })}
             />
-            {errors.userName?.type == "required" ? (
+            {errors.name?.type == "required" &&(
               <h1 className="text-red-600">This field is required</h1>
-            ) : (
-              <></>
             )}
+            {
+              errors.name?.message == "Name must be at least 4 characters long" && <h1 className="text-red-600">{errors.name.message}</h1>
+            }
           </div>
 
           <div className="mt-5 w-80">
@@ -58,13 +94,18 @@ const RegisterForm = () => {
               className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full"
               {...register("email", {
                 required: true,
+                pattern: {
+                  value: /^[^@]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Enter a valid email address",
+                },
                 onChange: (e) => setValue("email", e.target.value.trim()),
               })}
             />
-            {errors.email?.type == "required" ? (
+            {errors.email?.type == "required" &&(
               <h1 className="text-red-600">This field is required</h1>
-            ) : (
-              <></>
+            )}
+            {errors.email &&(
+              <h1 className="text-red-600">{errors.email.message}</h1>
             )}
           </div>
 
@@ -84,21 +125,13 @@ const RegisterForm = () => {
             ) : (
               <></>
             )}
-            {errors.password?.type == "pattern" ? (
-              <>
-                <ul>
-                  <li className="text-red-600">
-                    * Minimum 8 characters, Maximum 15
-                  </li>
-                  <li className="text-red-600">* Must Start with Alpha</li>
-                  <li className="text-red-600">
-                    * Must have mixed Alpha-Numeric
-                  </li>
-                </ul>
-              </>
-            ) : (
-              <></>
-            )}
+            {errors.password?.type == "pattern" && 
+              <ul>
+                {password.length<8&&<li className="text-red-600">* Minimum 8 characters required</li>}
+                {password.length>15&&<li className="text-red-600">* Maximum 15 characters allowed</li>}
+                {!/[A-Za-z]/.test(password)?<li className="text-red-600">* Must contain letters</li> : ''}
+              </ul> 
+            }
           </div>
 
           <div className="mt-5 w-80">
@@ -109,7 +142,6 @@ const RegisterForm = () => {
               {...register("confirmPassword", {
                 required: true,
                 validate: validateConfirmPassword,
-                pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,15}$/,
                 onChange: (e) =>
                   setValue("confirmPassword", e.target.value.trim()),
               })}

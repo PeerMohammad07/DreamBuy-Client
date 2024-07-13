@@ -10,11 +10,11 @@ const userSlice = createSlice({
   initialState,
   reducers:{
     userLogin : (state)=>{
-      console.log(state);
+      state.userLogin = true
     },
 
     userLogout : (state)=> {
-      console.log(state);
+      state.userLogin = false
     }
   }
 })
