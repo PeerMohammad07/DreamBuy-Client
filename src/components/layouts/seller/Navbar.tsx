@@ -1,22 +1,20 @@
-// import React from 'react'
 import { useDispatch, useSelector } from "react-redux";
-import { rootState } from "../../Redux/store/store";
-import { userLogout } from "../../Redux/slice/userAuthSlice";
-import { logout } from "../../api/userApi";
+import { rootState } from "../../../Redux/store/store";
+import { sellerLogout } from "../../../Redux/slice/sellerAuthSlice";
 import { Link } from "react-router-dom";
+import { Logout } from "../../../api/sellerApi";
 
 
 const Navbar = () => {
 
   const dispatch = useDispatch()
-  const userStatus =  useSelector((state:rootState)=> state.user.userLogin)
+  const sellerStatus =  useSelector((state:rootState)=> state.seller.sellerLogin)
 
 
   const handleLogout = async ()=> {
-    const response = await logout()
-    console.log(response,"logout response");
-    
-    dispatch(userLogout())
+    const response = await Logout()
+    console.log(response,"seller handle logout");    
+    dispatch(sellerLogout())
   }
 
   return (
@@ -29,16 +27,16 @@ const Navbar = () => {
               <li className="font-medium px-7">Buy</li>
               <li className="font-medium px-7">Rent</li>
               <li className="text-1xl font-medium px-4">About us</li>
-              <li className="text-1xl font-medium px-4">Contact us</li>
+              <li className="text-1xl font-medium px-4">Add property</li>
             </ul>
           <div className="flex justify-between pe-8">
             <div className="flex justify-around px-3">
               {
-                userStatus ? <button onClick={handleLogout} className="bg-red-400 hover:bg-red-700 text-white font-bold py-1 px-4 text-center rounded ">
+                sellerStatus ? <button onClick={handleLogout} className="bg-red-400 hover:bg-red-700 text-white font-bold py-1 px-4 text-center rounded ">
                 Logout
              </button>
                 :
-                <Link to="/login">
+                <Link to="/seller/register">
                 <button className="bg-blue-400 hover:bg-blue-700 text-white font-bold py-1 px-4 text-center rounded">
                   Login
                 </button>

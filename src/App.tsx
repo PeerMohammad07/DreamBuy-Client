@@ -1,5 +1,6 @@
 // import { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import UserRoutes from './Routes/UserRoutes'
 import AdminRoutes from './Routes/AdminRoutes'
 import SellerRoutes from './Routes/SellerRoutes'

@@ -2,6 +2,8 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../../api/userApi";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const RegisterForm = () => {
 
@@ -51,7 +53,11 @@ const RegisterForm = () => {
         }
 
       } catch (error) {
-        
+        if(axios.isAxiosError(error)) {
+          if(error.response?.data.message == "user already exist with this email"){
+            toast.error(error.response.data.message)
+          }
+        }
       } 
   };
  

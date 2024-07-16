@@ -1,6 +1,6 @@
 // import React from 'react'
 import { Routes,Route, useNavigate } from 'react-router-dom'
-import Navbar from '../components/layouts/Navbar'
+import Navbar from '../components/layouts/user/Navbar'
 import Login from '../pages/user/Login'
 import Otp from '../components/user/Otp'
 import ProtectLogin from './Private/protectLogin'
