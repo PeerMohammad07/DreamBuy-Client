@@ -6,5 +6,6 @@ export const  userEndPoints = {
   logout : "/api/logout",
   getToken : "/api/getToken",
   resendOtp : "/api/resendOtp",
-  googleAuth: "/api/googleLogin"
+  googleAuth: "/api/googleLogin",
+  resetPassword: "/api/resetPassword"
 }

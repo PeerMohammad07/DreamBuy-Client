@@ -37,3 +37,11 @@ export const Logout = async ()=> {
 export const resendOtp = async ()=> {
   return await Api.post(sellerEndpoints.resendOtp)
 }
+
+export const forgotPasswordSeller = async (email:string)=> {
+  return await Api.post(sellerEndpoints.forgotPassword,{email})
+}
+
+export const resetPasswordSeller = async (password:string,userId:string,token:string)=> {  
+  return await Api.post(sellerEndpoints.resetPassword,{password,userId,token})
+}

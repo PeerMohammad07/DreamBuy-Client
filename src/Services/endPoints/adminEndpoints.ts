@@ -1,5 +1,6 @@
-export const sellerRoutes = {
-  signUp : "/api/admin/register",
+export const adminEndpoints = {
   signIn : "/api/admin/login",
+  getUsers : "/api/admin/getUsers",
+  blockUser : "/api/admin/blockUser"
 }
 

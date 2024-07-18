@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/slice/userAuthSlice";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { googleAuthLogin } from "../../api/userApi";
-import ForgotPasswordEmailVerification from "./ForgotPasswordEmailVerification";
+import ForgotPassword from "../common/ForgotPassword";
 
 interface CredentialPayload extends JwtPayload {
   iss: string;
@@ -37,6 +37,8 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [forgotPass,setForgotPass] = useState(false)
+
   const [error, setError] = useState({
     emailErr: "",
     passwordErr: "",
@@ -48,7 +50,6 @@ const LoginForm = () => {
     setValue,
     formState: { errors },
   } = useForm<formData>();
-  const [openModal,setOpenModal] = useState(false)
 
   // Handling OnSubmit
   const onSubmit = async (data: formData) => {
@@ -106,7 +107,7 @@ const LoginForm = () => {
 
   return (
     <>
-    <ForgotPasswordEmailVerification openModal={openModal} setOpenModal={setOpenModal}/>
+    <ForgotPassword open={forgotPass} close={setForgotPass} role={"user"}/>
       <div className="w-full justify-center ">
         <h1 className="text-center mt-5 text-3xl mb-4 text-black leading-loose font-serif">
           User Login
@@ -151,7 +152,7 @@ const LoginForm = () => {
             )}
           </div>
           <div className="mt-2 w-80 flex justify-start">
-            <span className="text-blue-500 cursor-pointer" onClick={()=> setOpenModal(true)}>
+            <span className="text-blue-500 cursor-pointer" onClick={()=> setForgotPass(true)}>
               Forgot password ?
             </span>
           </div>

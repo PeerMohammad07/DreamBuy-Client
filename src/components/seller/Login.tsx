@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import OtpComponent, { OtpComponentProps } from "./OtpComponent";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { sellerLogin } from "../../Redux/slice/sellerAuthSlice";
+import ForgotPassword from "../common/ForgotPassword";
+import { useState } from "react";
 
 export interface loginData {
   email: string;
@@ -18,7 +22,8 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
     formState: { errors },
   } = useForm<loginData>();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const [forgotPass, setForgotPass] = useState(false);
 
   // Handle Form Submit
   const onSubmit: SubmitHandler<loginData> = async (data: loginData) => {
@@ -28,6 +33,7 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
         response?.data.message == "login succesfully" &&
         response.data.status
       ) {
+        dispatch(sellerLogin());
         navigate("/seller/");
       }
     } catch (error) {
@@ -41,8 +47,6 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
           toast.warning("Kyc verification in progress");
         } else if (error.response?.data.message === "incorrect password") {
           toast.error("incorrect password");
-        } else if (error.response?.data.message === "no verification image") {
-          navigate("/seller/kycVerification");
         } else {
           toast.error(error.response?.data.message);
         }
@@ -54,6 +58,7 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
 
   return (
     <>
+      <ForgotPassword open={forgotPass} close={setForgotPass} role={"seller"}/>
       <OtpComponent showModal={showModal} setShowModal={setShowModal} />
       <div className="min-h-screen pt-6">
         <div className="container mx-auto">
@@ -99,7 +104,10 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
                   </button>
                 </div>
                 <div className="mt-2 w-80 flex justify-start">
-                  <span className="text-blue-500 cursor-pointer">
+                  <span
+                    className="text-blue-500 cursor-pointer"
+                    onClick={() => setForgotPass(true)}
+                  >
                     Forgot password ?
                   </span>
                 </div>

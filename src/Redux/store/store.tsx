@@ -2,7 +2,8 @@ import {configureStore} from "@reduxjs/toolkit"
 import { combineReducers } from "@reduxjs/toolkit"
 import userReducer from "../slice/userAuthSlice"
 import sellerReducer from "../slice/sellerAuthSlice"
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import adminReducer from "../slice/adminAuthSlice"
+import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 export type rootState = ReturnType<typeof AllReducers>
@@ -17,12 +18,19 @@ const sellerPersistConfig = {
   storage
 }
 
+const adminPersistConfig = {
+  key:"admin",
+  storage
+}
+
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
 const persisitedSellerReducer = persistReducer(sellerPersistConfig,sellerReducer)
+const persisitedAdminReducer = persistReducer(adminPersistConfig,adminReducer)
 
 const AllReducers = combineReducers({
   user :  persistedUserReducer,
-  seller : persisitedSellerReducer
+  seller : persisitedSellerReducer,
+  admin : persisitedAdminReducer
 })
 
 const store = configureStore({

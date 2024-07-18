@@ -69,3 +69,11 @@ export const googleAuthLogin = async (name:string,email:string,image:string)=> {
     image
   })
 }
+
+export const forgotPassword = async (email:string)=> {
+  return await Api.post(userEndPoints.forgotPassword,{email})
+}
+
+export const resetPassword = async (password:string,userId:string,token:string)=> {
+  return await Api.post(userEndPoints.resetPassword,{password,userId,token})
+}

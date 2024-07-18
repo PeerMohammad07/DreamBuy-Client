@@ -5,7 +5,7 @@ const initialState = {
 }
 
 const sellerSlice = createSlice({
-  name : "Seller",
+  name : "seller",
   initialState,
   reducers : {
     sellerLogin : (state)=> {

@@ -156,7 +156,8 @@ const OtpComponent = ({ showModal, setShowModal }: OtpComponentProps) => {
       const response = await verifyOtp(Number(value));
 
       if (response?.data.message == "Otp verification done") {
-        navigate("/seller/kycVerification");
+        dispatch(sellerLogin())
+        navigate("/seller/");
         setShowModal(false);
       }      
 

@@ -1,0 +1,13 @@
+import Navbar from "../layouts/admin/Navbar";
+
+const Dashboard = () => {
+  return (
+    <>
+      <div>
+        <h1>Dashbaord</h1>
+      </div>
+    </>
+  );
+};
+
+export default Dashboard;
