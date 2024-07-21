@@ -1,10 +1,10 @@
 //import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import SellerLoginAndRegisteration from '../pages/seller/SellerLoginAndRegisteration'
-import Navbar from '../components/layouts/seller/Navbar'
-import KycVerification from '../components/seller/KycVerification'
 import ResetPassword from '../components/common/ResetPassword'
 import ProtectLogin from './Private/protectLoginSeller'
+import Mainpage from '../pages/admin/Mainpage'
+import Profile from '../components/seller/Profile'
 
 const SellerRoutes = () => {
 
@@ -12,9 +12,10 @@ const SellerRoutes = () => {
     <>
     <Routes>
         <Route path='/register' element={<ProtectLogin><SellerLoginAndRegisteration/></ProtectLogin>}/>
-        <Route path='/' element={<Navbar/>}/>
-        <Route path='/kycVerification' element={<ProtectLogin><KycVerification/></ProtectLogin>}/>
         <Route path='/resetPassword/:token' element={<ProtectLogin><ResetPassword/></ProtectLogin>}/>
+        <Route element={<Mainpage/>}>
+          <Route path='/' element={<Profile/>}/>
+        </Route>
     </Routes>
     </>
   )

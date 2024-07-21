@@ -1,0 +1,175 @@
+import { AiFillFileAdd } from "react-icons/ai";
+import { useSelector } from "react-redux";
+import { rootState } from "../../Redux/store/store";
+import KycVerificationModal from "./KycVerificationModal";
+import { useState } from "react";
+import { MdOutlineBookmarkAdded } from "react-icons/md";
+
+interface SellerProfile {
+  email: string;
+  isBlocked: boolean;
+  kycVerified: string;
+  name: string;
+  otpVerified: boolean;
+  password: string;
+  phone: number;
+  __v: number;
+  _id: string;
+}
+
+const Profile = () => {
+  const [verificationModal, setVerificationModal] = useState(false);
+
+  const seller: SellerProfile | null = useSelector(
+    (state: rootState) => state.seller.sellerData
+  );
+
+  function handleCloseModal() {
+    setVerificationModal(false);
+  }
+
+  // Function to get the color based on kycVerified status
+  const getKycStatusClass = (status: string) => {
+    switch (status) {
+      case "Not Verified":
+        return "text-red-500 bg-red-100";
+      case "Verification Pending":
+        return "text-yellow-500 bg-yellow-100";
+      case "Verified":
+        return "text-green-500 bg-green-100";
+      case "Cancelled":
+        return "text-blue-500 bg-blue-100";
+      default:
+        return "text-gray-500 bg-gray-100";
+    }
+  };
+
+  return (
+    <>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center p-4 md:flex-row md:items-center md:p-6 bg-white rounded-lg shadow-lg w-full max-w-4xl">
+          <div className="flex flex-col items-center md:items-center w-full">
+            <img
+              src="/avatar-4.png"
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover mb-4 md:mb-4"
+            />
+            <div className="container w-full">
+              <form>
+                <div className="relative z-0 w-full mb-3 group">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Username:
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    defaultValue={seller?.name}
+                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=""
+                  />
+                </div>
+                <div className="relative z-0 w-full mb-3 group">
+                  <label
+                    htmlFor="email"
+                    className="flex items-center text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Email:
+                    <div className="tooltip" data-tip="Can't Change Email">
+                      <button style={{ marginLeft: "8px" }}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          id="information"
+                        >
+                          <path fill="none" d="M0 0h24v24H0z"></path>
+                          <path d="M11 18h2v-6h-2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-10h2V6h-2z"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </label>
+                  <input
+                    type="email"
+                    name="floating_email"
+                    id="floating_email"
+                    defaultValue={seller?.email}
+                    readOnly
+                    className="block py-2.5 px-0 w-full text-sm text-gray-400 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=""
+                  />
+                </div>
+                <div className="relative z-0 w-full mb-3 group">
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Phone No:
+                  </label>
+                  <input
+                    type="text"
+                    name="phone"
+                    defaultValue={seller?.phone}
+                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=""
+                  />
+                </div>
+              </form>
+              <div className="relative z-0 w-full mb-3 group flex items-center space-x-3">
+                <label
+                  htmlFor="kycStatus"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                  style={{ minWidth: "100px" }}
+                >
+                  KYC Status:
+                </label>
+                <input
+                  type="text"
+                  name="kycStatus"
+                  value={seller?.kycVerified}
+                  readOnly
+                  className={`py-2 px-3 w-full text-sm border rounded-md focus:outline-none ${getKycStatusClass(
+                    seller?.kycVerified || ""
+                  )}`}
+                  placeholder=""
+                />
+                <KycVerificationModal
+                  open={verificationModal}
+                  onClose={handleCloseModal}
+                  id={seller?._id || ""}
+                />
+                {seller?.kycVerified == "Not Verified" || seller?.kycVerified == "Cancelled"? (
+                  <button
+                    className="bg-green-600 text-white rounded-md p-2 flex items-center space-x-2"
+                    onClick={() => setVerificationModal(true)}
+                  >
+                    <span>Add</span>
+                    <AiFillFileAdd />
+                  </button>
+                ) : (
+                  <button
+                  disabled
+                    className="bg-green-400 text-white rounded-md p-2 flex items-center space-x-2"
+                    onClick={() => setVerificationModal(true)}
+                  >
+                    <span>Added</span>
+                    <MdOutlineBookmarkAdded />
+                  </button>
+                )}
+              </div>
+              <div className="flex justify-center">
+                <button className="bg-blue-500 rounded-md p-2 text-white">
+                  Edit details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Profile;

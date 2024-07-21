@@ -1,22 +1,45 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
-  sellerLogin : false
+// Define the SellerProfile interface
+interface SellerProfile {
+  email: string;
+  isBlocked: boolean;
+  kycVerified: string;
+  name: string;
+  otpVerified: boolean;
+  password: string;
+  phone: number;
+  __v: number;
+  _id: string;
 }
 
+// Define the initial state interface
+interface SellerState {
+  sellerLogin: boolean;
+  sellerData: SellerProfile | null;
+}
+
+// Initial state with proper types
+const initialState: SellerState = {
+  sellerLogin: false,
+  sellerData: null,
+};
+
+// Created the Seller slice
 const sellerSlice = createSlice({
-  name : "seller",
+  name: "seller",
   initialState,
-  reducers : {
-    sellerLogin : (state)=> {
-      state.sellerLogin = true
+  reducers: {
+    sellerLogin: (state, action: PayloadAction<SellerProfile>) => {
+      state.sellerLogin = true;
+      state.sellerData = action.payload;
     },
+    sellerLogout: (state) => {
+      state.sellerLogin = false;
+      state.sellerData = null;
+    },
+  },
+});
 
-    sellerLogout : (state)=> {
-      state.sellerLogin = false
-    }
-  }
-})
-
-export const {sellerLogin,sellerLogout} = sellerSlice.actions
-export default sellerSlice.reducer
+export const { sellerLogin, sellerLogout } = sellerSlice.actions;
+export default sellerSlice.reducer;

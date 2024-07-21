@@ -2,15 +2,19 @@ import { useEffect, useState } from "react";
 import { blockUser, getUsers } from "../../api/adminApi";
 import UserTable from "../common/Table";
 import Swal from "sweetalert2";
+import { Skeleton, TableCell, TableRow } from "@mui/material";
 
 const UserManagement =() => {
   
   const [users,setUsers] = useState([])
+  const [isLoading,setIsLoading] = useState(false)
 
   const fetchUser = async ()=> {
     try {
+      setIsLoading(true)
       const response = await getUsers();        
-      setUsers(response.data.users);        
+      setUsers(response.data.users); 
+      setIsLoading(false)       
     } catch (err) {
       console.log(err);
     }
@@ -35,11 +39,8 @@ const UserManagement =() => {
       });
 
       if (confirmation.isConfirmed) {
-        const response = await blockUser(_id, status);
-        console.log(response.data,`${action.toLowerCase()}ed successfully`);
-        
+        const response = await blockUser(_id, status);        
         if (response.data === `${action.toLowerCase()}ed successfully`) {
-          console.log("eneter");
           Swal.fire(`${action}ed!`, `The user has been ${action.toLowerCase()}ed.`, "success");
           fetchUser()
         }
@@ -53,7 +54,28 @@ const UserManagement =() => {
   return (
     <>
     <div className="bg-gray-100">
-      <UserTable handleBlock={handleBlock} data={users}/>
+      {
+        isLoading ? <>{Array.from({ length: 5 }).map((_, index) => (
+          <TableRow key={index}>
+            <TableCell>
+              <Skeleton variant="text" width={40} />
+            </TableCell>
+            <TableCell>
+              <Skeleton variant="text" width={100} />
+            </TableCell>
+            <TableCell>
+              <Skeleton variant="text" width={150} />
+            </TableCell>
+            <TableCell>
+              <Skeleton variant="text" width={120} />
+            </TableCell>
+            <TableCell>
+              <Skeleton variant="rectangular" width={100} height={40} />
+            </TableCell>
+          </TableRow>
+        ))}</> : <UserTable handleBlock={handleBlock} data={users} role={"user"}  acceptOrDecline={()=>{}}/>
+
+      }
     </div>
     </>
   )

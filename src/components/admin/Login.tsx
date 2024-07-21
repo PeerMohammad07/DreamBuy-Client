@@ -57,6 +57,7 @@ const Login = () => {
             type="email"
             placeholder="Email"
             autoComplete="email"
+            value={"admin@gmail.com"}
             className="w-full h-full bg-transparent border-2 border-white border-opacity-20 rounded-full text-white text-lg pl-12 py-4"
             {...register("email", {
               required: true,
@@ -73,6 +74,7 @@ const Login = () => {
           <input
             type="password"
             placeholder="Password"
+            value={"admin123"}
             className="w-full h-full bg-transparent border-2 border-white border-opacity-20 rounded-full text-white text-lg pl-12 py-4 focus:outline-none focus:border-opacity-50"
             {...register("password", {
               required: true,

@@ -32,8 +32,8 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
       if (
         response?.data.message == "login succesfully" &&
         response.data.status
-      ) {
-        dispatch(sellerLogin());
+      ) {        
+        dispatch(sellerLogin(response.data.seller));
         navigate("/seller/");
       }
     } catch (error) {

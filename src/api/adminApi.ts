@@ -18,3 +18,8 @@ export const blockUser = async (id:string,status:boolean)=> {
     status
   })
 }
+
+export const logout = async ()=> {
+  return Api.post(adminEndpoints.logout)
+}
+

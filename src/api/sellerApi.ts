@@ -45,3 +45,28 @@ export const forgotPasswordSeller = async (email:string)=> {
 export const resetPasswordSeller = async (password:string,userId:string,token:string)=> {  
   return await Api.post(sellerEndpoints.resetPassword,{password,userId,token})
 }
+
+
+export const updateKycImage = async (buffer:string, type:string,id:string)=> {    
+  return await Api.post(sellerEndpoints.updateKycImage,{
+    buffer,
+    type,
+    id
+  })
+}
+
+export const getSeller = async ()=> {;
+  return await Api.get(sellerEndpoints.getSeller)
+}
+
+export const kycStatusUpdate = async (id:string,status:string)=> {
+  return await Api.post(sellerEndpoints.kycStatusUpdate,{id,status})
+}
+
+
+export const blockSeller = async (id:string,status:boolean)=> {
+  return await Api.post(sellerEndpoints.blockSeller,{
+    id,
+    status
+  })
+}
