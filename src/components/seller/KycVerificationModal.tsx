@@ -70,7 +70,7 @@ const KycVerificationModal: React.FC<KycVerificationModalProps> = ({
           onClose();
           setLoading(false);
           toast.success("KYC image updated wait for verification");
-        }
+        }   
       }
     } catch (error) {
       console.log(error);
@@ -91,8 +91,8 @@ const KycVerificationModal: React.FC<KycVerificationModalProps> = ({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.7)', // Optional: semi-transparent background
-            zIndex: 10, // Ensure spinner is above the modal content
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            zIndex: 10, 
           }}>
             <Grid
               visible={true}

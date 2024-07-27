@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import { FaUser } from "react-icons/fa";
 import { FaUserFriends } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import { BiCategoryAlt } from "react-icons/bi";
 
 // Define the Sidebar context type
 interface SidebarContextType {
@@ -67,6 +68,12 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
               text={"Seller management"}
               active={location.pathname == "/admin/seller"}
               link={"/admin/seller"}
+            />
+            <SidebarItem
+              icon={<BiCategoryAlt size={20} />}
+              text={"Category management"}
+              active={location.pathname == "/admin/category"}
+              link={"/admin/category"}
             />
           </SidebarContext.Provider>
         </nav>

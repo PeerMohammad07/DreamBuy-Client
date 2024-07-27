@@ -1,79 +1,155 @@
-import Api from "../Services/axios"
-import { userEndPoints } from "../Services/endPoints/userEndpoints"
+import { editFormData } from "../pages/user/EditProfile";
+import Api from "../Services/axios";
+import { userEndPoints } from "../Services/endPoints/userEndpoints";
+import errorHandle from "./errorHandling";
 
 interface signUpData {
-  name : string
-  email:string
-  password:string
+  name: string;
+  email: string;
+  password: string;
 }
 
 interface response {
-  data :{
-    status : number,
-    message : string
+  data: {
+    status: number;
+    message: string;
+  };
+}
+
+// Sign Up Api
+export const signUp = async (data: signUpData): Promise<response> => {
+  try {
+    const { name, email, password } = data;
+    const response = await Api.post(userEndPoints.signUp, {
+      name,
+      email,
+      password,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
   }
-}
-
-// Sign Up Api 
-export const signUp = async (data:signUpData):Promise<response>=> {
-  const {
-    name, 
-    email,
-    password
-  } = data
-
-  const response = await Api.post(userEndPoints.signUp,{
-    name,
-    email,
-    password
-  })
-
-  return response
-}
-
+};
 
 // Verify Api
-export const verifyOtp = async (otp:number)=> {
-  return await Api.post(userEndPoints.verifyOtp,{
-    otp
-  })
-   
-}
+export const verifyOtp = async (otp: number) => {
+  try {
+    return await Api.post(userEndPoints.verifyOtp, { otp });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
 
 // Logout Api
-export const logout = async ()=> {
-  return await Api.post(userEndPoints.logout)
-}
+export const logout = async () => {
+  try {
+    return await Api.post(userEndPoints.logout);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
 
+// Get token
+export const getToken = async () => {
+  try {
+    return await Api.post(userEndPoints.getToken);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
 
-// get token 
-export const getToken = async ()=> {
-  return await Api.post(userEndPoints.getToken)
-}
+// Sign in
+export const signIn = async (email: string, password: string) => {
+  try {
+    return await Api.post(userEndPoints.signIn, { email, password });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
 
-export const signIn = async (email:string,password:string)=> {
-  return await Api.post(userEndPoints.signIn,{
-    email,
-    password
-  })
-}
+// Resend OTP
+export const resendOtp = async () => {
+  try {
+    return await Api.post(userEndPoints.resendOtp);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
 
-export const resendOtp = async ()=> {
-  return await Api.post(userEndPoints.resendOtp)
-}
+// Google login
+export const googleAuthLogin = async (name: string, email: string, image: string) => {
+  try {
+    return await Api.post(userEndPoints.googleAuth, { name, email, image });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
 
-export const googleAuthLogin = async (name:string,email:string,image:string)=> {
-  return await Api.post(userEndPoints.googleAuth,{
-    name,
-    email,
-    image
-  })
-}
+// Forgot password
+export const forgotPassword = async (email: string) => {
+  try {
+    return await Api.post(userEndPoints.forgotPassword, { email });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
 
-export const forgotPassword = async (email:string)=> {
-  return await Api.post(userEndPoints.forgotPassword,{email})
-}
+// Reset password
+export const resetPassword = async (password: string, userId: string, token: string) => {
+  try {
+    return await Api.post(userEndPoints.resetPassword, { password, userId, token });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
 
-export const resetPassword = async (password:string,userId:string,token:string)=> {
-  return await Api.post(userEndPoints.resetPassword,{password,userId,token})
-}
+// Get rent property
+export const getRentProperty = async () => {
+  try {
+    return await Api.get(userEndPoints.getRentProperty);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
+
+// Get sale property
+export const getSaleProperty = async () => {
+  try {
+    return await Api.get(userEndPoints.getSaleProperty);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
+
+// update User
+export const updateUser = async (data:editFormData) => {
+  try {    
+    return await Api.put(userEndPoints.updateUser, data);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+};

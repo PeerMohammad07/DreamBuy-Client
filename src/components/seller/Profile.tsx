@@ -4,6 +4,10 @@ import { rootState } from "../../Redux/store/store";
 import KycVerificationModal from "./KycVerificationModal";
 import { useState } from "react";
 import { MdOutlineBookmarkAdded } from "react-icons/md";
+import ChangePassword from "../common/ChangePassword";
+import { useForm } from "react-hook-form";
+import { updateSeller } from "../../api/sellerApi";
+import { toast } from "react-toastify";
 
 interface SellerProfile {
   email: string;
@@ -17,12 +21,23 @@ interface SellerProfile {
   _id: string;
 }
 
+interface editFormData {
+  name: string
+  phone: string
+}
+
 const Profile = () => {
   const [verificationModal, setVerificationModal] = useState(false);
+  const [changePasswordModal, setChangePasswordModal] = useState(false)
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
+  
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<editFormData>()
 
   const seller: SellerProfile | null = useSelector(
     (state: rootState) => state.seller.sellerData
   );
+
 
   function handleCloseModal() {
     setVerificationModal(false);
@@ -44,6 +59,20 @@ const Profile = () => {
     }
   };
 
+
+  const onSubmit = async () => {
+    try {
+      const name = watch('name')
+      const phone = watch('phone')
+      const updateResponse = await updateSeller(name, phone, seller?._id)
+      if (updateResponse && updateResponse.data.message == "seller updated") {
+        toast.success("profile updated successfully")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <div className="flex items-center justify-center min-h-screen">
@@ -55,7 +84,7 @@ const Profile = () => {
               className="w-24 h-24 rounded-full object-cover mb-4 md:mb-4"
             />
             <div className="container w-full">
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="relative z-0 w-full mb-3 group">
                   <label
                     htmlFor="name"
@@ -65,11 +94,25 @@ const Profile = () => {
                   </label>
                   <input
                     type="text"
-                    name="name"
                     defaultValue={seller?.name}
                     className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=""
+                    placeholder="Name..."
+                    {...register("name", {
+                      required: "name field is required",
+                      minLength: {
+                        value: 4,
+                        message: "Name must be at least 4 characters long",
+                      },
+                      onChange: (e) => setValue("name", e.target.value.trim())
+                    })
+                    }
                   />
+                  {errors.name?.type == "required" && (
+                    <h1 className="text-red-600">{errors.name.message}</h1>
+                  )}
+                  {
+                    errors.name?.message == "Name must be at least 4 characters long" && <h1 className="text-red-600">{errors.name.message}</h1>
+                  }
                 </div>
                 <div className="relative z-0 w-full mb-3 group">
                   <label
@@ -77,8 +120,26 @@ const Profile = () => {
                     className="flex items-center text-sm font-medium text-gray-900 dark:text-white"
                   >
                     Email:
-                    <div className="tooltip" data-tip="Can't Change Email">
-                      <button style={{ marginLeft: "8px" }}>
+                    <div
+                      className="relative ml-2"
+                      onMouseEnter={() => setIsTooltipVisible(true)}
+                      onMouseLeave={() => setIsTooltipVisible(false)}
+                    >
+                      {isTooltipVisible && (
+                        <div
+                          className="absolute z-10 w-48 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-100 transition-opacity duration-300"
+                          style={{ bottom: '100%', left: '50%', transform: 'translateX(-50%) translateY(-8px)' }}
+                        >
+                          Email cannot be edited
+                          <div
+                            className="absolute left-1/2 transform -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-gray-900"
+                            style={{ bottom: '-4px' }}
+                          ></div>
+                        </div>
+                      )}
+                      <button
+                        className="text-white font-medium rounded-lg text-sm px-2 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -89,6 +150,7 @@ const Profile = () => {
                           <path d="M11 18h2v-6h-2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-10h2V6h-2z"></path>
                         </svg>
                       </button>
+
                     </div>
                   </label>
                   <input
@@ -98,7 +160,7 @@ const Profile = () => {
                     defaultValue={seller?.email}
                     readOnly
                     className="block py-2.5 px-0 w-full text-sm text-gray-400 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=""
+                    placeholder="Email..."
                   />
                 </div>
                 <div className="relative z-0 w-full mb-3 group">
@@ -110,60 +172,78 @@ const Profile = () => {
                   </label>
                   <input
                     type="text"
-                    name="phone"
                     defaultValue={seller?.phone}
                     className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=""
+                    placeholder="Phone..."
+                    {...register("phone", {
+                      required: "phone field is required",
+                      minLength: {
+                        value: 10,
+                        message: "Phone number must be exactly 10 digits",
+                      },
+                      maxLength: {
+                        value: 10,
+                        message: "Phone number must be exactly 10 digits",
+                      },
+                      pattern: {
+                        value: /^[1-9][0-9]{3,10}$/,
+                        message: "Enter a valid phone number",
+                      },
+                      onChange: (e) => setValue("phone", e.target.value.trim())
+                    })}
                   />
+                  {
+                    errors.phone && <h1 className="text-red-600">{errors.phone.message}</h1>
+                  }
+                </div>
+                <div className="relative z-0 w-full mb-3 group flex items-center space-x-3">
+                  <label
+                    htmlFor="kycStatus"
+                    className="block text-sm font-medium text-gray-900 dark:text-white"
+                    style={{ minWidth: "100px" }}
+                  >
+                    KYC Status:
+                  </label>
+                  <input
+                    type="text"
+                    name="kycStatus"
+                    value={seller?.kycVerified}
+                    readOnly
+                    className={`py-2 px-3 w-full text-sm border rounded-md focus:outline-none ${getKycStatusClass(
+                      seller?.kycVerified || ""
+                    )}`}
+                    placeholder="Kyc Status..."
+                  />
+                  <KycVerificationModal
+                    open={verificationModal}
+                    onClose={handleCloseModal}
+                    id={seller?._id || ""}
+                  />
+                  {seller?.kycVerified == "Not Verified" || seller?.kycVerified == "Cancelled" ? (
+                    <button
+                      className="bg-green-600 text-white rounded-md p-2 flex items-center space-x-2"
+                      onClick={() => setVerificationModal(true)}
+                    >
+                      <span>Add</span>
+                      <AiFillFileAdd />
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className="bg-green-400 text-white rounded-md p-2 flex items-center space-x-2"
+                      onClick={() => setVerificationModal(true)}
+                    >
+                      <span>Added</span>
+                      <MdOutlineBookmarkAdded />
+                    </button>
+                  )}
+                </div>
+                <div className="flex justify-center ">
+                  <button type="submit" className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</button>
+                  <button type="button" onClick={() => setChangePasswordModal(true)} className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br  focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit password</button>
                 </div>
               </form>
-              <div className="relative z-0 w-full mb-3 group flex items-center space-x-3">
-                <label
-                  htmlFor="kycStatus"
-                  className="block text-sm font-medium text-gray-900 dark:text-white"
-                  style={{ minWidth: "100px" }}
-                >
-                  KYC Status:
-                </label>
-                <input
-                  type="text"
-                  name="kycStatus"
-                  value={seller?.kycVerified}
-                  readOnly
-                  className={`py-2 px-3 w-full text-sm border rounded-md focus:outline-none ${getKycStatusClass(
-                    seller?.kycVerified || ""
-                  )}`}
-                  placeholder=""
-                />
-                <KycVerificationModal
-                  open={verificationModal}
-                  onClose={handleCloseModal}
-                  id={seller?._id || ""}
-                />
-                {seller?.kycVerified == "Not Verified" || seller?.kycVerified == "Cancelled"? (
-                  <button
-                    className="bg-green-600 text-white rounded-md p-2 flex items-center space-x-2"
-                    onClick={() => setVerificationModal(true)}
-                  >
-                    <span>Add</span>
-                    <AiFillFileAdd />
-                  </button>
-                ) : (
-                  <button
-                  disabled
-                    className="bg-green-400 text-white rounded-md p-2 flex items-center space-x-2"
-                    onClick={() => setVerificationModal(true)}
-                  >
-                    <span>Added</span>
-                    <MdOutlineBookmarkAdded />
-                  </button>
-                )}
-              </div>
-              <div className="flex justify-center">
-                <button className="bg-blue-500 rounded-md p-2 text-white">
-                  Edit details
-                </button>
-              </div>
+              <ChangePassword open={changePasswordModal} close={setChangePasswordModal} sellerId={seller?._id} />
             </div>
           </div>
         </div>

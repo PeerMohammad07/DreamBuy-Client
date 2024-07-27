@@ -4,16 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { signUp } from "../../api/userApi";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { FaEye } from "react-icons/fa6";
+import { useState } from "react";
 
 const RegisterForm = () => {
 
   interface formData {
-    name : string
-    email:string
-    password:string
-    confirmPassword : string
+    name: string
+    email: string
+    password: string
+    confirmPassword: string
   }
 
+  const [closeEye, setCloseEye] = useState(true)
   const navigate = useNavigate()
 
   const {
@@ -27,40 +31,40 @@ const RegisterForm = () => {
   const password = watch("password");
 
   // validating the confirm password field
-  const validateConfirmPassword = (value:string) => {    
+  const validateConfirmPassword = (value: string) => {
     if (value === password) {
-      return true; 
+      return true;
     } else {
-      return "Passwords do not match"; 
+      return "Passwords do not match";
     }
   };
 
 
   // Handling Form submiting
-  const onSubmit:SubmitHandler<formData> = async (data:formData) => {
-      try {
-        const {name,email,password} = data
+  const onSubmit: SubmitHandler<formData> = async (data: formData) => {
+    try {
+      const { name, email, password } = data
 
-        const res = await signUp({
-          name,
-          email,
-          password,
-        })
+      const res = await signUp({
+        name,
+        email,
+        password,
+      })
 
-        if(res.data.message == "User created and otp sended successfully"&& res.data.status){
-          localStorage.setItem("otpTimer","60")
-          navigate('/verifyOtp')
+      if (res.data.message == "User created and otp sended successfully" && res.data.status) {
+        localStorage.setItem("otpTimer", "60")
+        navigate('/verifyOtp')
+      }
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data.message == "user already exist with this email") {
+          toast.error(error.response.data.message)
         }
-
-      } catch (error) {
-        if(axios.isAxiosError(error)) {
-          if(error.response?.data.message == "user already exist with this email"){
-            toast.error(error.response.data.message)
-          }
-        }
-      } 
+      }
+    }
   };
- 
+
   return (
     <>
       <div className="w-full justify-center ">
@@ -77,7 +81,7 @@ const RegisterForm = () => {
               placeholder="name"
               className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full"
               {...register("name", {
-                required: true,
+                required: "name field is required",
                 minLength: {
                   value: 4,
                   message: "Name must be at least 4 characters long",
@@ -85,8 +89,8 @@ const RegisterForm = () => {
                 onChange: (e) => setValue("name", e.target.value.trim()),
               })}
             />
-            {errors.name?.type == "required" &&(
-              <h1 className="text-red-600">This field is required</h1>
+            {errors.name?.type == "required" && (
+              <h1 className="text-red-600">{errors.name.message}</h1>
             )}
             {
               errors.name?.message == "Name must be at least 4 characters long" && <h1 className="text-red-600">{errors.name.message}</h1>
@@ -99,7 +103,7 @@ const RegisterForm = () => {
               placeholder="Email"
               className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full"
               {...register("email", {
-                required: true,
+                required: "Email is required",
                 pattern: {
                   value: /^[^@]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                   message: "Enter a valid email address",
@@ -107,10 +111,10 @@ const RegisterForm = () => {
                 onChange: (e) => setValue("email", e.target.value.trim()),
               })}
             />
-            {errors.email?.type == "required" &&(
-              <h1 className="text-red-600">This field is required</h1>
+            {errors.email?.type == "required" && (
+              <h1 className="text-red-600">{errors.email.message}</h1>
             )}
-            {errors.email &&(
+            {errors.email && errors.email.type != "required" && (
               <h1 className="text-red-600">{errors.email.message}</h1>
             )}
           </div>
@@ -121,48 +125,53 @@ const RegisterForm = () => {
               placeholder="Password"
               className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full"
               {...register("password", {
-                required: true,
+                required: "password is required",
                 pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,15}$/,
                 onChange: (e) => setValue("password", e.target.value.trim()),
               })}
             />
             {errors.password?.type == "required" ? (
-              <h1 className="text-red-600">This field is required</h1>
+              <h1 className="text-red-600">{errors.password.message}</h1>
             ) : (
               <></>
             )}
-            {errors.password?.type == "pattern" && 
+            {errors.password?.type == "pattern" &&
               <ul>
-                {password.length<8&&<li className="text-red-600">* Minimum 8 characters required</li>}
-                {password.length>15&&<li className="text-red-600">* Maximum 15 characters allowed</li>}
-                {!/[A-Za-z]/.test(password)?<li className="text-red-600">* Must contain letters</li> : ''}
-              </ul> 
+                {password.length < 8 && <li className="text-red-600">* Minimum 8 characters required</li>}
+                {password.length > 15 && <li className="text-red-600">* Maximum 15 characters allowed</li>}
+                {!/[A-Za-z]/.test(password) ? <li className="text-red-600">* Must contain letters</li> : ''}
+              </ul>
             }
           </div>
 
-          <div className="mt-5 w-80">
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full"
-              {...register("confirmPassword", {
-                required: true,
-                validate: validateConfirmPassword,
-                onChange: (e) =>
-                  setValue("confirmPassword", e.target.value.trim()),
-              })}
-            />
-            {errors.confirmPassword?.type == "required" && (
-              <h1 className="text-red-600">This field is required</h1>
+          <div className="mt-5 w-80 relative">
+            <div className="relative flex items-center">
+              <input
+                type={closeEye ? "password" : "text"}
+                placeholder="Confirm Password"
+                className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full pr-10"
+                {...register("confirmPassword", {
+                  required: "confirm Password is required",
+                  validate: validateConfirmPassword,
+                  onChange: (e) => setValue("confirmPassword", e.target.value.trim()),
+                })}
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer h-full">
+                {closeEye ? (
+                  <RiEyeCloseFill onClick={() => setCloseEye(false)} />
+                ) : (
+                  <FaEye onClick={() => setCloseEye(true)} />
+                )}
+              </div>
+            </div>
+            {errors.confirmPassword?.type === "required" && (
+              <h1 className="text-red-600 mt-2">{errors.confirmPassword.message}</h1>
             )}
-            
-            {errors.confirmPassword?.type === "validate" &&
-              typeof errors.confirmPassword.message === "string" && (
-                <h1 className="text-red-600">
-                  {errors.confirmPassword.message}
-                </h1>
-              )}
+            {errors.confirmPassword?.type === "validate" && (
+              <h1 className="text-red-600 mt-2">{errors.confirmPassword.message}</h1>
+            )}
           </div>
+
 
           <div className="mt-5 w-80">
             <button className="w-full bg-blue-500 py-3 text-center text-white rounded-lg shadow-md">

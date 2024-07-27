@@ -1,5 +1,5 @@
 import Modal from "react-modal";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { forgotPassword } from "../../api/userApi";
 import { forgotPasswordSeller } from "../../api/sellerApi";
@@ -77,7 +77,7 @@ const ForgotPassword = ({ open, role, close }: OtpComponentProps) => {
         console.log(response);
       }else if(role == "seller"){
         const response = await forgotPasswordSeller(email)
-        if(response.data.message == "email sended succesfully"){          
+        if(response&&response.data.message == "email sended succesfully"){          
           setOpenModal(false)
           showEmailSentAlert(email)
         }
@@ -138,7 +138,7 @@ const ForgotPassword = ({ open, role, close }: OtpComponentProps) => {
                 })}
               />
               {errors.email?.type === "required" && (
-                <h1 className="text-red-600">This field is required</h1>
+                <h1 className="text-red-600">{errors.email.message}</h1>
               )}
             </div>
             <button

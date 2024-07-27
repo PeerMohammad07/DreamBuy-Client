@@ -1,15 +1,14 @@
 import { jwtDecode } from "jwt-decode";
-import { decode } from "querystring";
-import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { resetPassword } from "../../api/userApi";
 import { resetPasswordSeller } from "../../api/sellerApi";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { sellerLogin } from "../../Redux/slice/sellerAuthSlice";
-import { userLogin } from "../../Redux/slice/userAuthSlice";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { FaEye } from "react-icons/fa6";
+import { useState } from "react";
+
 
 export interface Decoded {
   exp: number;
@@ -26,7 +25,6 @@ interface formData {
 
 const ResetPassword = () => {
   const { token } = useParams<{ token: string }>();
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const {
     register,
@@ -36,6 +34,8 @@ const ResetPassword = () => {
     formState: { errors },
   } = useForm<formData>();
 
+  const [closeEye,setCloseEye] = useState(true)
+  const [passCloseEye,setPassCloseEye] = useState(true)
   const password = watch("password");
 
   const validateConfirmPassword = (value: string) => {
@@ -51,29 +51,27 @@ const ResetPassword = () => {
       let decoded = null
       if (token) {
         decoded = jwtDecode(token) as Decoded;
-      }else {
+      } else {
         toast.error("Your link has been expired")
         return
       }
-      const { password } = data;      
+      const { password } = data;
       if (decoded.role == "user") {
-        const response = await resetPassword(password,decoded.userId,token)
-        if(response.data.message == "password updated succesfully"){
-          dispatch(userLogin())
-          navigate("/")
+        const response = await resetPassword(password, decoded.userId, token)
+        if (response.data.message == "password updated succesfully") {
+          navigate("/login")
         }
-      } else if (decoded?.role == "seller") {        
-        const response = await resetPasswordSeller(password,decoded.userId,token)
-        if(response.data.message == "password updated succesfully"){
-          dispatch(sellerLogin())
-          navigate("/seller/")
+      } else if (decoded?.role == "seller") {
+        const response = await resetPasswordSeller(password, decoded.userId, token)
+        if (response&&response.data.message == "password updated succesfully") {
+          navigate("/seller/register")
         }
       }
     } catch (error) {
-      if(axios.isAxiosError(error)){
-        if(error.response?.data.message == "token has been expired"){
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data.message == "token has been expired") {
           toast.error("User doesnt exist with this email")
-        }else if(error.response?.data.message == "user doesn't exist"){
+        } else if (error.response?.data.message == "user doesn't exist") {
           toast.error("User doesnt exist with this email")
         }
       }
@@ -98,20 +96,29 @@ const ResetPassword = () => {
               </h2>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mt-5">
-                  <input
+                 <div className="relative flex items-center">
+                 <input
                     type="password"
                     placeholder="Password"
                     className="border border-gray-400 py-1 px-2 w-full rounded-md"
                     {...register("password", {
-                      required: true,
+                      required: "password field is required",
                       pattern:
                         /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,15}$/,
                       onChange: (e) =>
                         setValue("password", e.target.value.trim()),
                     })}
                   />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+                      {passCloseEye ? (
+                        <RiEyeCloseFill onClick={() => setPassCloseEye(false)} />
+                      ) : (
+                        <FaEye onClick={() => setPassCloseEye(true)} />
+                      )}
+                    </div>
+                 </div>
                   {errors.password?.type == "required" ? (
-                    <h1 className="text-red-600">This field is required</h1>
+                    <h1 className="text-red-600">{errors.password.message}</h1>
                   ) : (
                     <></>
                   )}
@@ -135,20 +142,32 @@ const ResetPassword = () => {
                     </ul>
                   )}
                 </div>
-                <div className="mt-3">
-                  <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    className="border border-gray-400 py-1 px-2 w-full rounded-md"
-                    {...register("confirmPassword", {
-                      required: true,
-                      validate: validateConfirmPassword,
-                      onChange: (e) =>
-                        setValue("confirmPassword", e.target.value.trim()),
-                    })}
-                  />
+
+
+
+                <div className="mt-5">
+                  <div className="relative flex items-center">
+                    <input
+                      type={closeEye ? "password" : "text"}
+                      placeholder="confirm password"
+                      className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full pr-10"
+                      {...register("confirmPassword", {
+                        required: "Confirm Password is required",
+                        validate: validateConfirmPassword,
+                        onChange: (e) =>
+                          setValue("confirmPassword", e.target.value.trim()),
+                      })}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+                      {closeEye ? (
+                        <RiEyeCloseFill onClick={() => setCloseEye(false)} />
+                      ) : (
+                        <FaEye onClick={() => setCloseEye(true)} />
+                      )}
+                    </div>
+                  </div>
                   {errors.confirmPassword?.type == "required" && (
-                    <h1 className="text-red-600">This field is required</h1>
+                    <h1 className="text-red-600">{errors.confirmPassword.message}</h1>
                   )}
 
                   {errors.confirmPassword?.type === "validate" &&

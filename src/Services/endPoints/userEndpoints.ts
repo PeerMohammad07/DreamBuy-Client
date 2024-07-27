@@ -7,5 +7,8 @@ export const  userEndPoints = {
   getToken : "/api/getToken",
   resendOtp : "/api/resendOtp",
   googleAuth: "/api/googleLogin",
-  resetPassword: "/api/resetPassword"
+  resetPassword: "/api/resetPassword",
+  getRentProperty: "/api/getRentProperty",
+  getSaleProperty : "/api/getSaleProperty",
+  updateUser : "/api/updateUser"
 }

@@ -7,7 +7,9 @@ export const sellerEndpoints = {
     forgotPassword:"/api/seller/forgotPassword",
     resetPassword : "/api/seller/resetPassword",
     updateKycImage : "/api/seller/updateKycImage",
-    getSeller : "/api/seller/getSellers",
     kycStatusUpdate:"/api/seller/kycStatusUpdate",
-    blockSeller : "/api/seller/blockSeller"
+    blockSeller : "/api/seller/blockSeller",
+    addProperty : "/api/seller/addProperty",
+    changePassword : "/api/seller/changePassword",
+    updateSeller : "/api/seller/updateSeller"
 }

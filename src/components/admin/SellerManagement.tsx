@@ -1,10 +1,11 @@
 import UserTable from '../common/Table'
-import { blockSeller, getSeller, kycStatusUpdate } from '../../api/sellerApi'
+import { blockSeller, kycStatusUpdate } from '../../api/sellerApi'
 import { useEffect, useState } from 'react'
 import { Skeleton, TableCell, TableRow } from '@mui/material'
 import Swal from 'sweetalert2'
 import { sellerLogin } from '../../Redux/slice/sellerAuthSlice'
 import { useDispatch } from 'react-redux'
+import { getSeller } from '../../api/adminApi'
 
 const SellerManagement = () => {
 

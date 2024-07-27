@@ -115,7 +115,7 @@ const Otp = () => {
       let response = await verifyOtp(Number(value));
 
       if (response.data.message == "Otp verification done") {
-        dispatch(userLogin());
+        dispatch(userLogin(response.data.user));
         navigate("/");
       }
     } catch (error) {

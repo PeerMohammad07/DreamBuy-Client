@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { sellerLogin } from "../../Redux/slice/sellerAuthSlice";
 import ForgotPassword from "../common/ForgotPassword";
 import { useState } from "react";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { FaEye } from "react-icons/fa6";
 
 export interface loginData {
   email: string;
@@ -19,11 +21,15 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
     register,
     setValue,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<loginData>();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [forgotPass, setForgotPass] = useState(false);
+  const [closeEye, setCloseEye] = useState(true)
+
+  const passwordWatch = watch('password')
 
   // Handle Form Submit
   const onSubmit: SubmitHandler<loginData> = async (data: loginData) => {
@@ -32,7 +38,7 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
       if (
         response?.data.message == "login succesfully" &&
         response.data.status
-      ) {        
+      ) {
         dispatch(sellerLogin(response.data.seller));
         navigate("/seller/");
       }
@@ -58,7 +64,7 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
 
   return (
     <>
-      <ForgotPassword open={forgotPass} close={setForgotPass} role={"seller"}/>
+      <ForgotPassword open={forgotPass} close={setForgotPass} role={"seller"} />
       <OtpComponent showModal={showModal} setShowModal={setShowModal} />
       <div className="min-h-screen pt-6">
         <div className="container mx-auto">
@@ -73,31 +79,44 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
                     placeholder="email"
                     className="border border-gray-400 py-1 px-2 w-full rounded-md"
                     {...register("email", {
-                      required: true,
+                      required: "email is required",
                       pattern:
                         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                       onChange: (e) => setValue("email", e.target.value.trim()),
                     })}
                   />
                   {errors.email?.type == "required" && (
-                    <h1 className="text-red-600">This field is required</h1>
+                    <h1 className="text-red-600">{errors.email.message}</h1>
                   )}
                 </div>
-                <div className="mt-3">
-                  <input
-                    type="password"
-                    placeholder="password"
-                    className="border border-gray-400 py-1 px-2 w-full rounded-md"
-                    {...register("password", {
-                      required: true,
-                      onChange: (e) =>
-                        setValue("password", e.target.value.trim()),
-                    })}
-                  />
-                  {errors.password?.type == "required" && (
-                    <h1 className="text-red-600">This field is required</h1>
-                  )}
+
+
+                <div className="mt-5 w-full">
+                  <div className="relative flex items-center">
+                    <input
+                      type={closeEye ? "password" : "text"}
+                      placeholder="Password"
+                      className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full pr-10"
+                      {...register("password", {
+                        required: "password is required",
+                        onChange: (e) =>
+                          setValue("password", e.target.value.trim()),
+                      })}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+                      { passwordWatch ? closeEye ? (
+                        <RiEyeCloseFill onClick={() => setCloseEye(false)} />
+                      ) : (
+                        <FaEye onClick={() => setCloseEye(true)} />
+                      ):<></>}
+                    </div>
+                  </div>
+                    {errors.password?.type == "required" && (
+                      <h1 className="text-red-600">{errors.password.message}</h1>
+                    )}
                 </div>
+
+
                 <div className="mt-5">
                   <button className="w-full bg-blue-500 py-3 text-center text-white">
                     Login

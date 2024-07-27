@@ -10,6 +10,10 @@ import { userLogin } from "../../Redux/slice/userAuthSlice";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { googleAuthLogin } from "../../api/userApi";
 import ForgotPassword from "../common/ForgotPassword";
+import { toast } from "react-toastify";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { FaEye } from "react-icons/fa6";
+
 
 interface CredentialPayload extends JwtPayload {
   iss: string;
@@ -37,7 +41,9 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [forgotPass,setForgotPass] = useState(false)
+  const [forgotPass, setForgotPass] = useState(false)
+  const [closeEye, setCloseEye] = useState(true)
+
 
   const [error, setError] = useState({
     emailErr: "",
@@ -59,7 +65,7 @@ const LoginForm = () => {
         response.data.message == "Login Succesfully" &&
         response.data.status
       ) {
-        dispatch(userLogin());
+        dispatch(userLogin(response.data.user));
         navigate("/");
       }
     } catch (error) {
@@ -73,6 +79,8 @@ const LoginForm = () => {
             emailErr: "",
             passwordErr: "Incorrect password",
           });
+        } else if (error.response?.data.message == "this user is blocked ") {
+          toast.error("This user is blocked")
         } else {
           setError({
             emailErr: "invalid email user not found",
@@ -97,7 +105,7 @@ const LoginForm = () => {
         googleLoginResponse.data.message == "google Login succesfull" &&
         googleLoginResponse.data.status
       ) {
-        dispatch(userLogin());
+        dispatch(userLogin(googleLoginResponse.data.user));
         navigate("/");
       }
     } catch (error) {
@@ -107,7 +115,7 @@ const LoginForm = () => {
 
   return (
     <>
-    <ForgotPassword open={forgotPass} close={setForgotPass} role={"user"}/>
+      <ForgotPassword open={forgotPass} close={setForgotPass} role={"user"} />
       <div className="w-full justify-center ">
         <h1 className="text-center mt-5 text-3xl mb-4 text-black leading-loose font-serif">
           User Login
@@ -122,37 +130,47 @@ const LoginForm = () => {
               placeholder="Email"
               className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full"
               {...register("email", {
-                required: true,
+                required: "Email field is required",
                 pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                 onChange: (e) => setValue("email", e.target.value.trim()),
               })}
             />
             {errors.email?.type == "required" && (
-              <h1 className="text-red-600">This field is required</h1>
+              <h1 className="text-red-600">{errors.email.message}</h1>
             )}
             {!errors.email && error.emailErr && (
               <h1 className="text-red-600">{error.emailErr}</h1>
             )}
           </div>
           <div className="mt-5 w-80">
-            <input
-              type="password"
-              placeholder="Password"
-              className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full"
-              {...register("password", {
-                required: true,
-                onChange: (e) => setValue("password", e.target.value.trim()),
-              })}
-            />
-            {errors.password?.type == "required" && (
-              <h1 className="text-red-600">This field is required</h1>
+            <div className="relative flex items-center">
+              <input
+                type={closeEye ? "password" : "text"}
+                placeholder="Password"
+                className="border border-gray-400 rounded-lg shadow py-2 px-4 w-full pr-10"
+                {...register("password", {
+                  required: "password is required",
+                  onChange: (e) => setValue("password", e.target.value.trim()),
+                })}
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+                {closeEye ? (
+                  <RiEyeCloseFill onClick={() => setCloseEye(false)} />
+                ) : (
+                  <FaEye onClick={() => setCloseEye(true)} />
+                )}
+              </div>
+            </div>
+            {errors.password?.type === "required" && (
+              <h1 className="text-red-600 mt-2">{errors.password.message}</h1>
             )}
-            {error.passwordErr && (
-              <h1 className="text-red-600">{error.passwordErr}</h1>
+            {error.passwordErr && errors.password?.type != "required" && (
+              <h1 className="text-red-600 mt-2">{error.passwordErr}</h1>
             )}
           </div>
+
           <div className="mt-2 w-80 flex justify-start">
-            <span className="text-blue-500 cursor-pointer" onClick={()=> setForgotPass(true)}>
+            <span className="text-blue-500 cursor-pointer" onClick={() => setForgotPass(true)}>
               Forgot password ?
             </span>
           </div>
