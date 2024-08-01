@@ -7,6 +7,9 @@ import ResetPassword from "../components/common/ResetPassword";
 import UserMainPage from "../pages/user/UserMainPage";
 import UserHome from "../pages/user/UserHome";
 import Profile from "../pages/user/Profile";
+import Premium from "../pages/user/Premium";
+import PaymentStatus from "../pages/user/PaymentStatus";
+import PropertyDetails from "../pages/user/PropertyDetails";
 
 const UserRoutes = () => {
   return (
@@ -31,16 +34,17 @@ const UserRoutes = () => {
         <Route
           path="/resetPassword/:token"
           element={
-              <ResetPassword />
+            <ResetPassword />
           }
         />
         <Route element={<UserMainPage />}>
           <Route path="/" element={<UserHome />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/premium" element={<Premium />} />
+          <Route path="/paymentStatus" element={<PaymentStatus/>} />
+          <Route path="/propertyDetails" element={<PropertyDetails/>} />
         </Route>
 
-        <Route element={<UserMainPage/>}>
-          <Route path="/profile" element={<Profile/>}/>
-        </Route>
       </Routes>
     </>
   );

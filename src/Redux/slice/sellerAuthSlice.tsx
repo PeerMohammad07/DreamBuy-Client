@@ -14,7 +14,7 @@ interface SellerProfile {
 }
 
 // Define the initial state interface
-interface SellerState {
+export interface SellerState {
   sellerLogin: boolean;
   sellerData: SellerProfile | null;
 }

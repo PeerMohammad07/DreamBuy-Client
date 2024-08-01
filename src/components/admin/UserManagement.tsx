@@ -73,7 +73,7 @@ const UserManagement =() => {
               <Skeleton variant="rectangular" width={100} height={40} />
             </TableCell>
           </TableRow>
-        ))}</> : <UserTable handleBlock={handleBlock} data={users} role={"user"}  acceptOrDecline={()=>{}}/>
+        ))}</> : <UserTable onEdit={()=>{}} handleBlock={handleBlock} data={users} role={"user"}  acceptOrDecline={()=>{}}/>
 
       }
     </div>

@@ -10,5 +10,9 @@ export const  userEndPoints = {
   resetPassword: "/api/resetPassword",
   getRentProperty: "/api/getRentProperty",
   getSaleProperty : "/api/getSaleProperty",
-  updateUser : "/api/updateUser"
+  updateUser : "/api/updateUser",
+  getPremium : "/api/getPremium",
+  updatePremium : "/api/updatePremium",
+  productDetail : "/api/productDetail",
+  googleRegister : '/api/googleRegister'
 }

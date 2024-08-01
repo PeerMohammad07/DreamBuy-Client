@@ -6,6 +6,7 @@ import UserManagement from '../components/admin/UserManagement'
 import ProtectLogin from './Private/protectLoginAdmin'
 import SellerManagement from '../components/admin/SellerManagement'
 import CategoryManagement from '../components/admin/CategoryManagement'
+import PropertyManagement from '../pages/admin/PropertyManagement'
 
 const AdminRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AdminRoutes = () => {
          <Route path='/user' element={<Layout><UserManagement/></Layout>}/>
          <Route path='/seller' element={<Layout><SellerManagement/></Layout>}/>
          <Route path='/category' element={<Layout><CategoryManagement/></Layout>}/>
+         <Route path='/property' element={<Layout><PropertyManagement/></Layout>}/>
       </Routes>
     </>
   )

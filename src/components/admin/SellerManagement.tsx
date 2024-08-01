@@ -33,7 +33,9 @@ const SellerManagement = () => {
   const acceptOrDecline = async (id:string,status:string)=> {
     try {      
       const response = await kycStatusUpdate(id,status)
-      dispatch(sellerLogin(response.data.response))
+      if(response){
+        dispatch(sellerLogin(response.data.response))
+      }
       fetchSeller()
     } catch (error) {
       console.log(error);
@@ -57,7 +59,7 @@ const SellerManagement = () => {
       if (confirmation.isConfirmed) {
         const response = await blockSeller(_id, status);        
         console.log(response)
-        if (response.data === `${action.toLowerCase()}ed successfully`) {
+        if (response&&response.data === `${action.toLowerCase()}ed successfully`) {
           Swal.fire(`${action}ed!`, `The seller has been ${action.toLowerCase()}ed.`, "success");
           fetchSeller()
         }
@@ -89,7 +91,7 @@ const SellerManagement = () => {
                 <Skeleton variant="rectangular" width={100} height={40} />
               </TableCell>
             </TableRow>
-          ))}</> : <UserTable handleBlock={handleBlock} data={sellers} role={"seller"} acceptOrDecline={acceptOrDecline}/>  
+          ))}</> : <UserTable onEdit={()=>{}} handleBlock={handleBlock} data={sellers} role={"seller"} acceptOrDecline={acceptOrDecline}/>  
         }
     </div>
     </>

@@ -1,12 +1,13 @@
-import {configureStore} from "@reduxjs/toolkit"
-import { combineReducers } from "@reduxjs/toolkit"
-import userReducer from "../slice/userAuthSlice"
-import sellerReducer from "../slice/sellerAuthSlice"
-import adminReducer from "../slice/adminAuthSlice"
+import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-
-export type rootState = ReturnType<typeof AllReducers>
+import userReducer from "../slice/userAuthSlice";
+import sellerReducer from "../slice/sellerAuthSlice";
+import adminReducer from "../slice/adminAuthSlice";
+import { UserState } from "../slice/userAuthSlice"; 
+import { SellerState } from "../slice/sellerAuthSlice"; 
+import { AdminState } from "../slice/adminAuthSlice"; 
+import { PersistPartial } from 'redux-persist/es/persistReducer';
 
 const userPersistConfig = {
   key: 'user',
@@ -15,32 +16,38 @@ const userPersistConfig = {
 
 const sellerPersistConfig = {
   key: 'seller',
-  storage
-}
+  storage,
+};
 
 const adminPersistConfig = {
-  key:"admin",
-  storage
-}
+  key: 'admin',
+  storage,
+};
 
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
-const persisitedSellerReducer = persistReducer(sellerPersistConfig,sellerReducer)
-const persisitedAdminReducer = persistReducer(adminPersistConfig,adminReducer)
+const persistedSellerReducer = persistReducer(sellerPersistConfig, sellerReducer);
+const persistedAdminReducer = persistReducer(adminPersistConfig, adminReducer);
 
-const AllReducers = combineReducers({
-  user :  persistedUserReducer,
-  seller : persisitedSellerReducer,
-  admin : persisitedAdminReducer
-})
+const rootReducer = combineReducers({
+  user: persistedUserReducer,
+  seller: persistedSellerReducer,
+  admin: persistedAdminReducer,
+});
+
+export type rootState = {
+  user: UserState & PersistPartial; 
+  seller: SellerState & PersistPartial; 
+  admin: AdminState & PersistPartial; 
+};
 
 const store = configureStore({
-  reducer: AllReducers,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false
-    })
-})
+      serializableCheck: false,
+    }),
+});
 
-const persistStoree = persistStore(store)
+const persistor = persistStore(store);
 
-export  {store,persistStoree}
+export { store, persistor };

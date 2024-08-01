@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MdMoreVert, MdChevronRight, MdChevronLeft } from "react-icons/md";
+import { IoHome } from "react-icons/io5";
 import { TbLayoutDashboard } from "react-icons/tb";
 import Navbar from "./Navbar";
 import { FaUser } from "react-icons/fa";
@@ -74,6 +75,12 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
               text={"Category management"}
               active={location.pathname == "/admin/category"}
               link={"/admin/category"}
+            />
+            <SidebarItem
+              icon={<IoHome size={20} />}
+              text={"Property management"}
+              active={location.pathname == "/admin/property"}
+              link={"/admin/property"}
             />
           </SidebarContext.Provider>
         </nav>

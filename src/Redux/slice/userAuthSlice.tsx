@@ -1,17 +1,24 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 
-interface User {
-  _id: string;
+interface IPremiumSubscription {
+  subscriptionType?: 'weekly' | 'monthly' | 'three_months';
+  startDate?: Date;
+  expiryDate?: Date;
+}
+
+interface User{
+  _id:string
   name: string;
   email: string;
   password: string;
   isBlocked: boolean;
   otpVerified: boolean;
-  image?:string
-  __v: number;
+  image?: string;
+  isPremium: boolean;
+  premiumSubscription?: IPremiumSubscription;
 }
 
-interface UserState {
+export interface UserState {
   userLogin: boolean;
   userData: User | null;
 }

@@ -80,11 +80,10 @@ const Navbar = () => {
   return (
     <>
       {sellerStatus ? (
-        <nav className="h-16 flex justify-between px-6 flex-1 flex-wrap items-center bg-gray-800">
+        <nav className="h-14 flex justify-between px-6 flex-1 flex-wrap items-center bg-gray-800">
           <img src="/dreambuywhitelogo.png" alt="" className="h-12 mt-2" />
           <div className="flex justify-between items-center pe-8">
-            <Link to={""}><span className="text-white text-xl px-10">My property</span></Link>
-            <button onClick={addProperty} className="text-black bg-white hover:bg-orange-400 hover:text-black font-bold py-2 mr-6 px-3 rounded transition-colors duration-300">
+            <button onClick={addProperty} className="text-black bg-white hover:bg-orange-400 hover:text-black font-bold py-1 mr-6 px-3 rounded transition-colors duration-300">
               Add Property
             </button>
             <IoNotificationsCircle className="text-white h-10 w-10 mx-4" />

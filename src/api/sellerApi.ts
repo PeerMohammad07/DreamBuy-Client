@@ -108,6 +108,8 @@ export const blockSeller = async (id: string, status: boolean) => {
 
 export const addProperty = async (data: Property) => {
   try {
+    console.log("ponn");
+    
     return await Api.post(sellerEndpoints.addProperty, { data });
   } catch (error) {
     const err: Error = error as Error;
@@ -129,6 +131,6 @@ export const updateSeller = async (name: string, phone: string, sellerId: string
     return await Api.post(sellerEndpoints.updateSeller, { name, phone, sellerId });
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+     errorHandle(err);
   }
 };

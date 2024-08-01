@@ -5,7 +5,7 @@ import { Buffer } from "buffer";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/slice/userAuthSlice";
-import LoadingSkelton from "../../components/common/LoadingSkelton";
+import LoadingSkelton from "../../components/common/LoadingSkelton/LoadingSkelton";
 
 export interface editFormData {
   name: string
@@ -17,7 +17,7 @@ export interface editFormData {
 interface EditProfileProps {
   setProfileImage: (file: File) => void;
   profileImage: File | null
-  user: { _id: string, name: string, email: string } | null
+  user: { _id: string, name: string, email: string ,image?:string} | null
 }
 
 const EditProfile = ({ user, setProfileImage, profileImage }: EditProfileProps) => {
@@ -40,7 +40,7 @@ const EditProfile = ({ user, setProfileImage, profileImage }: EditProfileProps) 
         const buffer = await fileToBuffer(profileImage);
         base64Image = Buffer.from(buffer).toString('base64');
       }
-
+      base64Image = base64Image ? base64Image : user?.image      
       const formData = { name: data.name, image: base64Image, id: user?._id, type: profileImage?.type }
       reset()
       const response = await updateUser(formData)

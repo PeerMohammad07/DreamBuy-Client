@@ -1,5 +1,5 @@
 import { AiFillFileAdd } from "react-icons/ai";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import KycVerificationModal from "./KycVerificationModal";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import ChangePassword from "../common/ChangePassword";
 import { useForm } from "react-hook-form";
 import { updateSeller } from "../../api/sellerApi";
 import { toast } from "react-toastify";
+import { sellerLogin } from "../../Redux/slice/sellerAuthSlice";
 
 interface SellerProfile {
   email: string;
@@ -30,7 +31,7 @@ const Profile = () => {
   const [verificationModal, setVerificationModal] = useState(false);
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-
+  const dispatch = useDispatch()
   
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<editFormData>()
 
@@ -64,8 +65,9 @@ const Profile = () => {
     try {
       const name = watch('name')
       const phone = watch('phone')
-      const updateResponse = await updateSeller(name, phone, seller?._id)
-      if (updateResponse && updateResponse.data.message == "seller updated") {
+      const updateResponse = await updateSeller(name, phone, seller?._id)    
+      if (updateResponse && updateResponse.data.message == "seller updated") {     
+        dispatch(sellerLogin(updateResponse.data.seller))
         toast.success("profile updated successfully")
       }
     } catch (error) {

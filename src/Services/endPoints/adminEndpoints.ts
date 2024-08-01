@@ -5,6 +5,8 @@ export const adminEndpoints = {
   logout : "/api/admin/logout",
   getSeller : "/api/admin/getSellers",
   getCategory:"/api/admin/getCategory",
-  blockCategory : "/api/admin/blockCategory"
+  blockCategory : "/api/admin/blockCategory",
+  addCategory : "/api/admin/addCategory",
+  editCategory : "/api/admin/editCategory"
 }
 

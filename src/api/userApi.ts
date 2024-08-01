@@ -1,4 +1,5 @@
 import { editFormData } from "../pages/user/EditProfile";
+import { IProperty } from "../pages/user/PropertyDetails";
 import Api from "../Services/axios";
 import { userEndPoints } from "../Services/endPoints/userEndpoints";
 import errorHandle from "./errorHandling";
@@ -14,6 +15,12 @@ interface response {
     status: number;
     message: string;
   };
+}
+
+interface premiumData {
+  id:string
+  price : string,
+  interval : string
 }
 
 // Sign Up Api
@@ -99,6 +106,18 @@ export const googleAuthLogin = async (name: string, email: string, image: string
   }
 };
 
+// Google Register
+export const googleAuthRegister = async (name: string, email: string, image: string)=>{
+  try {
+    return await Api.post(userEndPoints.googleRegister, { name, email, image });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+}
+
+
 // Forgot password
 export const forgotPassword = async (email: string) => {
   try {
@@ -153,3 +172,45 @@ export const updateUser = async (data:editFormData) => {
     throw err;
   }
 };
+
+// premium 
+export const getPremium = async (data:premiumData)=> {
+  try {
+    return await Api.patch(userEndPoints.getPremium,{
+      data
+    })
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
+
+// updateUserPremium
+export const updatePremium = async (type:string,id:string)=>{
+  try {
+    return await Api.patch(userEndPoints.updatePremium,{
+      type,
+      id
+    })
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
+// getproduct Detail
+
+export const productDetail = async (id:string)=>{
+  try {
+    return await Api.post(userEndPoints.productDetail,{id})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
+

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import { location } from "../seller/AddProperty";
 
 interface CustomGeocoderResult {
   geometry: {
@@ -11,8 +12,8 @@ interface CustomGeocoderResult {
 }
 
 interface GoogleSearchProps {
-  onLocationSelect: (result: string) => void;
-  prevLocation?: string;
+  onLocationSelect: (result: location) => void;
+  prevLocation?: location;
 }
 
 const GoogleSearch: React.FC<GoogleSearchProps> = ({
@@ -39,8 +40,8 @@ const GoogleSearch: React.FC<GoogleSearchProps> = ({
         }
 
         geocoderRef.current.on("result", (event) => {
-          const result = event.result as CustomGeocoderResult;
-          onLocationSelect(result.place_name);
+          const result = event.result as CustomGeocoderResult;          
+          onLocationSelect({location:result.place_name,geometry:result.geometry.coordinates});
         });
 
         geocoderRef.current.on("error", (error) => {
@@ -52,7 +53,7 @@ const GoogleSearch: React.FC<GoogleSearchProps> = ({
     }
 
     if (geocoderRef.current && prevLocation && inputRef.current) {
-      inputRef.current.value = prevLocation;
+      inputRef.current.value = prevLocation.location;
     }
   }, [onLocationSelect, prevLocation]);
 

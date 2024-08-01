@@ -105,10 +105,17 @@ const LoginForm = () => {
         googleLoginResponse.data.message == "google Login succesfull" &&
         googleLoginResponse.data.status
       ) {
-        dispatch(userLogin(googleLoginResponse.data.user));
+        console.log(googleLoginResponse);
+        
+        dispatch(userLogin(googleLoginResponse.data.loginUser));
         navigate("/");
       }
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (!error.response?.data.status) {
+          toast.error(error.response?.data.message)
+        }
+      }
       console.log(error);
     }
   };

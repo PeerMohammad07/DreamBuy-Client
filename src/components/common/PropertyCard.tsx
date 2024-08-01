@@ -15,8 +15,17 @@ import { MdPermDataSetting } from "react-icons/md";
 
 
 import { RiMoneyRupeeCircleFill } from 'react-icons/ri';
+import { Link } from 'react-router-dom';
+import CardLoading from './LoadingSkelton/CardLoading';
+
+export interface location {
+  location:string
+  longitude:number
+  latitude : number
+}
 
 export interface PropertyRentData {
+  _id: string
   propertyFor: "rent";
   propertyType: string;
   propertyName: string;
@@ -29,11 +38,12 @@ export interface PropertyRentData {
   description: string;
   sqft: string;
   propertyImage: string[];
-  location: string;
+  location: location;
   sellerId: string;
 }
 
 export interface PropertySaleData {
+  _id: string
   propertyFor: "sale";
   propertyType: string;
   propertyName: string;
@@ -46,21 +56,25 @@ export interface PropertySaleData {
   description: string;
   sqft: string;
   propertyImage: string[];
-  location: string;
+  location: location;
   sellerId: string;
 }
 
 export default function BasicDemo() {
   const [rentProperty, setRentProperty] = useState<PropertyRentData[]>([]);
   const [saleProperty, setSaleProperty] = useState<PropertySaleData[]>([]);
+  const [propertyLoading, setPropertyLoading] = useState(false)
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setPropertyLoading(true)
         const rentData = await getRentProperty();
         const saleData = await getSaleProperty();
         setRentProperty(rentData.data);
         setSaleProperty(saleData.data);
+        setPropertyLoading(false)
       } catch (error) {
         console.error('Error fetching property data:', error);
       }
@@ -107,15 +121,16 @@ export default function BasicDemo() {
   const productTemplate = (product: PropertyRentData | PropertySaleData) => {
     return (
       <>
-        <Card sx={{ maxWidth: 345, height: 370, display: 'flex', flexDirection: 'column' }}>
-          <CardActionArea className="flex-1">
-            <CardMedia
-              component="img"
-              image={product.propertyImage[2]}
-              alt={product.propertyName}
-              sx={{ objectFit: 'cover', height: 245 }}
-            />
-           </CardActionArea>
+        <Link to={`/propertyDetails?id=${product._id}`}>
+          <Card sx={{ maxWidth: 345, height: 370, display: 'flex', flexDirection: 'column' }}>
+            <CardActionArea className="flex-1">
+              <CardMedia
+                component="img"
+                image={product.propertyImage[2]}
+                alt={product.propertyName}
+                sx={{ objectFit: 'cover', height: 245 }}
+              />
+            </CardActionArea>
             <CardContent className="flex-1 flex flex-col">
               <div className="flex justify-between items-center mb-2">
                 <Typography gutterBottom variant="h5" component="div">
@@ -143,10 +158,10 @@ export default function BasicDemo() {
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      maxWidth: '160px', 
+                      maxWidth: '160px',
                     }}
                   >
-                    {product.location}
+                    {product.location.location}
                   </Typography>
                 </div>
                 <Button
@@ -155,7 +170,8 @@ export default function BasicDemo() {
                 />
               </div>
             </CardContent>
-        </Card>
+          </Card>
+        </Link>
       </>
     );
   };
@@ -164,11 +180,28 @@ export default function BasicDemo() {
     <>
       <div className="card">
         <h2 className='font-bold text-3xl text-center py-5'>Rent Properties</h2>
-        <Carousel value={rentProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={productTemplate} />
-      </div>
+        {
+          propertyLoading ? <>
+            <div className='flex justify-center items-center px-8'>
+              <CardLoading />
+              <CardLoading />
+              <CardLoading />
+            </div>
+          </> : <Carousel value={rentProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={productTemplate} />
+
+        }      </div>
       <div className='pt-5'>
         <h2 className='font-bold text-3xl text-center py-8'>Sale Properties</h2>
-        <Carousel value={saleProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={productTemplate} />
+        {
+          propertyLoading ? <>
+            <div className='flex justify-center items-center px-8'>
+              <CardLoading />
+              <CardLoading />
+              <CardLoading />
+            </div>
+          </> : 
+          <Carousel value={saleProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={productTemplate} />
+        }
       </div>
     </>
   );

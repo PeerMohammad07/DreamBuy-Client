@@ -15,6 +15,11 @@ import { CgMore } from "react-icons/cg";
 import MoreDetails, { ISeller } from "../admin/MoreDetails";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
+interface PremiumSubscription {
+  subscriptionType: string; 
+  startDate: string;
+  expiryDate: string;
+}
 
 export interface User {
   _id: string;
@@ -23,6 +28,8 @@ export interface User {
   password: string;
   isBlocked: boolean;
   otpVerified: boolean;
+  isPremium:boolean
+  premiumSubscription:PremiumSubscription
   __v: number;
   phone?: number;
   kycVerified?:
@@ -39,7 +46,8 @@ interface TableData {
   data: User[];
   handleBlock: (id: string, status: boolean) => void;
   role: string;
-  acceptOrDecline: (id: string, status: string) => void;
+  acceptOrDecline : (id: string, status: string) => void 
+  onEdit :(id: string,name:string,description:string|undefined) => void;
 }
 
 
@@ -48,7 +56,7 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   overflowX: "auto",
 }));
 
-const UserTable: React.FC<TableData> = ({ data, handleBlock, role, acceptOrDecline }) => {
+const UserTable: React.FC<TableData> = ({ data, handleBlock, role, acceptOrDecline ,onEdit}) => {
   const [moreDetails, setMoreDetails] = useState(false);
   const [selectedSeller, setSelectedSeller] = useState<ISeller | null>(null);
 
@@ -132,7 +140,7 @@ const UserTable: React.FC<TableData> = ({ data, handleBlock, role, acceptOrDecli
                 <TableCell style={{ textAlign: 'center' }} className="whitespace-nowrap">
                   {
                     role == "category" &&
-                    <button className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2 mb-2 ">
+                    <button onClick={()=> onEdit(user._id,user.name,user?.description)} className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2 mb-2 ">
                       Edit
                     </button>
                   }

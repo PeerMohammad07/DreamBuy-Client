@@ -1,6 +1,7 @@
+import { FormData } from "../components/admin/AddAndEditCategory";
 import Api from "../Services/axios";
 import { adminEndpoints } from "../Services/endPoints/adminEndpoints";
-import errorHandle from "./errorHandling"; 
+import errorHandle from "./errorHandling";
 
 export const signIn = async (email: string, password: string) => {
   try {
@@ -11,7 +12,7 @@ export const signIn = async (email: string, password: string) => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; 
+    throw err;
   }
 };
 
@@ -81,3 +82,25 @@ export const blockCategory = async (id: string, status: boolean) => {
     throw err;
   }
 };
+
+
+export const addCategory = async (data:FormData) => {
+  try {
+    return await Api.post(adminEndpoints.addCategory,data)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
+
+export const editCategory = async (data:FormData) => {
+  try {
+    return await Api.put(adminEndpoints.editCategory,data)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}

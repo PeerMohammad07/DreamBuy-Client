@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+export interface AdminState {
+  adminLogin: boolean;
+}
+
+const initialState:AdminState = {
   adminLogin : false
 }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LocationSearch from "../common/LocationSearch";
 import { useForm } from "react-hook-form";
 import { addProperty } from "../../api/sellerApi";
@@ -7,9 +7,10 @@ import { rootState } from "../../Redux/store/store";
 import { Buffer } from "buffer";
 import { useNavigate } from "react-router-dom";
 import { RotatingLines } from "react-loader-spinner";
+import { getCategory } from "../../api/adminApi";
 
 export interface PropertyFormData {
-  propertyFor: "rent" | "sale";
+  propertyFor: "rent" | "sale"|"";
   propertyType: string;
   propertyName: string;
   state: string;
@@ -21,12 +22,23 @@ export interface PropertyFormData {
   description: string;
   sqft: string;
   images: FileList;
-  location: string;
+  location: locationInterface;
   sellerId: string;
 }
 
+export interface location {
+  location : string
+  geometry : [number,number]
+}
+
+export interface locationInterface {
+  location : string
+  latitude : number
+  longitude:number
+}
+
 export interface Property {
-  propertyFor: "rent" | "sale";
+  propertyFor: "rent" | "sale"| "";
   propertyType: string;
   propertyName: string;
   state: string;
@@ -42,33 +54,54 @@ export interface Property {
     fileName: string;
     fileType: string;
   }[];
-  location: string;
+  location: locationInterface;
   sellerId: string | undefined;
+}
+
+interface ICategory{
+  name : string
+  description : string
 }
 
 const AddProperty = () => {
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState<string>("");
+  const [category,setCategory] = useState<ICategory[]|[]>([])
+  const [location, setLocation] = useState<location>({location:'',geometry:[0,0]});
   const navigate = useNavigate();
 
   const seller = useSelector(
     (prevState: rootState) => prevState.seller.sellerData
   );
 
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await getCategory();
+      setCategory(response.data.category);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  console.log(location);
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<PropertyFormData>({
     defaultValues: {
-      propertyFor: "rent",
+      propertyFor: "",
       propertyType: "",
       propertyName: "",
       state: "",
       city: "",
       bedrooms: 0,
       bathrooms: 0,
-      expectedPrice:"" ,
+      expectedPrice: "",
       description: "",
       features: "",
       sqft: "",
@@ -100,7 +133,6 @@ const AddProperty = () => {
   // Add property Submit Handler
   const onSubmit = async (data: PropertyFormData) => {
     try {
-      console.log("reac");
       setLoading(true);
       const imageBase64Strings = await Promise.all(
         Array.from(data.images).map(fileToBase64)
@@ -108,12 +140,12 @@ const AddProperty = () => {
 
       const obj = {
         ...data,
-        location: location,
+        location: {location:location.location,latitude :location.geometry[1],longitude:location.geometry[0]},
         sellerId: seller?._id,
         images: imageBase64Strings,
       };
       const response = await addProperty(obj);
-      if (response&&response.data == "successfully added the user") {
+      if (response && response.data == "successfully added the user") {
         setLoading(false);
         navigate("/seller/");
       }
@@ -122,8 +154,6 @@ const AddProperty = () => {
     }
   };
 
-  console.log(errors);
-  
   return (
     <>
       {loading && (
@@ -173,11 +203,13 @@ const AddProperty = () => {
                   {...register("propertyFor", {
                     required: "Property for is required",
                   })}
+                  defaultValue=""
                 >
                   <option value="">Select Property For</option>
                   <option value="rent">Rent</option>
                   <option value="sale">Sale</option>
                 </select>
+
                 {errors.propertyFor && (
                   <p className="text-red-500">{errors.propertyFor.message}</p>
                 )}
@@ -234,10 +266,12 @@ const AddProperty = () => {
                   })}
                 >
                   <option value="">Select Property Type</option>
-                  <option value="apartment">Apartment</option>
-                  <option value="house">House</option>
-                  <option value="office">Office</option>
-                  <option value="workspace">Workspace</option>
+                  {
+                    category.map((category)=>(
+                      <option value={category.name}>{category.name}</option>
+                    ))
+                  }
+                  
                 </select>
                 {errors.propertyType && (
                   <p className="text-red-500">{errors.propertyType.message}</p>
@@ -250,7 +284,7 @@ const AddProperty = () => {
               onLocationSelect={setLocation}
               prevLocation={location}
             />
-           
+
             <div className="flex gap-6 mb-8">
               <div className="flex-1">
                 <label

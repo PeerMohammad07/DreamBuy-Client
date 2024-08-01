@@ -1,12 +1,35 @@
 // import React from 'react'
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { signUp } from "../../api/userApi";
+import { googleAuthRegister, signUp } from "../../api/userApi";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { RiEyeCloseFill } from "react-icons/ri";
 import { FaEye } from "react-icons/fa6";
 import { useState } from "react";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+import { userLogin } from "../../Redux/slice/userAuthSlice";
+import { useDispatch } from "react-redux";
+
+
+interface CredentialPayload extends JwtPayload {
+  iss: string;
+  azp: string;
+  aud: string;
+  sub: string;
+  email: string;
+  email_verified: boolean;
+  exp: number;
+  family_name: string;
+  given_name: string;
+  iat: number;
+  jti: string;
+  name: string;
+  nbf: number;
+  picture: string;
+}
+
 
 const RegisterForm = () => {
 
@@ -19,6 +42,7 @@ const RegisterForm = () => {
 
   const [closeEye, setCloseEye] = useState(true)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const {
     register,
@@ -39,6 +63,35 @@ const RegisterForm = () => {
     }
   };
 
+  // goggleregister 
+  const googleRegister = async (response: CredentialResponse) => {
+    try {
+      const credentails: CredentialPayload = jwtDecode(
+        response.credential as string
+      );
+      const googleRegisterResponse = await googleAuthRegister(
+        credentails.name,
+        credentails.email,
+        credentails.picture
+      );
+      if (
+        googleRegisterResponse.data.message == "google register succesfull" &&
+        googleRegisterResponse.data.status
+      ) {
+        console.log(googleRegisterResponse);
+
+        dispatch(userLogin(googleRegisterResponse.data.newUser));
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        if (!error.response?.data.status) {
+          toast.error(error.response?.data.message)
+        }
+      }
+    }
+  }
 
   // Handling Form submiting
   const onSubmit: SubmitHandler<formData> = async (data: formData) => {
@@ -63,7 +116,7 @@ const RegisterForm = () => {
         }
       }
     }
-  };
+  }
 
   return (
     <>
@@ -177,6 +230,14 @@ const RegisterForm = () => {
             <button className="w-full bg-blue-500 py-3 text-center text-white rounded-lg shadow-md">
               Sign Up
             </button>
+          </div>
+          <div className="pt-4">
+            <GoogleLogin
+              onSuccess={googleRegister}
+              onError={() => {
+                console.log("google register Failed");
+              }}
+            />
           </div>
         </form>
       </div>
