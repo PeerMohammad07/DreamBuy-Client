@@ -7,6 +7,7 @@ import ProtectLogin from './Private/protectLoginAdmin'
 import SellerManagement from '../components/admin/SellerManagement'
 import CategoryManagement from '../components/admin/CategoryManagement'
 import PropertyManagement from '../pages/admin/PropertyManagement'
+import AmenitiesManagement from '../pages/admin/AmenitiesManagement'
 
 const AdminRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const AdminRoutes = () => {
          <Route path='/seller' element={<Layout><SellerManagement/></Layout>}/>
          <Route path='/category' element={<Layout><CategoryManagement/></Layout>}/>
          <Route path='/property' element={<Layout><PropertyManagement/></Layout>}/>
+         <Route path='/amenities' element={<Layout><AmenitiesManagement/></Layout>}/>
       </Routes>
     </>
   )

@@ -40,11 +40,11 @@ const ChangePassword = ({ open, close, sellerId }: ChangePasswordProps) => {
     try {
       const updateData = { ...data, sellerId: sellerId }
       const response = await changePassword(updateData)
-      if (response.data === "password updated succesfully") {
+      if (response&&response.data === "password updated succesfully") {
         toast.success("password updated successfully")
         reset()
         close(false)
-      } else if (response.data === "Incorrect old Password") {
+      } else if (response && response.data === "Incorrect old Password") {
         toast.error("Incorrect old Password")
       }
     } catch (error) {

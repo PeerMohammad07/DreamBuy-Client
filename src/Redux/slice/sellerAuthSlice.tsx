@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the SellerProfile interface
 interface SellerProfile {
+  image:string;
   email: string;
   isBlocked: boolean;
   kycVerified: string;

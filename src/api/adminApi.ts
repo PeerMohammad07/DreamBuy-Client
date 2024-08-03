@@ -104,3 +104,57 @@ export const editCategory = async (data:FormData) => {
     throw err;
   }
 }
+
+export const blockProperty = async (id: string, status: boolean) => {
+  try {
+    return await Api.put(adminEndpoints.blockProperty, {
+      id,
+      status
+    });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+};
+
+export const getAmenities = async ()=>{
+  try {
+    return await Api.get(adminEndpoints.amenities);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
+export const addAmenitites = async (name:string)=>{
+  try {
+    return await Api.post(adminEndpoints.amenities,{name});
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
+export const editAmenities = async (id:string|undefined,name:string)=>{
+  try {
+    return await Api.put(adminEndpoints.amenities,{id,name})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
+
+export const blockAmenitie = async (id:string,status:boolean)=>{
+  try {
+    return await Api.put(adminEndpoints.blockAmenitie,{id,status})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}

@@ -29,6 +29,7 @@ export interface PropertyRentData {
   propertyFor: "rent";
   propertyType: string;
   propertyName: string;
+  propertyStatus : boolean
   state: string;
   city: string;
   noOfBedroom: number;
@@ -47,6 +48,7 @@ export interface PropertySaleData {
   propertyFor: "sale";
   propertyType: string;
   propertyName: string;
+  propertyStatus : boolean
   state: string;
   city: string;
   noOfBedroom: number;

@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import { IoMdAddCircle } from "react-icons/io";
 import AddAndEditCategory from './AddAndEditCategory';
 import { toast } from 'react-toastify';
+import { FaEdit } from "react-icons/fa";
+
 
 const CategoryManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -126,7 +128,6 @@ const CategoryManagement = () => {
                   role: '',
                   initialData: { id: '', name: '', description: '' }
                 })
-                console.log(response);
                 toast.success("category added successfully")
                 fetchCategory()
               }

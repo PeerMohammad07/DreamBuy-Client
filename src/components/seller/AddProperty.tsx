@@ -6,11 +6,14 @@ import { useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import { Buffer } from "buffer";
 import { useNavigate } from "react-router-dom";
-import { RotatingLines } from "react-loader-spinner";
-import { getCategory } from "../../api/adminApi";
+import { getAmenities, getCategory } from "../../api/adminApi";
+import { Iaminities } from "../../pages/admin/AmenitiesManagement";
+import { IoClose } from "react-icons/io5";
+import { CircularProgress } from "@mui/material";
+
 
 export interface PropertyFormData {
-  propertyFor: "rent" | "sale"|"";
+  propertyFor: "rent" | "sale" | "";
   propertyType: string;
   propertyName: string;
   state: string;
@@ -27,18 +30,18 @@ export interface PropertyFormData {
 }
 
 export interface location {
-  location : string
-  geometry : [number,number]
+  location: string
+  geometry: [number, number]
 }
 
 export interface locationInterface {
-  location : string
-  latitude : number
-  longitude:number
+  location: string
+  latitude: number
+  longitude: number
 }
 
 export interface Property {
-  propertyFor: "rent" | "sale"| "";
+  propertyFor: "rent" | "sale" | "";
   propertyType: string;
   propertyName: string;
   state: string;
@@ -58,15 +61,19 @@ export interface Property {
   sellerId: string | undefined;
 }
 
-interface ICategory{
-  name : string
-  description : string
+interface ICategory {
+  _id: string
+  name: string
+  description: string
 }
 
 const AddProperty = () => {
   const [loading, setLoading] = useState(false);
-  const [category,setCategory] = useState<ICategory[]|[]>([])
-  const [location, setLocation] = useState<location>({location:'',geometry:[0,0]});
+  const [category, setCategory] = useState<ICategory[] | []>([])
+  const [amenities, setAmenities] = useState<Iaminities[] | []>([])
+  const [location, setLocation] = useState<location>({ location: '', geometry: [0, 0] });
+  const [inputValue, setInputValue] = useState<string[]>([])
+
   const navigate = useNavigate();
 
   const seller = useSelector(
@@ -80,14 +87,25 @@ const AddProperty = () => {
   const fetchCategory = async () => {
     try {
       const response = await getCategory();
+      const responseAmenities = await getAmenities()
+      setAmenities(responseAmenities.data.amenities)
       setCategory(response.data.category);
     } catch (err) {
       console.log(err);
     }
   };
 
-  console.log(location);
-  
+  const selectAmenitie = (ameniti: string) => {
+    if (!inputValue.includes(ameniti)) {
+      setInputValue((state) => [...state, ameniti])
+    }
+  }
+
+  const removeAmenitie = (e: React.MouseEvent<HTMLButtonElement>, ameniti: string) => {
+    e.preventDefault()
+    setInputValue((state) => state.filter(item => item !== ameniti));
+  }
+
   const {
     register,
     handleSubmit,
@@ -103,7 +121,7 @@ const AddProperty = () => {
       bathrooms: 0,
       expectedPrice: "",
       description: "",
-      features: "",
+      features: '',
       sqft: "",
       images: {} as FileList,
     },
@@ -138,9 +156,10 @@ const AddProperty = () => {
         Array.from(data.images).map(fileToBase64)
       );
 
+      console.log(data)
       const obj = {
         ...data,
-        location: {location:location.location,latitude :location.geometry[1],longitude:location.geometry[0]},
+        location: { location: location.location, latitude: location.geometry[1], longitude: location.geometry[0] },
         sellerId: seller?._id,
         images: imageBase64Strings,
       };
@@ -156,32 +175,6 @@ const AddProperty = () => {
 
   return (
     <>
-      {loading && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.7)",
-            zIndex: 10,
-            height: 1200,
-          }}
-        >
-          <RotatingLines
-            strokeColor="grey"
-            strokeWidth="5"
-            animationDuration="0.75"
-            width="96"
-            visible={true}
-          />
-        </div>
-      )}
-
       <div className="flex flex-col items-center py-10 px-4">
         <div className="w-full max-w-screen-md">
           <h1 className="font-bold text-2xl text-center mb-8">
@@ -267,11 +260,11 @@ const AddProperty = () => {
                 >
                   <option value="">Select Property Type</option>
                   {
-                    category.map((category)=>(
-                      <option value={category.name}>{category.name}</option>
+                    category.map((category) => (
+                      <option key={category._id} value={category.name}>{category.name}</option>
                     ))
                   }
-                  
+
                 </select>
                 {errors.propertyType && (
                   <p className="text-red-500">{errors.propertyType.message}</p>
@@ -434,26 +427,52 @@ const AddProperty = () => {
             </div>
 
             <div className="flex flex-col mb-8">
+              <div className="flex flex-wrap gap-1">
+                {amenities && amenities.map((ameniti) => (
+                  <div
+                    key={ameniti._id}
+                    onClick={() => selectAmenitie(ameniti.name)}
+                    className="flex-none text-sm w-1/6 p-1 bg-gray-200 dark:bg-gray-700 rounded-md cursor-pointer"
+                  >
+                    {ameniti.name}
+                  </div>
+                ))}
+              </div>
+
               <label
                 htmlFor="features"
                 className="block text-sm font-medium text-gray-700"
               >
                 Features
               </label>
-              <textarea
+              <div className="flex flex-wrap gap-1 mb-2">
+                {inputValue.map((amenity, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-md inline-flex items-center"
+                  >
+                    <span>{amenity}</span>
+                    <button
+                      onClick={(e) => removeAmenitie(e, amenity)}
+                      className="ml-2 text-red-500"
+                    >
+                      <IoClose size={20} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <input
                 id="features"
                 placeholder="Features"
+                value={inputValue.join(', ')}
+                readOnly
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 {...register("features", {
-                  required: "Features are required",
                   minLength: {
-                    value: 10,
-                    message: "Features must be at least 10 characters long",
+                    value: 2,
+                    message: "minimum one amenitie is required"
                   },
-                  maxLength: {
-                    value: 500,
-                    message: "Features cannot exceed 500 characters",
-                  },
+                  required: "Features are required",
                 })}
               />
               {errors.features && (
@@ -515,12 +534,16 @@ const AddProperty = () => {
             </div>
 
             <div className="flex justify-center">
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Add Property
-              </button>
+              {loading ? <CircularProgress  color="success" />
+
+                : <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Add Property
+                </button>
+              }
+
             </div>
           </form>
         </div>

@@ -7,6 +7,9 @@ export const adminEndpoints = {
   getCategory:"/api/admin/getCategory",
   blockCategory : "/api/admin/blockCategory",
   addCategory : "/api/admin/addCategory",
-  editCategory : "/api/admin/editCategory"
+  editCategory : "/api/admin/editCategory",
+  blockProperty : "/api/admin/blockProperty",
+  amenities : "/api/admin/amenities",
+  blockAmenitie : "/api/admin/amenityBlock"
 }
 

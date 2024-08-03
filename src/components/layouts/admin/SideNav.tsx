@@ -7,6 +7,8 @@ import { FaUser } from "react-icons/fa";
 import { FaUserFriends } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { BiCategoryAlt } from "react-icons/bi";
+import { RiHomeGearLine } from "react-icons/ri";
+
 
 // Define the Sidebar context type
 interface SidebarContextType {
@@ -14,7 +16,7 @@ interface SidebarContextType {
 }
 
 // Create Sidebar context
-const SidebarContext = React.createContext<SidebarContextType | undefined>(
+export const SidebarContext = React.createContext<SidebarContextType | undefined>(
   undefined
 );
 
@@ -81,6 +83,12 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
               text={"Property management"}
               active={location.pathname == "/admin/property"}
               link={"/admin/property"}
+            />
+            <SidebarItem
+              icon={<RiHomeGearLine size={20}/>}
+              text={"Amenties management"}
+              active={location.pathname == "/admin/amenities"}
+              link={"/admin/amenities"}
             />
           </SidebarContext.Provider>
         </nav>
