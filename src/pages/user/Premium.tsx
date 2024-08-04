@@ -40,6 +40,7 @@ const PremiumCard: React.FC<PremiumCardProps> = ({ theme, amount, month, index, 
               "Chat",
               "Video Call",
               "Send images",
+              "Get Owner Details"
             ].map((item, index) => (
               <li key={index} className={`flex items-center ${isDark ? 'text-white' : 'text-black'}`}>
                 <svg className={`mr-3 h-4 w-4 fill-current ${index < 3 ? 'text-gray-400' : 'text-gray-400'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

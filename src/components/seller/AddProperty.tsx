@@ -49,7 +49,7 @@ export interface Property {
   bedrooms: number;
   bathrooms: number;
   expectedPrice: string;
-  features: string;
+  features: string[];
   description: string;
   sqft: string;
   images: {
@@ -73,7 +73,6 @@ const AddProperty = () => {
   const [amenities, setAmenities] = useState<Iaminities[] | []>([])
   const [location, setLocation] = useState<location>({ location: '', geometry: [0, 0] });
   const [inputValue, setInputValue] = useState<string[]>([])
-
   const navigate = useNavigate();
 
   const seller = useSelector(
@@ -159,6 +158,7 @@ const AddProperty = () => {
       console.log(data)
       const obj = {
         ...data,
+        features:inputValue,
         location: { location: location.location, latitude: location.geometry[1], longitude: location.geometry[0] },
         sellerId: seller?._id,
         images: imageBase64Strings,

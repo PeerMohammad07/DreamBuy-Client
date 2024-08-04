@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { Link, useLocation } from "react-router-dom";
-import { productDetail } from "../../api/userApi";
+import { productDetail, sendOwnerDetails } from "../../api/userApi";
 
 // icons
 import { FaBath, FaBed, FaRegHeart } from 'react-icons/fa';
@@ -12,6 +12,10 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 import toast from "react-hot-toast";
 import { location } from "../../components/common/PropertyCard";
+import { rootState } from "../../Redux/store/store";
+import { useSelector } from "react-redux";
+import Modal from "../../components/user/Modal";
+import GetOwnerDetails from "../../components/user/GetOwnerDetails";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXJmYW4zNzQiLCJhIjoiY2xwZmlqNzVyMWRuMDJpbmszdGszazMwaCJ9.7wdXsKdpOXmDR9l_ISdIqA'
 
@@ -36,6 +40,7 @@ export interface IProperty {
 const PropertyDetails = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
+  const userData = useSelector((prevState: rootState) => prevState.user.userData)
   const [product, setProduct] = useState<IProperty | null>(null);
   const id = query.get('id');
   const [mainImage, setMainImage] = useState<string | undefined>(undefined);
@@ -44,6 +49,8 @@ const PropertyDetails = () => {
   const imageRef = useRef<HTMLDivElement | null>(null);
   const featureRef = useRef<HTMLDivElement | null>(null);
   const mapContainer = useRef<HTMLDivElement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [getOwnerDetails,setGetOwnerDetails] = useState(false)
 
   useEffect(() => {
     const fetchProductDetail = async () => {
@@ -63,6 +70,8 @@ const PropertyDetails = () => {
 
     fetchProductDetail();
   }, [id]);
+
+  
 
   useEffect(() => {
     if (product && mapContainer.current) {
@@ -94,6 +103,38 @@ const PropertyDetails = () => {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  const handleSendOwnerDetails = async () => {
+    if (userData?.isPremium) {
+      try {
+        setGetOwnerDetails(true);
+        const sellerId = product?.sellerId;
+        await sendOwnerDetails(userData?.name, product, sellerId, userData?.email);
+      } catch (error) {
+        console.error('Failed to send owner details:', error);
+      }
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  const sendOwnerDetail = async ()=>{
+    try {
+      const sellerId = product?.sellerId
+      const response = await sendOwnerDetails(userData?.name,product,sellerId,userData?.email)
+      return response
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const ownerDetailsModalClose = () => {
+    setGetOwnerDetails(false);
   };
 
   return (
@@ -244,11 +285,15 @@ const PropertyDetails = () => {
           <div className="w-1/3 border-black border rounded-xl">
             <h1 className="text-2xl font-bold text-center py-5">Thinking of Buying ❓</h1>
             <div className="p-6">
-              <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                Book Now
+              <button onClick={() => {
+                handleSendOwnerDetails()
+              }} className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                Get Owner Details
               </button>
               <p className="text-center text-xl px-5 font-serif">OR</p>
-              <button className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 mt-2">
+              <button onClick={() => {
+                userData?.isPremium ? <></> : setIsModalOpen(true)
+              }} className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 mt-2">
                 Contact Owner
               </button>
               <p className="text-center text-sm mt-2 text-gray-600">
@@ -258,6 +303,8 @@ const PropertyDetails = () => {
           </div>
         </div>
 
+        <GetOwnerDetails isOpen={getOwnerDetails} onClose={ownerDetailsModalClose}/>
+        <Modal isOpen={isModalOpen} onClose={handleModalClose} />
 
         <div className="ps-6 w-2/3" ref={aboutRef}>
           <div>
@@ -269,7 +316,7 @@ const PropertyDetails = () => {
         <div className="ps-6 w-2/3 pt-5" ref={featureRef}>
           <div>
             <h1 className="text-3xl font-bold ">Features</h1>
-            <p className="pt-6">{product?.features}</p>
+           { <p className="pt-6">{product?.features}</p>}
           </div>
           <hr className="h-5 w-2/3 mt-10 border-t-2" />
         </div>

@@ -213,4 +213,14 @@ export const productDetail = async (id:string)=>{
   }
 }
 
+// Send Owner Details
 
+export const sendOwnerDetails = async (userName:string|undefined,PropertyDetails:IProperty|null,sellerId:string|undefined,email:string|undefined)=>{
+  try{
+    return await Api.post(userEndPoints.sendOwnerDetail,{sellerId,email,userName,PropertyDetails})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}

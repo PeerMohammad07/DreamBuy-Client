@@ -17,6 +17,7 @@ interface SellerProfile {
   name: string;
   otpVerified: boolean;
   password: string;
+  image:string
   phone: number;
   __v: number;
   _id: string;
@@ -81,7 +82,7 @@ const Profile = () => {
         <div className="flex flex-col items-center p-4 md:flex-row md:items-center md:p-6 bg-white rounded-lg shadow-lg w-full max-w-4xl">
           <div className="flex flex-col items-center md:items-center w-full">
             <img
-              src="/avatar-4.png"
+              src={seller?.image}
               alt="Profile"
               className="w-24 h-24 rounded-full object-cover mb-4 md:mb-4"
             />
