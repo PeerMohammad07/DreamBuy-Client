@@ -225,7 +225,10 @@ const Profile = () => {
                   {seller?.kycVerified == "Not Verified" || seller?.kycVerified == "Cancelled" ? (
                     <button
                       className="bg-green-600 text-white rounded-md p-2 flex items-center space-x-2"
-                      onClick={() => setVerificationModal(true)}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setVerificationModal(true)
+                      }}
                     >
                       <span>Add</span>
                       <AiFillFileAdd />
