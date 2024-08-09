@@ -11,5 +11,7 @@ export const sellerEndpoints = {
     blockSeller : "/api/seller/blockSeller",
     addProperty : "/api/seller/addProperty",
     changePassword : "/api/seller/changePassword",
-    updateSeller : "/api/seller/updateSeller"
+    updateSeller : "/api/seller/updateSeller",
+    getMyProperty : "/api/seller/getMyProperty",
+    deleteProperty : "/api/seller/deleteProperty"
 }

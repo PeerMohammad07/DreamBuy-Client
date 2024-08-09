@@ -8,7 +8,8 @@ import Profile from '../components/seller/Profile'
 import AddProperty from '../components/seller/AddProperty'
 import ProtectSellerRoutes from './Private/ProtectSellerRoutes'
 import { ExpandProvider } from '../Context/ExpandContext'
-import ChatPage from '../pages/seller/ChatPage'
+import ChatPage from '../pages/Chat/ChatPage'
+import PropertyManagement from '../pages/seller/PropertyManagement'
 
 const SellerRoutes = () => {
 
@@ -18,10 +19,11 @@ const SellerRoutes = () => {
         <Routes>
           <Route path='/register' element={<ProtectLogin><SellerLoginAndRegisteration /></ProtectLogin>} />
           <Route path='/resetPassword/:token' element={<ProtectLogin><ResetPassword /></ProtectLogin>} />
-          <Route element={<Mainpage />}>
-            <Route path='/' element={<ProtectSellerRoutes><Profile /></ProtectSellerRoutes>} />
-            <Route path='/addProperty' element={<AddProperty />} />
-            <Route path='/chat' element={<ChatPage/>} />
+          <Route path='/' element={<ProtectSellerRoutes><Mainpage /></ProtectSellerRoutes>}>
+            <Route index element={<Profile />} />
+            <Route path='addProperty' element={<AddProperty />} />
+            <Route path='chat/:role' element={<ChatPage />} />
+            <Route path='property' element={<PropertyManagement/>} />
           </Route>
         </Routes>
       </ExpandProvider>

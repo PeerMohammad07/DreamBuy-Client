@@ -15,5 +15,6 @@ export const  userEndPoints = {
   updatePremium : "/api/updatePremium",
   productDetail : "/api/productDetail",
   googleRegister : '/api/googleRegister',
-  sendOwnerDetail : "/api/sendOwnerDetail"
+  sendOwnerDetail : "/api/sendOwnerDetail",
+  getUser : "/api/getUser"
 }

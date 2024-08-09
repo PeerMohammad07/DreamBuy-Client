@@ -89,55 +89,69 @@ export default function BasicDemo() {
   const responsiveOptions: CarouselResponsiveOption[] = [
     {
       breakpoint: '575px',
-      numVisible: 1,
+      numVisible: 1, // Show 1 card on small screens
       numScroll: 1
     },
     {
       breakpoint: '768px',
-      numVisible: 2,
+      numVisible: 2, // Show 2 cards on medium screens
       numScroll: 1
     },
     {
       breakpoint: '992px',
-      numVisible: 3,
+      numVisible: 3, // Show 3 cards on larger screens
       numScroll: 1
     },
     {
       breakpoint: '1200px',
-      numVisible: 3,
+      numVisible: 4, // Show 4 cards on wider screens
       numScroll: 1
     },
     {
       breakpoint: '1400px',
-      numVisible: 3,
+      numVisible: 4,
       numScroll: 1
     },
     {
       breakpoint: '1800px',
-      numVisible: 4,
+      numVisible: 5, // Show 5 cards on very wide screens
       numScroll: 1
     }
   ];
+  
 
 
   const productTemplate = (product: PropertyRentData | PropertySaleData) => {
     return (
       <>
         <Link to={`/propertyDetails?id=${product._id}`}>
-          <Card sx={{ maxWidth: 345, height: 370, display: 'flex', flexDirection: 'column' }}>
-            <CardActionArea className="flex-1">
+        <Card sx={{ maxWidth: 300, height: 300, display: 'flex', flexDirection: 'column', margin: '0 15px' }}>
+        <CardActionArea className="flex-1 relative">
               <CardMedia
                 component="img"
                 image={product.propertyImage[2]}
                 alt={product.propertyName}
-                sx={{ objectFit: 'cover', height: 245 }}
+                sx={{ objectFit: 'cover', height: 180 }}
               />
+              <Button
+                  icon={<FaRegHeart className='text-xl'/>}
+                  className="rounded-full h-8 w-8 text-black bg-white absolute bottom-1 left-64  md:left-56"
+                />
             </CardActionArea>
             <CardContent className="flex-1 flex flex-col">
               <div className="flex justify-between items-center mb-2">
-                <Typography gutterBottom variant="h5" component="div">
-                  {product.propertyName}
-                </Typography>
+              <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      maxWidth: '160px',
+                    }}
+                  >
+                    {product.propertyName}
+                  </Typography>
                 <Typography variant="h6" color="text.primary" className="flex items-center">
                   <RiMoneyRupeeCircleFill className="mr-1" />
                   {product.Price}
@@ -166,10 +180,6 @@ export default function BasicDemo() {
                     {product.location.location}
                   </Typography>
                 </div>
-                <Button
-                  icon={<FaRegHeart />}
-                  className="p-button-rounded p-button-text"
-                />
               </div>
             </CardContent>
           </Card>

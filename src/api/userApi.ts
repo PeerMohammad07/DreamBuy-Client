@@ -224,3 +224,15 @@ export const sendOwnerDetails = async (userName:string|undefined,PropertyDetails
     throw err;
   }
 }
+
+// Get User 
+
+export const getUser = async (id:string,role:string|undefined)=>{
+  try{
+    return await Api.get(`${userEndPoints.getUser}?id=${id}&role=${role}`)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}

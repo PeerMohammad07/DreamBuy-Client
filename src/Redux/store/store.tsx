@@ -1,4 +1,4 @@
-import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from "../slice/userAuthSlice";
@@ -8,6 +8,7 @@ import { UserState } from "../slice/userAuthSlice";
 import { SellerState } from "../slice/sellerAuthSlice"; 
 import { AdminState } from "../slice/adminAuthSlice"; 
 import { PersistPartial } from 'redux-persist/es/persistReducer';
+
 
 const userPersistConfig = {
   key: 'user',

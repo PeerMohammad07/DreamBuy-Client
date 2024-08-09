@@ -134,3 +134,21 @@ export const updateSeller = async (name: string, phone: string, sellerId: string
      errorHandle(err);
   }
 };
+
+export const getMyProperty = async (id:string|undefined)=>{
+  try {
+    return await Api.get(`${sellerEndpoints.getMyProperty}/${id}`)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+  }
+}
+
+export const deleteProperty = async (id:string)=>{
+  try {
+    return await Api.post(sellerEndpoints.deleteProperty,{id})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+  }
+}

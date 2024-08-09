@@ -8,6 +8,7 @@ import { IoHome } from 'react-icons/io5';
 import { FaRegUser } from 'react-icons/fa6';
 import { LuLogOut } from 'react-icons/lu';
 import { TiTick } from 'react-icons/ti';
+import { MdMarkUnreadChatAlt } from "react-icons/md";
 import Hamburger from 'hamburger-react';
 import Sidebar from './Sidebar';
 
@@ -48,9 +49,11 @@ const Navbar = () => {
           <Sidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} userStatus={userStatus ? true : false} />
 
           <div className="hidden xl:flex lg:flex md:flex items-center pe-3">
-            <div className="flex items-center justify-center pe-5">
+            <div className="flex items-center justify-center pe-6">
               {userData?.isPremium ? (
-                <></>
+                <>
+                 <Link to={'/chat/user'}><MdMarkUnreadChatAlt size={25} /></Link>
+                </>
               ) : (
                 <Link to={'/premium'}>
                   <button className="bg-orange-500 rounded-xl h-10 px-4 text-white hover:shadow-lg hover:bg-orange-500 transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2">

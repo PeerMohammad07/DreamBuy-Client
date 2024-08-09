@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { productDetail, sendOwnerDetails } from "../../api/userApi";
 
 // icons
@@ -16,6 +16,7 @@ import { rootState } from "../../Redux/store/store";
 import { useSelector } from "react-redux";
 import Modal from "../../components/user/Modal";
 import GetOwnerDetails from "../../components/user/GetOwnerDetails";
+import { createConversation } from "../../api/chatApi";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXJmYW4zNzQiLCJhIjoiY2xwZmlqNzVyMWRuMDJpbmszdGszazMwaCJ9.7wdXsKdpOXmDR9l_ISdIqA'
 
@@ -38,6 +39,7 @@ export interface IProperty {
 }
 
 const PropertyDetails = () => {
+  const navigate = useNavigate()
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const userData = useSelector((prevState: rootState) => prevState.user.userData)
@@ -53,6 +55,7 @@ const PropertyDetails = () => {
   const [getOwnerDetails,setGetOwnerDetails] = useState(false)
 
   useEffect(() => {
+    window.scrollTo(0,0)
     const fetchProductDetail = async () => {
       if (id) {
         try {
@@ -104,6 +107,20 @@ const PropertyDetails = () => {
       console.error(error);
     }
   }
+
+  const contactOwnerHandle = async (sellerId:string|undefined)=>{
+    try {
+      const response = await createConversation(userData?._id,sellerId)
+      if(response.data&&response.status){
+        // set curre3nt user 
+      }
+      navigate('/chat/user')
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
 
   const handleSendOwnerDetails = async () => {
     if (userData?.isPremium) {
@@ -292,7 +309,7 @@ const PropertyDetails = () => {
               </button>
               <p className="text-center text-xl px-5 font-serif">OR</p>
               <button onClick={() => {
-                userData?.isPremium ? <></> : setIsModalOpen(true)
+                userData?.isPremium ? contactOwnerHandle(product?.sellerId): setIsModalOpen(true)
               }} className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 mt-2">
                 Contact Owner
               </button>

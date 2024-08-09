@@ -1,13 +1,14 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from '../../components/layouts/user/Navbar'
 import Footer from '../../components/layouts/user/Footer'
 
 const UserMainPage = () => {
+  const location = useLocation()
   return (
     <>
        <Navbar/>
        <Outlet/>
-       <Footer/>
+       {location.pathname == "/chat/user"?<></>:<Footer/>}
     </>
   )
 }

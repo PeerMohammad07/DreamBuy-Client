@@ -104,12 +104,16 @@ const SellerSidebar: React.FC<SidebarProps> = () => {
             </button>
           </div>
 
+        <Link to={"/seller/"}>
           <SidebarItem
             icon={<FaUser size={20} />}
             text="Profile"
             active={location.pathname === '/seller/'}
             link="/seller/"
           />
+        </Link>
+
+        <Link to={"/seller/addProperty"}>
           <div onClick={addProperty}>
             <SidebarItem
               icon={<IoHome size={20} />}
@@ -118,20 +122,27 @@ const SellerSidebar: React.FC<SidebarProps> = () => {
               link="/seller/addProperty"
             />
           </div>
+        </Link>
+
+        <Link to={"/seller/property"}>
           <SidebarItem
             icon={<RiHomeGearLine size={20} />}
             text="Property Management"
             active={location.pathname === '/seller/property'}
             link="/seller/property"
           />
+        </Link>
+
+        <Link to={"/seller/chat/seller"}>
           <SidebarItem
             icon={<IoIosChatboxes size={20} />}
             text="Chat"
-            active={location.pathname === '/seller/chat'}
-            link="/seller/chat"
+            active={location.pathname === '/seller/chat/:seller"'}
+            link="/seller/chat/seller"
           />
+        </Link>
 
-          <div className="mt-auto p-4 flex flex-col items-center border-t border-gray-700">
+        <div className="mt-auto p-4 flex flex-col items-center border-t border-gray-700">
             <div className="flex items-center w-full justify-between">
               <div className="flex items-center">
                 <img

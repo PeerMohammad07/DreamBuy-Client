@@ -10,6 +10,8 @@ import Profile from "../pages/user/Profile";
 import Premium from "../pages/user/Premium";
 import PaymentStatus from "../pages/user/PaymentStatus";
 import PropertyDetails from "../pages/user/PropertyDetails";
+import ChatPage from "../pages/Chat/ChatPage";
+import { ExpandProvider } from "../Context/ExpandContext";
 
 const UserRoutes = () => {
   return (
@@ -43,6 +45,7 @@ const UserRoutes = () => {
           <Route path="/premium" element={<Premium />} />
           <Route path="/paymentStatus" element={<PaymentStatus/>} />
           <Route path="/propertyDetails" element={<PropertyDetails/>} />
+          <Route path="/chat/:role" element={<ExpandProvider><ChatPage/></ExpandProvider>}/>
         </Route>
 
       </Routes>

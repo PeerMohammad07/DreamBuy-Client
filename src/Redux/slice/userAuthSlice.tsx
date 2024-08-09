@@ -6,7 +6,7 @@ interface IPremiumSubscription {
   expiryDate?: Date;
 }
 
-interface User{
+export interface User{
   _id:string
   name: string;
   email: string;
@@ -32,13 +32,14 @@ const userSlice = createSlice({
   name:"user",
   initialState,
   reducers:{
-    userLogin : (state,action:PayloadAction<User>)=>{
-      state.userLogin = true
+    userLogin : (state,action:PayloadAction<User|null>)=>{
+      state.userLogin = action.payload !== null
       state.userData = action.payload
     },
 
     userLogout : (state)=> {
       state.userLogin = false
+      state.userData = null
     }
   }
 })

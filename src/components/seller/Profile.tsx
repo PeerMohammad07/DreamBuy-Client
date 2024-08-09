@@ -245,8 +245,8 @@ const Profile = () => {
                   )}
                 </div>
                 <div className="flex justify-center ">
-                  <button type="submit" className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</button>
-                  <button type="button" onClick={() => setChangePasswordModal(true)} className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br  focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit password</button>
+                  <button type="submit" className="text-white bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</button>
+                  <button type="button" onClick={() => setChangePasswordModal(true)} className="text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:bg-gradient-to-br  focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit password</button>
                 </div>
               </form>
               <ChangePassword open={changePasswordModal} close={setChangePasswordModal} sellerId={seller?._id} />
