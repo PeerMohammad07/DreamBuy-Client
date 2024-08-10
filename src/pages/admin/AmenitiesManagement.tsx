@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { addAmenitites, blockAmenitie, editAmenities, getAmenities } from '../../api/adminApi';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination } from '@mui/material';
 import { styled } from '@mui/system';
 import { ImBlocked } from "react-icons/im";
 import { CgUnblock } from "react-icons/cg";
@@ -10,19 +10,21 @@ import AddAndEditAmenity, { AmenityFormData } from '../../components/admin/AddAn
 import Swal from 'sweetalert2';
 
 export interface Iaminities {
-  _id: string
-  name: string
-  isBlocked: boolean
-  createdAt: Date
+  _id: string;
+  name: string;
+  isBlocked: boolean;
+  createdAt: Date;
 }
 
 const AmenitiesManagement = () => {
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [amenities, setAmenities] = useState<Iaminities[]>([])
+  const [isLoading, setIsLoading] = useState(false);
+  const [amenities, setAmenities] = useState<Iaminities[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [status, setStatus] = useState<'add' | 'edit'>('add');
   const [initialData, setInitialData] = useState<AmenityFormData>({ name: '' });
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchCategory();
@@ -50,8 +52,8 @@ const AmenitiesManagement = () => {
     try {
       const action = status ? "Unblock" : "Block";
       const confirmation = await Swal.fire({
-        title: `${action} Amenitie?`,
-        text: `Are you sure you want to ${action.toLowerCase()} this Amenitie?`,
+        title: `${action} Amenity?`,
+        text: `Are you sure you want to ${action.toLowerCase()} this amenity?`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -63,7 +65,7 @@ const AmenitiesManagement = () => {
       if (confirmation.isConfirmed) {
         const response = await blockAmenitie(_id, status);
         if (response.data === `${action.toLowerCase()}ed successfully`) {
-          Swal.fire(`${action}ed!`, `The Amenitie has been ${action.toLowerCase()}ed.`, "success");
+          Swal.fire(`${action}ed!`, `The amenity has been ${action.toLowerCase()}ed.`, "success");
           fetchCategory();
         }
       }
@@ -81,11 +83,9 @@ const AmenitiesManagement = () => {
       if (status === 'add') {
         const response = await addAmenitites(data.name);
         console.log(response);
-        
       } else {
         const response = await editAmenities(initialData?.id, data.name);
         console.log(response);
-        
       }
       fetchCategory(); 
       closeModal({ state: false, role: '' });
@@ -94,6 +94,16 @@ const AmenitiesManagement = () => {
     }
   };
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const paginatedData = amenities.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     minWidth: 650,
@@ -102,7 +112,7 @@ const AmenitiesManagement = () => {
 
   return (
     <>
-      <div className="flex justify-end ">
+      <div className="flex justify-end">
         <button
           onClick={() => openModal('add')}
           className="flex items-center text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
@@ -117,44 +127,48 @@ const AmenitiesManagement = () => {
             <TableHead>
               <TableRow>
                 <TableCell style={{ textAlign: 'center' }}>No</TableCell>
-                <TableCell style={{ textAlign: 'center' }}>Property Name</TableCell>
+                <TableCell style={{ textAlign: 'center' }}>Amenity Name</TableCell>
                 <TableCell style={{ textAlign: 'center' }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {
-                amenities.map((prop, index) => (
-                  <>
-                    <TableRow key={prop._id}>
-                      <TableCell style={{ textAlign: 'center' }}>{index + 1}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{prop.name}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>
-                        <div className='flex justify-center items-center'>
-                          {prop.isBlocked ? (
-                            <ImBlocked onClick={()=> handleBlock(prop._id,prop.isBlocked)} size={25} color='red' />
-                          ) : (
-                            <CgUnblock onClick={()=> handleBlock(prop._id,prop.isBlocked)} size={30} color='green' />
-                          )}
-                          <FaEdit size={25} className='ms-5' onClick={() => openModal('edit', { id: prop._id, name: prop.name })} />
-                        </div>
-                        <AddAndEditAmenity
-                          isOpen={isModalOpen}
-                          onClose={closeModal}
-                          status={status}
-                          submitHandler={submitHandler}
-                          initialData={initialData}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  </>
-                ))
-              }
+              {paginatedData.map((prop, index) => (
+                <TableRow key={prop._id}>
+                  <TableCell style={{ textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{prop.name}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    <div className='flex justify-center items-center'>
+                      {prop.isBlocked ? (
+                        <ImBlocked onClick={() => handleBlock(prop._id, prop.isBlocked)} size={25} color='red' />
+                      ) : (
+                        <CgUnblock onClick={() => handleBlock(prop._id, prop.isBlocked)} size={30} color='green' />
+                      )}
+                      <FaEdit size={25} className='ms-5' onClick={() => openModal('edit', { id: prop._id, name: prop.name })} />
+                    </div>
+                    <AddAndEditAmenity
+                      isOpen={isModalOpen}
+                      onClose={closeModal}
+                      status={status}
+                      submitHandler={submitHandler}
+                      initialData={initialData}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </StyledTableContainer>
+        <TablePagination
+          component="div"
+          count={amenities.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Paper>
     </>
-  )
+  );
 }
 
-export default AmenitiesManagement
+export default AmenitiesManagement;

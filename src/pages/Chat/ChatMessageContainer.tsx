@@ -14,7 +14,7 @@ import { BackgroundBeams } from "../../components/aceternity/Background";
 import Message from "./Message";
 import MyDropzone from "./DropZone";
 import { FaArrowLeft } from "react-icons/fa6";
-
+import notificationSound from "../../assets/notificationSound/frontend_src_assets_sounds_notification.mp3"
 
 
 interface ChatMessageContainerProps {
@@ -47,13 +47,13 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null)
   const [noti,setNoti] = useState<Imessage[] | []>([])
 
-  console.log(noti,"notification")
   const userData =
     role === "user"
       ? useSelector((prevState: rootState) => prevState.user.userData)
       : role === "seller"
         ? useSelector((prevState: rootState) => prevState.seller.sellerData)
         : null;
+
 
 
   async function handleOnEnter(text: string) {
@@ -71,9 +71,11 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
   useEffect(() => {
     const handleMessageContent = (message: Imessage) => {
       if (message.senderId === currentUser.id || message.senderId === userData?._id) {
+        const sound = new Audio(notificationSound)
+        sound.play()
         setMessages((prevMessages) => [...prevMessages, message]);
       }else{
-        setNoti([message,...messages])
+        setNoti([message,...noti])
       }
     };
 

@@ -15,7 +15,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({ id, setCurrentUser, role  }) => {
   useEffect(() => {
     const fetchUser = async () => {
       const response = await getUser(id,role);
-      console.log(response,"chat box user data fetched ")
       setUser(response.data);
     };
     fetchUser();

@@ -9,7 +9,7 @@ const Mainpage: React.FC = () => {
   return (
       <div className="flex">
         <SellerSidebar />
-        <div className={`flex-grow ${expanded ? 'ml-72':'ml-14'} overflow-auto`}>
+        <div className={`flex-grow bg-gray-900 ${expanded ? 'ml-72':'ml-14'} overflow-auto`}>
           <Outlet />
         </div>
       </div>

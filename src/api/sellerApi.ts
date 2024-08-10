@@ -107,9 +107,7 @@ export const blockSeller = async (id: string, status: boolean) => {
 };
 
 export const addProperty = async (data: Property) => {
-  try {
-    console.log("ponn");
-    
+  try {    
     return await Api.post(sellerEndpoints.addProperty, { data });
   } catch (error) {
     const err: Error = error as Error;
@@ -147,6 +145,24 @@ export const getMyProperty = async (id:string|undefined)=>{
 export const deleteProperty = async (id:string)=>{
   try {
     return await Api.post(sellerEndpoints.deleteProperty,{id})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+  }
+}
+
+export const updateProperty = async (id:string|undefined,data:Property)=>{
+  try {
+    return await Api.put(sellerEndpoints.updateProperty,{id,data})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+  }
+}
+
+export const setSellerBrowserToken = async (token:string,userId:string|undefined)=>{
+  try {
+    return await Api.post(sellerEndpoints.setBrowserToken,{token,userId})
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);

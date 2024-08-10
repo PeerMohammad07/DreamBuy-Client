@@ -16,5 +16,6 @@ export const  userEndPoints = {
   productDetail : "/api/productDetail",
   googleRegister : '/api/googleRegister',
   sendOwnerDetail : "/api/sendOwnerDetail",
-  getUser : "/api/getUser"
+  getUser : "/api/getUser",
+  setBrowserToken:"/api/setBrowserToken"
 }

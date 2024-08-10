@@ -1,33 +1,42 @@
-import React, { useEffect, useState } from 'react'
-
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination
+} from '@mui/material';
 import { styled } from "@mui/system";
 import { getRentProperty, getSaleProperty } from '../../api/userApi';
 import { PropertyRentData, PropertySaleData } from '../../components/common/PropertyCard';
 import Swal from 'sweetalert2';
 import { blockProperty } from '../../api/adminApi';
 
-
 const PropertyManagement = () => {
-
   const [value, setValue] = useState(0);
-  const [rentProperty, setRentProperty] = useState<PropertyRentData[]>([])
-  const [saleProperty, setSaletProperty] = useState<PropertySaleData[]>([])
-  const [property, setProperty] = useState<PropertyRentData[] | PropertySaleData[]>([])
+  const [rentProperty, setRentProperty] = useState<PropertyRentData[]>([]);
+  const [saleProperty, setSaleProperty] = useState<PropertySaleData[]>([]);
+  const [property, setProperty] = useState<PropertyRentData[] | PropertySaleData[]>([]);
+  
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    getProduct()
-  }, [])
+    getProduct();
+  }, []);
 
   async function getProduct() {
     try {
-      const rentPropertyy = await getRentProperty()
-      setRentProperty(rentPropertyy.data)
-      const salePropertyy = await getSaleProperty()
-      setSaletProperty(salePropertyy.data)
+      const rentPropertyy = await getRentProperty();
+      setRentProperty(rentPropertyy.data);
+      const salePropertyy = await getSaleProperty();
+      setSaleProperty(salePropertyy.data);
       setProperty(value === 0 ? rentPropertyy.data : salePropertyy.data); 
     } catch (error) {
       console.log(error);
@@ -35,10 +44,10 @@ const PropertyManagement = () => {
   }
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    if (newValue == 0) {
-      setProperty(rentProperty)
-    } else if (newValue == 1) {
-      setProperty(saleProperty)
+    if (newValue === 0) {
+      setProperty(rentProperty);
+    } else if (newValue === 1) {
+      setProperty(saleProperty);
     }
     setValue(newValue);
   };
@@ -63,13 +72,24 @@ const PropertyManagement = () => {
                      
         if (response.data === `${action.toLowerCase()}ed successfully`) {
           Swal.fire(`${action}ed!`, `The property has been ${action.toLowerCase()}ed.`, "success");
-          getProduct()
+          getProduct();
         }
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const paginatedData = property.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     minWidth: 650,
@@ -114,46 +134,48 @@ const PropertyManagement = () => {
                 <TableCell style={{ textAlign: 'center' }}>Type</TableCell>
                 <TableCell style={{ textAlign: 'center' }}>Price</TableCell>
                 <TableCell style={{ textAlign: 'center' }}>Action</TableCell>
-                {/* Add more columns as needed */}
               </TableRow>
             </TableHead>
             <TableBody>
-              {/* Add table rows here */}
-              {
-                 property.map((prop, index) => (
-                  <>
-                    <TableRow>
-                      <TableCell style={{ textAlign: 'center' }}>{index + 1}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{prop.propertyName}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{prop.propertyFor}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{prop.Price}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>
-                      {prop.propertyStatus ? (
+              {paginatedData.map((prop, index) => (
+                <TableRow key={prop._id}>
+                  <TableCell style={{ textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{prop.propertyName}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{prop.propertyFor}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{prop.Price}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {prop.propertyStatus ? (
                       <button
                         className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br shadow-md shadow-red-500/50 dark:shadow-md dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2 mb-2"
-                        onClick={() => handleBlock(prop._id,prop.propertyStatus)}
+                        onClick={() => handleBlock(prop._id, prop.propertyStatus)}
                       >
                         Blocked
                       </button>
-                      ) : (
+                    ) : (
                       <button
                         className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br shadow-md shadow-red-500/50 dark:shadow-md dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2 mb-2"
-                        onClick={() => handleBlock(prop._id,prop.propertyStatus)}
+                        onClick={() => handleBlock(prop._id, prop.propertyStatus)}
                       >
                         Block
                       </button>
-                  )}
+                    )}
                   </TableCell>
-                    </TableRow>
-                  </>
-                ))
-              }
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </StyledTableContainer>
+        <TablePagination
+          component="div"
+          count={property.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Paper>
     </>
-  )
-}
+  );
+};
 
-export default PropertyManagement
+export default PropertyManagement;

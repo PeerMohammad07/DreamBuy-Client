@@ -6,6 +6,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
   Paper,
 } from "@mui/material";
 import { styled } from "@mui/system";
@@ -61,6 +62,9 @@ const UserTable: React.FC<TableData> = ({ data, handleBlock, role, acceptOrDecli
   const [moreDetails, setMoreDetails] = useState(false);
   const [selectedSeller, setSelectedSeller] = useState<ISeller | null>(null);
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const handleMoreDetails = (user: User) => {
     const seller: ISeller = {
       ...user,
@@ -73,6 +77,16 @@ const UserTable: React.FC<TableData> = ({ data, handleBlock, role, acceptOrDecli
     setMoreDetails(true);
   };
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const paginatedData = data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
   return (
@@ -91,7 +105,7 @@ const UserTable: React.FC<TableData> = ({ data, handleBlock, role, acceptOrDecli
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((user, index) => (
+            {paginatedData.map((user, index) => (
               <TableRow key={user._id}>
                 <TableCell style={{ textAlign: 'center' }}className="whitespace-nowrap sm:hidden md:table-cell">
                   {index + 1}
@@ -175,6 +189,16 @@ const UserTable: React.FC<TableData> = ({ data, handleBlock, role, acceptOrDecli
           </TableBody>
         </Table>
       </StyledTableContainer>
+
+      <TablePagination
+        component="div"
+        count={data.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+
       {selectedSeller && (
         <MoreDetails
           onClose={() => setMoreDetails(false)}

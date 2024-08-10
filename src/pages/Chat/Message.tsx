@@ -8,8 +8,9 @@ interface MessageProps {
   role: string | undefined;
 }
 
-const Message: React.FC<MessageProps> = ({ message, isSender, userImage, userName, role }) => (
-  <div className={`message-container mb-2 ${isSender ? 'flex justify-end' : ''}`}>
+const Message: React.FC<MessageProps> = ({ message, isSender, userImage, userName, role }) => {
+  return (
+  <div className={`message-container mb-2 ${isSender ? 'flex justify-end' : ''} `}>
     <div className={`flex ${isSender ? 'flex-row-reverse' : ''}`}>
       {/* Profile image for both sender and receiver */}
       <img
@@ -27,7 +28,7 @@ const Message: React.FC<MessageProps> = ({ message, isSender, userImage, userNam
       </div>
     </div>
   </div>
-);
+)}
 
 export default Message;
   

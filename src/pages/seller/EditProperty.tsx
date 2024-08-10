@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import LocationSearch from "../common/LocationSearch";
 import { useForm } from "react-hook-form";
-import { addProperty } from "../../api/sellerApi";
+import { getMyProperty, updateProperty } from "../../api/sellerApi";
 import { useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import { Buffer } from "buffer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getAmenities, getCategory } from "../../api/adminApi";
 import { Iaminities } from "../../pages/admin/AmenitiesManagement";
-import { IoClose } from "react-icons/io5";
 import { CircularProgress } from "@mui/material";
-
+import LocationSearch from "../../components/common/LocationSearch";
+import { IoClose } from "react-icons/io5";
 
 export interface PropertyFormData {
   propertyFor: "rent" | "sale" | "";
@@ -67,43 +66,19 @@ interface ICategory {
   description: string
 }
 
-const AddProperty = () => {
+const EditProperty = () => {
+  const { id } = useParams<{ id: string }>(); 
   const [loading, setLoading] = useState(false);
-  const [category, setCategory] = useState<ICategory[] | []>([])
-  const [amenities, setAmenities] = useState<Iaminities[] | []>([])
+  const [category, setCategory] = useState<ICategory[] | []>([]);
+  const [amenities, setAmenities] = useState<Iaminities[] | []>([]);
   const [location, setLocation] = useState<location>({ location: '', geometry: [0, 0] });
-  const [inputValue, setInputValue] = useState<string[]>([])
+  const [inputValue, setInputValue] = useState<string[]>([]);
+  const [propertyData, setPropertyData] = useState<Property | null>(null);
   const navigate = useNavigate();
 
   const seller = useSelector(
     (prevState: rootState) => prevState.seller.sellerData
   );
-
-  useEffect(() => {
-    fetchCategory();
-  }, []);
-
-  const fetchCategory = async () => {
-    try {
-      const response = await getCategory();
-      const responseAmenities = await getAmenities()
-      setAmenities(responseAmenities.data.amenities)
-      setCategory(response.data.category);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const selectAmenitie = (ameniti: string) => {
-    if (!inputValue.includes(ameniti)) {
-      setInputValue((state) => [...state, ameniti])
-    }
-  }
-
-  const removeAmenitie = (e: React.MouseEvent<HTMLButtonElement>, ameniti: string) => {
-    e.preventDefault()
-    setInputValue((state) => state.filter(item => item !== ameniti));
-  }
 
   const {
     register,
@@ -111,22 +86,49 @@ const AddProperty = () => {
     formState: { errors },
   } = useForm<PropertyFormData>({
     defaultValues: {
-      propertyFor: "",
-      propertyType: "",
-      propertyName: "",
-      state: "",
-      city: "",
-      bedrooms: 0,
-      bathrooms: 0,
-      expectedPrice: "",
-      description: "",
+      propertyFor: propertyData?.propertyFor || "",
+      propertyType: propertyData?.propertyType || "",
+      propertyName: propertyData?.propertyName || "",
+      state: propertyData?.state || "",
+      city: propertyData?.city || "",
+      bedrooms: propertyData?.bedrooms || 0,
+      bathrooms: propertyData?.bathrooms || 0,
+      expectedPrice: propertyData?.expectedPrice || "",
+      description: propertyData?.description || "",
       features: '',
-      sqft: "",
+      sqft: propertyData?.sqft || "",
       images: {} as FileList,
     },
   });
 
-  // converting the image files to buffer
+  useEffect(() => {
+    fetchCategory();
+  }, [id]);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await getCategory();
+      const responseAmenities = await getAmenities();
+      setAmenities(responseAmenities.data.amenities);
+      setCategory(response.data.category);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+  const selectAmenitie = (ameniti: string) => {
+    if (!inputValue.includes(ameniti)) {
+      setInputValue((state) => [...state, ameniti]);
+    }
+  };
+
+  const removeAmenitie = (e: React.MouseEvent<HTMLButtonElement>, ameniti: string) => {
+    e.preventDefault();
+    setInputValue((state) => state.filter(item => item !== ameniti));
+  };
+
+
   const fileToBase64 = (
     file: File
   ): Promise<{ base64String: string; fileName: string; fileType: string }> => {
@@ -147,7 +149,7 @@ const AddProperty = () => {
     });
   };
 
-  // Add property Submit Handler
+  // Update property Submit Handler
   const onSubmit = async (data: PropertyFormData) => {
     try {
       setLoading(true);
@@ -155,7 +157,6 @@ const AddProperty = () => {
         Array.from(data.images).map(fileToBase64)
       );
 
-      console.log(data)
       const obj = {
         ...data,
         features: inputValue,
@@ -163,26 +164,29 @@ const AddProperty = () => {
         sellerId: seller?._id,
         images: imageBase64Strings,
       };
-      const response = await addProperty(obj);
-      if (response && response.data == "successfully added the user") {
+      const response = await updateProperty(id, obj);
+      if (response && response.data === "successfully updated the property") {
         setLoading(false);
-        navigate("/seller/");
+        navigate("/seller/property");
       }
     } catch (error) {
-      console.error("Error submitting property:", error);
+      console.error("Error updating property:", error);
     }
   };
+
+  if (!propertyData) {
+    return <div className="flex min-h-screen justify-center items-center py-10"><CircularProgress /></div>;
+  }
 
   return (
     <>
       <div className="flex flex-col items-center py-10 px-4">
         <div className="w-full max-w-screen-md">
           <h1 className="font-bold text-2xl text-white text-center mb-8">
-            Tell us about your property
+            Edit Property
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-
+          <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">  
             <div className="flex-1 flex flex-col">
               <label className="block text-sm font-medium text-white">
                 Property For
@@ -197,6 +201,7 @@ const AddProperty = () => {
                       {...register("propertyFor", {
                         required: "Property for is required",
                       })}
+                      defaultChecked={propertyData.propertyFor === "rent"}
                       className="mr-2"
                     />
                     <label htmlFor="rent" className="text-sm text-gray-800">
@@ -213,6 +218,7 @@ const AddProperty = () => {
                       {...register("propertyFor", {
                         required: "Property for is required",
                       })}
+                      defaultChecked={propertyData.propertyFor === "sale"}
                       className="mr-2"
                     />
                     <label htmlFor="sale" className="text-sm text-gray-800">
@@ -226,71 +232,7 @@ const AddProperty = () => {
               )}
             </div>
 
-
-            <div className="flex gap-6 mb-8">
-              <div className="flex-1">
-                <label
-                  htmlFor="propertyName"
-                  className="block text-sm font-medium text-white"
-                >
-                  Property Name
-                </label>
-                <input
-                  id="propertyName"
-                  type="text"
-                  placeholder="Property Name"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  {...register("propertyName", {
-                    required: "Property name is required",
-                    minLength: {
-                      value: 3,
-                      message: "Property name must be at least 3 characters",
-                    },
-                    maxLength: {
-                      value: 100,
-                      message: "Property name must be less than 100 characters",
-                    },
-                    pattern: {
-                      value: /^[a-zA-Z0-9 ]+$/,
-                      message:
-                        "Property name must be alphanumeric and cannot start with a number",
-                    },
-                  })}
-                />
-                {errors.propertyName && (
-                  <p className="text-red-500">{errors.propertyName.message}</p>
-                )}
-              </div>
-
-              <div className="flex-1">
-                <label
-                  htmlFor="propertyType"
-                  className="block text-sm font-medium text-white"
-                >
-                  Property Type
-                </label>
-                <select
-                  id="propertyType"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  {...register("propertyType", {
-                    required: "Property type is required",
-                  })}
-                >
-                  <option value="">Select Property Type</option>
-                  {
-                    category.map((category) => (
-                      <option key={category._id} value={category.name}>{category.name}</option>
-                    ))
-                  }
-
-                </select>
-                {errors.propertyType && (
-                  <p className="text-red-500">{errors.propertyType.message}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Location */}
+            {/* Add all other fields (similar to AddProperty) */}
             <LocationSearch
               onLocationSelect={setLocation}
               prevLocation={location}
@@ -521,42 +463,15 @@ const AddProperty = () => {
               )}
             </div>
 
-            <div className="flex flex-col mb-8">
-              <label
-                htmlFor="images"
-                className="block text-sm font-medium text-white"
-              >
-                Images
-              </label>
-              <input
-                id="images"
-                type="file"
-                multiple
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                {...register("images", {
-                  required: "At least one image is required",
-                  validate: {
-                    maxLength: (files) =>
-                      files.length <= 5 || "Maximum 5 images only",
-                  },
-                })}
-              />
-              {errors.images && (
-                <p className="text-red-500">{errors.images.message}</p>
-              )}
-            </div>
-
             <div className="flex justify-center">
               {loading ? <CircularProgress color="success" />
-
                 : <button
                   type="submit"
                   className="bg-gradient-to-tr from-blue-400 to-blue-600 text-black font-bold py-2 px-4 rounded"
                 >
-                  Add Property
+                  Update Property
                 </button>
               }
-
             </div>
           </form>
         </div>
@@ -565,4 +480,4 @@ const AddProperty = () => {
   );
 };
 
-export default AddProperty;
+export default EditProperty;

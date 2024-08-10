@@ -16,7 +16,7 @@ interface GoogleSearchProps {
   prevLocation?: location;
 }
 
-const GoogleSearch: React.FC<GoogleSearchProps> = ({
+const LocationSearch: React.FC<GoogleSearchProps> = ({
   onLocationSelect,
   prevLocation,
 }) => {
@@ -69,7 +69,7 @@ const GoogleSearch: React.FC<GoogleSearchProps> = ({
       <div className="flex-1">
         <label
           htmlFor="geocoderInput"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-white mb-1"
         >
           Location
         </label>
@@ -84,7 +84,7 @@ const GoogleSearch: React.FC<GoogleSearchProps> = ({
           <div>
             <label
               htmlFor="locationSearch"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-white mb-1"
             >
               Search Location
             </label>
@@ -104,4 +104,4 @@ const GoogleSearch: React.FC<GoogleSearchProps> = ({
   );
 };
 
-export default GoogleSearch;
+export default LocationSearch;

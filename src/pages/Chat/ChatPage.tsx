@@ -16,10 +16,9 @@ export interface IcurrentUser {
   userData: User | SellerProfile | null;
 }
 
-
 export interface IonlineUsers {
-  id: string
-  socketId: string
+  id: string;
+  socketId: string;
 }
 
 const ChatPage = () => {
@@ -27,8 +26,8 @@ const ChatPage = () => {
   const { setExpanded } = useExpandContext();
   const [conversations, setConversation] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState<IcurrentUser>({ id: '', userData: null });
-  const { socket } = useSocket()
-  const [onlineUsers, setOnlineUsers] = useState<IonlineUsers[]>([])
+  const { socket } = useSocket();
+  const [onlineUsers, setOnlineUsers] = useState<IonlineUsers[]>([]);
 
   const userData = role === 'user'
     ? useSelector((prevState: rootState) => prevState.user.userData)
@@ -36,24 +35,37 @@ const ChatPage = () => {
       ? useSelector((prevState: rootState) => prevState.seller.sellerData)
       : null;
 
-
-  useEffect(() => {
-    socket.emit('addUser', userData?._id)
-  }, [])
-
-  useEffect(() => {
-    socket.on('getUser', (user) => {
-      setOnlineUsers(user)
-    })
-  }, [])
-
-  socket.on('removeUser', (user) => {
-    setOnlineUsers(user)
-  })
-
   const userOnline = (id: string): boolean => {
-    return onlineUsers.some(user => user.id == id)
-  }
+    return onlineUsers.some(user => user.id === id);
+  };
+
+  useEffect(() => {
+    // Emit 'addUser' event after socket is connected
+    if (socket && userData?._id) {
+      socket.emit('addUser', userData._id);
+    }
+  }, [socket, userData]);
+
+
+  useEffect(() => {
+    if (socket) {
+      const handleGetUser = (users: IonlineUsers[]) => {
+        setOnlineUsers(users);
+      };
+
+      const handleRemoveUser = (users: IonlineUsers[]) => {
+        setOnlineUsers(users);
+      };
+
+      socket.on('getUser', handleGetUser);
+      socket.on('removeUser', handleRemoveUser);
+
+      return () => {
+        socket.off('getUser', handleGetUser);
+        socket.off('removeUser', handleRemoveUser);
+      };
+    }
+  }, [socket]);
 
   useEffect(() => {
     const fetchConversation = async () => {
@@ -66,7 +78,6 @@ const ChatPage = () => {
         }
       }
     };
-
     fetchConversation();
   }, [userData]);
 
@@ -78,14 +89,23 @@ const ChatPage = () => {
   }, [setExpanded]);
 
   const matches = useMediaQuery('(max-width:768px)');
+  
   return (
     <>
-      {matches ? <div className='flex h-screen'>
-        {
-          currentUser.id == '' ? <ChatSideBar role={role} conversations={conversations} setCurrentUser={setCurrentUser} />
-            : <ChatMessageContainer currentUser={currentUser} setCurrentUser={setCurrentUser} isOnline={userOnline(currentUser.id)} role={role} />
-        }
-      </div> : <>
+      {matches ? (
+        <div className='flex h-screen'>
+          {currentUser.id === '' ? (
+            <ChatSideBar role={role} conversations={conversations} setCurrentUser={setCurrentUser} />
+          ) : (
+            <ChatMessageContainer
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              isOnline={userOnline(currentUser.id)}
+              role={role}
+            />
+          )}
+        </div>
+      ) : (
         <div className='flex h-screen'>
           <ChatSideBar role={role} conversations={conversations} setCurrentUser={setCurrentUser} />
           <ChatMessageContainer
@@ -94,9 +114,8 @@ const ChatPage = () => {
             isOnline={userOnline(currentUser.id)}
             role={role}
           />
-
         </div>
-      </>}
+      )}
     </>
   );
 };
