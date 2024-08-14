@@ -1,5 +1,6 @@
 import { formDataProps } from "../components/common/ChangePassword";
 import { Property } from "../components/seller/AddProperty";
+import { PartialPropertyFormData } from "../pages/seller/EditProperty";
 import Api from "../Services/axios";
 import { sellerEndpoints } from "../Services/endPoints/sellerEndpoints";
 import errorHandle from "./errorHandling";
@@ -151,7 +152,7 @@ export const deleteProperty = async (id:string)=>{
   }
 }
 
-export const updateProperty = async (id:string|undefined,data:Property)=>{
+export const updateProperty = async (id:string|undefined,data:PartialPropertyFormData)=>{
   try {
     return await Api.put(sellerEndpoints.updateProperty,{id,data})
   } catch (error) {

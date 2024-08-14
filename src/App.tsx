@@ -9,15 +9,17 @@ import { createBrowserRouter ,RouterProvider} from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import { rootState } from './Redux/store/store';
 import {onMessage} from "firebase/messaging"
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getNotificationToken, messaging } from './Services/notification/firebase';
 import { setSellerBrowserToken } from './api/sellerApi';
 import { setUserBrowserToken } from './api/userApi';
+import AllApplicationSkelton from './components/common/LoadingSkelton/AllApplicationSkelton';
 
 function App() {
 
   const sellerLogin = useSelector((prevState:rootState)=> prevState.seller.sellerData)
   const userLogin = useSelector((prevState:rootState)=> prevState.user.userData)
+  const [loading,setLoading] = useState(true)
 
   useEffect(() => {
     onMessage(messaging, (payload) => {
@@ -69,6 +71,11 @@ function App() {
     }
   },[sellerLogin,userLogin])
 
+  useEffect(()=>{
+    setTimeout(()=>{
+      setLoading(false)
+    },2000)
+  })
 
 
   const router = createBrowserRouter([
@@ -79,8 +86,17 @@ function App() {
 
   return (
     <>
+    {
+      loading ? <>
+      <div className='flex justify-center items-center'>
+      <AllApplicationSkelton/>
+      </div>
+      </> :
+      <>
       <ToastContainer/>
       <RouterProvider router={router}/>
+      </>
+    }
     </>
   )
 }

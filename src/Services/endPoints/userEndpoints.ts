@@ -17,5 +17,6 @@ export const  userEndPoints = {
   googleRegister : '/api/googleRegister',
   sendOwnerDetail : "/api/sendOwnerDetail",
   getUser : "/api/getUser",
-  setBrowserToken:"/api/setBrowserToken"
+  setBrowserToken:"/api/setBrowserToken",
+  whishlist : "/api/whishlist"
 }

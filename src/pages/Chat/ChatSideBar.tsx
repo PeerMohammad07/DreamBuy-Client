@@ -5,6 +5,7 @@ import ChatBox from "./ChatBox";
 import { rootState } from "../../Redux/store/store";
 import { useSelector } from "react-redux";
 import { IcurrentUser } from "./ChatPage";
+import { Avatar, Skeleton, Typography } from "@mui/material";
 
 export interface IConversation extends Document {
   senderId: string;
@@ -17,9 +18,10 @@ interface ChatSideBarProps {
   conversations: IConversation[];
   setCurrentUser: React.Dispatch<React.SetStateAction<IcurrentUser>>;
   role: string | undefined;
+  loading: boolean
 }
 
-const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser, role }) => {
+const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser, role, loading }) => {
   const userData = role === 'user'
     ? useSelector((prevState: rootState) => prevState.user.userData)
     : role === 'seller'
@@ -28,7 +30,6 @@ const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser
 
   const [search, setSearch] = useState("");
   const [conversationUsers, setConversationUsers] = useState<IConversation[] | []>([]);
-  const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
 
   const alreadyMessagedUsers = conversationUsers.map((value) => {
@@ -41,9 +42,7 @@ const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser
 
 
   useEffect(() => {
-    setLoading(true)
     setConversationUsers(conversations);
-    setLoading(false)
   }, [conversations]);
 
   // Define color schemes based on the role
@@ -93,7 +92,11 @@ const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser
         ) : (
           <div className="text-center text-gray-500">No results found...</div>
         )}
-        {loading && <div className="text-center text-gray-500">Loading...</div>}
+        {loading && <div className="text-center text-gray-500"><Skeleton variant="circular">
+          <Avatar />
+        </Skeleton> <Skeleton width="100%">
+            <Typography>.</Typography>
+          </Skeleton></div>}
       </div>
     </div>
   );

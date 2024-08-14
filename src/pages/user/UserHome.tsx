@@ -1,5 +1,5 @@
 import { FlipWords } from '../../components/aceternity/FlipWord'
-import BasicDemo from '../../components/common/PropertyCard'
+import BasicDemo from '../../components/common/Carousel'
 
 const UserHome = () => {
 

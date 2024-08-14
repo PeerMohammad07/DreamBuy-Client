@@ -1,17 +1,17 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { productDetail, sendOwnerDetails } from "../../api/userApi";
+import { addToWishlist, getAllWhishlistProperty, productDetail, removeFromWishlist, sendOwnerDetails } from "../../api/userApi";
 
 // icons
-import { FaBath, FaBed, FaRegHeart } from 'react-icons/fa';
+import { FaBath, FaBed, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaLocationDot } from "react-icons/fa6";
 import { MdPermDataSetting } from "react-icons/md";
 import { FaRegCopy } from "react-icons/fa6";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 import toast from "react-hot-toast";
-import { location } from "../../components/common/PropertyCard";
+import { IWishlist, location } from "../../components/common/Carousel";
 import { rootState } from "../../Redux/store/store";
 import { useSelector } from "react-redux";
 import Modal from "../../components/user/Modal";
@@ -42,7 +42,9 @@ const PropertyDetails = () => {
   const navigate = useNavigate()
   const location = useLocation();
   const query = new URLSearchParams(location.search);
+  const [whishlistProperty, setWhishlistProperty] = useState<IWishlist[] | []>([])
   const userData = useSelector((prevState: rootState) => prevState.user.userData)
+  const [isWhish, setIswish] = useState<boolean>(false)
   const [product, setProduct] = useState<IProperty | null>(null);
   const id = query.get('id');
   const [mainImage, setMainImage] = useState<string | undefined>(undefined);
@@ -52,10 +54,10 @@ const PropertyDetails = () => {
   const featureRef = useRef<HTMLDivElement | null>(null);
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [getOwnerDetails,setGetOwnerDetails] = useState(false)
+  const [getOwnerDetails, setGetOwnerDetails] = useState(false)
 
   useEffect(() => {
-    window.scrollTo(0,0)
+    window.scrollTo(0, 0)
     const fetchProductDetail = async () => {
       if (id) {
         try {
@@ -74,7 +76,46 @@ const PropertyDetails = () => {
     fetchProductDetail();
   }, [id]);
 
-  
+
+  useEffect(() => {
+    const getWishlist = async () => {
+      try {
+        const whishlistData = await getAllWhishlistProperty(userData?._id)
+        setWhishlistProperty(whishlistData?.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getWishlist()
+  }, [])
+
+  useEffect(() => {
+    if (whishlistProperty.length > 0) {
+      const isWishlisted = whishlistProperty.some((whishlistData) => {
+        return whishlistData.propertyId === product?._id;
+      });
+      setIswish(isWishlisted);
+    } else {
+      setIswish(false);
+    }
+  }, [whishlistProperty, product?._id]);
+
+  const handleWhishlist = async (productId: string|undefined) => {
+    try {
+      if (isWhish && userData?._id && productId) {
+        await removeFromWishlist(userData?._id, productId);
+        toast.success("removed from wishlist")
+        setWhishlistProperty(prev => prev.filter(item => item.propertyId !== productId));
+      } else if (userData?._id) {
+        const response = await addToWishlist(userData?._id, productId);
+        toast.success("added to wishlist")
+        setWhishlistProperty(prev => [...prev, response?.data.data]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (product && mapContainer.current) {
@@ -108,10 +149,10 @@ const PropertyDetails = () => {
     }
   }
 
-  const contactOwnerHandle = async (sellerId:string|undefined)=>{
+  const contactOwnerHandle = async (sellerId: string | undefined) => {
     try {
-      const response = await createConversation(userData?._id,sellerId)
-      if(response.data&&response.status){
+      const response = await createConversation(userData?._id, sellerId)
+      if (response.data && response.status) {
         // set curre3nt user 
       }
       navigate('/chat/user')
@@ -136,10 +177,10 @@ const PropertyDetails = () => {
     }
   };
 
-  const sendOwnerDetail = async ()=>{
+  const sendOwnerDetail = async () => {
     try {
       const sellerId = product?.sellerId
-      const response = await sendOwnerDetails(userData?.name,product,sellerId,userData?.email)
+      const response = await sendOwnerDetails(userData?.name, product, sellerId, userData?.email)
       return response
     } catch (error) {
       console.error(error);
@@ -223,7 +264,8 @@ const PropertyDetails = () => {
           Features
         </h1>
         <h1 className="flex items-center p-4 cursor-pointer hover:bg-gray-100 hover:rounded-xl hover:text-gray-800">
-          <FaRegHeart className="mr-2" /> Wishlist
+          {isWhish ? <FaHeart className='text-red-500 mr-2' onClick={() => handleWhishlist(product?._id)} />:<FaRegHeart className="mr-2" onClick={() => handleWhishlist(product?._id)} />
+          } Wishlist
         </h1>
         <h1 onClick={copyUrl} className="flex items-center p-4 cursor-pointer hover:bg-gray-100 hover:rounded-xl hover:text-gray-800">
           <FaRegCopy className="mr-2" />
@@ -309,7 +351,7 @@ const PropertyDetails = () => {
               </button>
               <p className="text-center text-xl px-5 font-serif">OR</p>
               <button onClick={() => {
-                userData?.isPremium ? contactOwnerHandle(product?.sellerId): setIsModalOpen(true)
+                userData?.isPremium ? contactOwnerHandle(product?.sellerId) : setIsModalOpen(true)
               }} className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 mt-2">
                 Contact Owner
               </button>
@@ -320,7 +362,7 @@ const PropertyDetails = () => {
           </div>
         </div>
 
-        <GetOwnerDetails isOpen={getOwnerDetails} onClose={ownerDetailsModalClose}/>
+        <GetOwnerDetails isOpen={getOwnerDetails} onClose={ownerDetailsModalClose} />
         <Modal isOpen={isModalOpen} onClose={handleModalClose} />
 
         <div className="ps-6 w-2/3" ref={aboutRef}>
@@ -333,7 +375,7 @@ const PropertyDetails = () => {
         <div className="ps-6 w-2/3 pt-5" ref={featureRef}>
           <div>
             <h1 className="text-3xl font-bold ">Features</h1>
-           { <p className="pt-6">{product?.features}</p>}
+            {<p className="pt-6">{product?.features}</p>}
           </div>
           <hr className="h-5 w-2/3 mt-10 border-t-2" />
         </div>

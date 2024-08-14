@@ -5,7 +5,7 @@ import { IoVideocam } from "react-icons/io5";
 import { LuSendHorizonal } from "react-icons/lu";
 import { useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
-import { getMessages, sendMessage } from "../../api/chatApi";
+import { getMessages, sendMessage, uploadChatFile } from "../../api/chatApi";
 import { IcurrentUser } from "./ChatPage";
 import { getUser } from "../../api/userApi";
 import { useSocket } from "../../Context/SocketContext";
@@ -15,6 +15,9 @@ import Message from "./Message";
 import MyDropzone from "./DropZone";
 import { FaArrowLeft } from "react-icons/fa6";
 import notificationSound from "../../assets/notificationSound/frontend_src_assets_sounds_notification.mp3"
+import { toast } from "react-toastify";
+import { LineWave } from "react-loader-spinner";
+import { IoClose } from "react-icons/io5";
 
 
 interface ChatMessageContainerProps {
@@ -33,6 +36,12 @@ export interface Imessage {
   senderId: string;
 }
 
+export interface file {
+  name: string
+  type: string
+  path: string
+}
+
 const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
   currentUser,
   setCurrentUser,
@@ -41,11 +50,14 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
 }) => {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<Imessage[] | []>([]);
+  const [loading, setLoading] = useState(false)
+  const [sendFileLoading, setSendFileLoading] = useState(false)
   const [preview, setPreview] = useState<string[]>([])
+  const [file, setFile] = useState<File[]>([]);
   const [activePreview, setActivePreview] = useState(preview[0]);
   const { socket } = useSocket()
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [noti,setNoti] = useState<Imessage[] | []>([])
+  const [noti, setNoti] = useState<Imessage[] | []>([])
 
   const userData =
     role === "user"
@@ -57,6 +69,46 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
 
 
   async function handleOnEnter(text: string) {
+    if (file.length > 0 && userData) {
+      const videos = file.filter((fil) => fil.type === 'video/mp4');
+      const images = file.filter((fil) => fil.type.startsWith('image/'));
+
+      if (videos.length > 1) {
+        toast.error('You can only upload one video at a time.');
+        return;
+      }
+
+      if (videos.length > 0 && images.length > 0) {
+        toast.error('You cannot upload both images and videos together.');
+        return;
+      }
+
+      setSendFileLoading(true)
+      let formData = new FormData();
+      file.forEach((file) => {
+        formData.append('files', file);
+      });
+      formData.append('senderId', userData?._id)
+      formData.append('recieverId', currentUser.id)
+      const response = await uploadChatFile(formData)
+      if (!Array.isArray(response.data.data) && response.data.data.message.endsWith('.mp4')) {
+        setMessages((prevState) => [...prevState, response.data.data])
+        setSendFileLoading(false)
+        setPreview([])
+        setFile([])
+      } else if (response.data.status) {
+        response.data.data.map((msg: any) => {
+          setMessages((prevState) => [...prevState, msg])
+        })
+        console.log("vanmn")
+        setSendFileLoading(false)
+        setPreview([])
+        setFile([])
+      } else {
+        setSendFileLoading(false)
+        toast.error(response.data.message)
+      }
+    }
     if (text.trim() == "" || text == "") {
       return;
     }
@@ -74,8 +126,8 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
         const sound = new Audio(notificationSound)
         sound.play()
         setMessages((prevMessages) => [...prevMessages, message]);
-      }else{
-        setNoti([message,...noti])
+      } else {
+        setNoti([message, ...noti])
       }
     };
 
@@ -90,6 +142,7 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
   useEffect(() => {
     const getCurrentUserdata = async () => {
       if (currentUser && currentUser.id) {
+        setLoading(true)
         const currUser = await getUser(currentUser.id, role);
         const messages = await getMessages(userData?._id, currUser.data._id);
         setCurrentUser((prevState: IcurrentUser) => ({
@@ -97,6 +150,7 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
           userData: currUser.data,
         }));
         setMessages(messages.data);
+        setLoading(false)
       }
     };
     getCurrentUserdata();
@@ -146,7 +200,7 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
               </div>
 
               {/* Chat Messages Container */}
-              <div
+              {<div
                 className="flex-grow p-4 overflow-y-auto"
                 style={{
                   backgroundImage: role === "seller" ? 'url(/floating-cogs.svg)' : 'none',
@@ -164,30 +218,61 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
                   />
                 ))}
                 <div ref={scrollRef} />
-              </div>
+              </div>}
 
-              {/* Thumbnail Section */}
-              <div className="mb-1 flex gap-2 overflow-x-auto">
-                {preview.map((item, index) => (
+              {/* Image preview Section */}
+              {sendFileLoading ?
+                <>
                   <div
-                    key={index}
-                    onClick={() => setActivePreview(item)}
-                    className={`flex-shrink-0 cursor-pointer border ${activePreview === item ? 'border-blue-500' : 'border-gray-500'} rounded-lg overflow-hidden`}
+                    className="mb-1  absolute flex gap-1 overflow-x-auto"
+                    style={{ bottom: role === "seller" ? '85px' : '30px' }}
                   >
-                    {item.endsWith('.mp4') ? (
-                      <video src={item} className="w-20 h-20 object-cover rounded-lg" />
-                    ) : (
-                      <img src={item} alt={`Thumbnail-${index}`} className="w-20 h-20 object-cover rounded-lg" />
-                    )}
+                    <LineWave
+                      visible={true}
+                      height="100"
+                      width="100"
+                      color="#4fa94d"
+                      ariaLabel="line-wave-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      firstLineColor=""
+                      middleLineColor=""
+                      lastLineColor=""
+                    />
                   </div>
-                ))}
-                {role=="seller"&&<BackgroundBeams />}
-              </div>
+                </>
+                : <div
+                  className="mb-1 absolute flex gap-1 overflow-x-auto"
+                  style={{ bottom: role === "seller" ? '85px' : '30px' }}
+                >
+                  {preview.map((item, index) => (
+                    <>
+                      <div
+                        key={index}
+                        onClick={() => setActivePreview(item)}
+                        className={`flex-shrink-0 cursor-pointer border ${activePreview === item ? 'border-blue-500' : 'border-gray-500'} rounded-lg overflow-hidden`}
+                      >
+                        {item.startsWith('data:video') ? (
+                          <video className="rounded-lg h-36" controls>
+                            <source src={item} type="video/mp4" />
+                          </video>
+                        ) : (
+                          <>
+                            <img src={item} alt={`Thumbnail-${index}`} className="h-36 w-36 object-cover rounded-lg" />
+                          </>
+                        )}
+                      </div>
+                    </>
+                  ))}
+                </div>}
+
+              {/* Background Design  */}
+              {role == "seller" && <BackgroundBeams />}
 
 
               {/* Chat Input Box */}
               <div className={`flex items-center p-4 border-t ${role == "user" ? "bg-gray-200" : "bg-gray-900"}`} >
-                <MyDropzone setPreview={setPreview} />
+                <MyDropzone setPreview={setPreview} setFile={setFile} />
                 <div className="flex-grow">
                   <InputEmoji
                     value={text}
@@ -200,7 +285,9 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
                   />
                 </div>
                 <button
-                  onClick={() => handleOnEnter(text)}
+                  onClick={() => {
+                    handleOnEnter(text)
+                  }}
                   className="ml-4 p-2 bg-blue-600 text-white rounded-full"
                 >
                   <LuSendHorizonal size={24} />

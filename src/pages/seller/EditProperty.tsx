@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getMyProperty, updateProperty } from "../../api/sellerApi";
+import { updateProperty } from "../../api/sellerApi";
 import { useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import { Buffer } from "buffer";
@@ -10,21 +10,24 @@ import { Iaminities } from "../../pages/admin/AmenitiesManagement";
 import { CircularProgress } from "@mui/material";
 import LocationSearch from "../../components/common/LocationSearch";
 import { IoClose } from "react-icons/io5";
+import { productDetail } from "../../api/userApi";
+import { IoMdCloseCircleOutline } from "react-icons/io";
+import { toast } from "react-toastify";
 
 export interface PropertyFormData {
-  propertyFor: "rent" | "sale" | "";
+  features: string[];
+  propertyFor: "" | "rent" | "sale";
   propertyType: string;
   propertyName: string;
   state: string;
   city: string;
-  bedrooms: number;
-  bathrooms: number;
-  expectedPrice: string;
-  features: string;
+  noOfBedroom: number;
+  noOfBathroom: number;
+  Price: string;
   description: string;
   sqft: string;
-  images: FileList;
-  location: locationInterface;
+  propertyImage?: FileList;
+  location?: locationInterface;
   sellerId: string;
 }
 
@@ -45,17 +48,13 @@ export interface Property {
   propertyName: string;
   state: string;
   city: string;
-  bedrooms: number;
-  bathrooms: number;
-  expectedPrice: string;
+  noOfBedroom: number;
+  noOfBathroom: number;
+  Price: string;
   features: string[];
   description: string;
   sqft: string;
-  images: {
-    base64String: string;
-    fileName: string;
-    fileType: string;
-  }[];
+  propertyImage: FileList;
   location: locationInterface;
   sellerId: string | undefined;
 }
@@ -66,69 +65,120 @@ interface ICategory {
   description: string
 }
 
+export type PartialPropertyFormData = Partial<PropertyFormData>;
+
+
 const EditProperty = () => {
-  const { id } = useParams<{ id: string }>(); 
+  const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<ICategory[] | []>([]);
   const [amenities, setAmenities] = useState<Iaminities[] | []>([]);
   const [location, setLocation] = useState<location>({ location: '', geometry: [0, 0] });
   const [inputValue, setInputValue] = useState<string[]>([]);
   const [propertyData, setPropertyData] = useState<Property | null>(null);
+  const [initialData, setInitialData] = useState<Property | null>(null);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const navigate = useNavigate();
 
   const seller = useSelector(
     (prevState: rootState) => prevState.seller.sellerData
   );
 
+  useEffect(() => {
+    async function getProduct() {
+      const product = await productDetail(id);
+      setPropertyData(product.data.data);
+      setInitialData(product.data.data)
+    }
+    getProduct();
+  }, [id]);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropertyFormData>({
-    defaultValues: {
-      propertyFor: propertyData?.propertyFor || "",
-      propertyType: propertyData?.propertyType || "",
-      propertyName: propertyData?.propertyName || "",
-      state: propertyData?.state || "",
-      city: propertyData?.city || "",
-      bedrooms: propertyData?.bedrooms || 0,
-      bathrooms: propertyData?.bathrooms || 0,
-      expectedPrice: propertyData?.expectedPrice || "",
-      description: propertyData?.description || "",
-      features: '',
-      sqft: propertyData?.sqft || "",
-      images: {} as FileList,
-    },
-  });
+    reset,
+  } = useForm<PropertyFormData>();
 
   useEffect(() => {
-    fetchCategory();
-  }, [id]);
+    if (propertyData) {
+      setImagePreviews(propertyData.propertyImage);
+      setSelectedFiles(propertyData.propertyImage);
 
-  const fetchCategory = async () => {
-    try {
-      const response = await getCategory();
-      const responseAmenities = await getAmenities();
-      setAmenities(responseAmenities.data.amenities);
-      setCategory(response.data.category);
-    } catch (err) {
-      console.log(err);
+      reset({
+        propertyFor: propertyData.propertyFor,
+        propertyType: propertyData.propertyType,
+        propertyName: propertyData.propertyName,
+        state: propertyData.state,
+        city: propertyData.city,
+        noOfBedroom: propertyData.noOfBedroom,
+        noOfBathroom: propertyData.noOfBathroom,
+        Price: propertyData.Price,
+        description: propertyData.description,
+        sqft: propertyData.sqft,
+        propertyImage: propertyData.propertyImage as any,
+        features: propertyData.features,
+      });
+
+      setLocation({
+        location: propertyData.location.location,
+        geometry: [propertyData.location.longitude, propertyData.location.latitude]
+      });
+
+      setInputValue(propertyData.features);
     }
-  };
+  }, [propertyData, reset]);
 
 
+  // fetching category from backend
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await getCategory();
+        const responseAmenities = await getAmenities();
+        setAmenities(responseAmenities.data.amenities);
+        setCategory(response.data.category);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchCategory();
+  }, []);
+
+  // setting ameniti
   const selectAmenitie = (ameniti: string) => {
     if (!inputValue.includes(ameniti)) {
       setInputValue((state) => [...state, ameniti]);
     }
   };
 
+  // handling image change
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const files = Array.from(event.target.files);
+
+      // creating image previews
+      const previews = files.map(file => URL.createObjectURL(file));
+      setImagePreviews(previews);
+      setSelectedFiles(files);
+    }
+  };
+
+  // preview image removing
+  const handleRemoveImage = (index: number) => {
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+
+  // remove amenitie
   const removeAmenitie = (e: React.MouseEvent<HTMLButtonElement>, ameniti: string) => {
     e.preventDefault();
     setInputValue((state) => state.filter(item => item !== ameniti));
   };
 
-
+  // convertin image to buffer
   const fileToBase64 = (
     file: File
   ): Promise<{ base64String: string; fileName: string; fileType: string }> => {
@@ -149,30 +199,60 @@ const EditProperty = () => {
     });
   };
 
-  // Update property Submit Handler
+
+  // onSubmit || update property
   const onSubmit = async (data: PropertyFormData) => {
     try {
       setLoading(true);
-      const imageBase64Strings = await Promise.all(
-        Array.from(data.images).map(fileToBase64)
-      );
 
-      const obj = {
-        ...data,
-        features: inputValue,
-        location: { location: location.location, latitude: location.geometry[1], longitude: location.geometry[0] },
-        sellerId: seller?._id,
-        images: imageBase64Strings,
-      };
-      const response = await updateProperty(id, obj);
-      if (response && response.data === "successfully updated the property") {
+      const updatedData = { ...data, features: inputValue };
+
+      let changes: PartialPropertyFormData = {};
+      for (const key in updatedData) {
+        if (updatedData.hasOwnProperty(key)) {
+          const typedKey = key as keyof PropertyFormData;
+
+          if (JSON.stringify(updatedData[typedKey]) !== JSON.stringify(initialData?.[typedKey])) {
+
+            if (typedKey === "propertyImage" && selectedFiles.length > 0) {
+              const imageBase64Strings = await Promise.all(
+                selectedFiles.map(fileToBase64)
+              );
+              changes.propertyImage = imageBase64Strings as any;
+            } else if (typedKey === "location") {
+              changes.location = {
+                location: location.location,
+                latitude: location.geometry[1],
+                longitude: location.geometry[0],
+              };
+            } else {
+              const value = updatedData[typedKey];
+              if (value !== undefined) {
+                changes[typedKey] = value
+              }
+            }
+          }
+        }
+      }
+
+      changes.sellerId = seller?._id;
+
+      const response = await updateProperty(id, changes);
+      console.log(response)
+      if (response && response.data.message === "Successfully updated the property") {
         setLoading(false);
         navigate("/seller/property");
+      }else{
+        setLoading(false)
+        toast.error(response?.data.message)
       }
     } catch (error) {
       console.error("Error updating property:", error);
+      setLoading(false);
     }
   };
+
+
 
   if (!propertyData) {
     return <div className="flex min-h-screen justify-center items-center py-10"><CircularProgress /></div>;
@@ -186,7 +266,8 @@ const EditProperty = () => {
             Edit Property
           </h1>
 
-          <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">  
+          <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+
             <div className="flex-1 flex flex-col">
               <label className="block text-sm font-medium text-white">
                 Property For
@@ -232,7 +313,55 @@ const EditProperty = () => {
               )}
             </div>
 
-            {/* Add all other fields (similar to AddProperty) */}
+            <div className="flex gap-6 mb-8 mt-5">
+              <div className="flex-1">
+                <label
+                  htmlFor="propertyName"
+                  className="block text-sm font-medium text-white"
+                >
+                  Property Name
+                </label>
+                <input
+                  id="propertyName"
+                  type="text"
+                  placeholder="Property Name"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  {...register("propertyName", {
+                    required: "Property name is required",
+                  })}
+                />
+                {errors.propertyName && (
+                  <p className="text-red-500 mt-2">{errors.propertyName.message}</p>
+                )}
+              </div>
+
+              <div className="flex-1">
+                <label
+                  htmlFor="propertyType"
+                  className="block text-sm font-medium text-white"
+                >
+                  Property Type
+                </label>
+                <select
+                  id="propertyType"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  {...register("propertyType", {
+                    required: "Property type is required",
+                  })}
+                >
+                  <option value="" disabled>Select Property Type</option>
+                  {category.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.propertyType && (
+                  <p className="text-red-500 mt-2">{errors.propertyType.message}</p>
+                )}
+              </div>
+            </div>
+
             <LocationSearch
               onLocationSelect={setLocation}
               prevLocation={location}
@@ -303,7 +432,7 @@ const EditProperty = () => {
                   type="number"
                   placeholder="Bedrooms"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  {...register("bedrooms", {
+                  {...register("noOfBedroom", {
                     required: "Bedrooms are required",
                     min: {
                       value: 1,
@@ -311,8 +440,8 @@ const EditProperty = () => {
                     },
                   })}
                 />
-                {errors.bedrooms && (
-                  <p className="text-red-500">{errors.bedrooms.message}</p>
+                {errors.noOfBedroom && (
+                  <p className="text-red-500">{errors.noOfBedroom.message}</p>
                 )}
               </div>
 
@@ -328,7 +457,7 @@ const EditProperty = () => {
                   type="number"
                   placeholder="Bathrooms"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  {...register("bathrooms", {
+                  {...register("noOfBathroom", {
                     required: "Bathrooms are required",
                     min: {
                       value: 1,
@@ -336,8 +465,8 @@ const EditProperty = () => {
                     },
                   })}
                 />
-                {errors.bathrooms && (
-                  <p className="text-red-500">{errors.bathrooms.message}</p>
+                {errors.noOfBathroom && (
+                  <p className="text-red-500">{errors.noOfBathroom.message}</p>
                 )}
               </div>
             </div>
@@ -355,12 +484,12 @@ const EditProperty = () => {
                   type="text"
                   placeholder="Expected Price"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  {...register("expectedPrice", {
+                  {...register("Price", {
                     required: "Expected price is required",
                   })}
                 />
-                {errors.expectedPrice && (
-                  <p className="text-red-500">{errors.expectedPrice.message}</p>
+                {errors.Price && (
+                  <p className="text-red-500">{errors.Price.message}</p>
                 )}
               </div>
 
@@ -463,6 +592,45 @@ const EditProperty = () => {
               )}
             </div>
 
+            {/* Preview of Image */}
+            <div className="flex gap-4 mt-4">
+              {imagePreviews.map((preview, index) => (
+                <div key={index} className="relative w-32 h-32">
+                  <img
+                    src={preview}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                  <IoMdCloseCircleOutline
+                    className="absolute top-2 right-2 text-red-600 cursor-pointer"
+                    size={24}
+                    onClick={() => handleRemoveImage(index)}
+                  />
+                </div>
+              ))}
+            </div>
+
+
+            <div className="flex flex-col mb-8">
+              <label
+                htmlFor="images"
+                className="block text-sm font-medium text-white"
+              >
+                Images
+              </label>
+              <input
+                id="images"
+                type="file"
+                multiple
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                onChange={handleFileChange}
+              />
+
+              {errors.propertyImage && (
+                <p className="text-red-500">{errors.propertyImage.message}</p>
+              )}
+            </div>
+
             <div className="flex justify-center">
               {loading ? <CircularProgress color="success" />
                 : <button
@@ -474,8 +642,8 @@ const EditProperty = () => {
               }
             </div>
           </form>
-        </div>
-      </div>
+        </div >
+      </div >
     </>
   );
 };

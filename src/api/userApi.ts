@@ -1,3 +1,4 @@
+import { IWishlist } from "../components/common/Carousel";
 import { editFormData } from "../pages/user/EditProfile";
 import { IProperty } from "../pages/user/PropertyDetails";
 import Api from "../Services/axios";
@@ -203,7 +204,7 @@ export const updatePremium = async (type:string,id:string)=>{
 
 // getproduct Detail
 
-export const productDetail = async (id:string)=>{
+export const productDetail = async (id:string|undefined)=>{
   try {
     return await Api.post(userEndPoints.productDetail,{id})
   } catch (error) {
@@ -240,6 +241,34 @@ export const getUser = async (id:string,role:string|undefined)=>{
 export const setUserBrowserToken = async (token:string,userId:string|undefined)=>{
   try {
     return await Api.post(userEndPoints.setBrowserToken,{token,userId})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+  }
+}
+
+
+export const getAllWhishlistProperty = async (userId:string|undefined) =>{
+  try {
+    return await Api.get(`${userEndPoints.whishlist}/${userId}`)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+  }
+}
+
+export const removeFromWishlist = async (userId:string,propertyId:string)=> {
+  try {
+    return await Api.delete(`${userEndPoints.whishlist}/${userId}/${propertyId}`)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+  }
+}
+
+export const addToWishlist = async (userId:string,propertyId:string|undefined)=>{
+  try {
+    return await Api.post(userEndPoints.whishlist,{userId,propertyId})
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);

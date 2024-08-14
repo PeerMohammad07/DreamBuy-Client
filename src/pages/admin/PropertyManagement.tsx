@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { styled } from "@mui/system";
 import { getRentProperty, getSaleProperty } from '../../api/userApi';
-import { PropertyRentData, PropertySaleData } from '../../components/common/PropertyCard';
+import { PropertyRentData, PropertySaleData } from '../../components/common/Carousel';
 import Swal from 'sweetalert2';
 import { blockProperty } from '../../api/adminApi';
 

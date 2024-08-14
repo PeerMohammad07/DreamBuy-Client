@@ -28,6 +28,7 @@ const ChatPage = () => {
   const [currentUser, setCurrentUser] = useState<IcurrentUser>({ id: '', userData: null });
   const { socket } = useSocket();
   const [onlineUsers, setOnlineUsers] = useState<IonlineUsers[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const userData = role === 'user'
     ? useSelector((prevState: rootState) => prevState.user.userData)
@@ -69,12 +70,15 @@ const ChatPage = () => {
 
   useEffect(() => {
     const fetchConversation = async () => {
+      setLoading(true)
       if (userData?._id) {
         try {
           const response = await getConversation(userData._id);
           setConversation(response.data);
+          setLoading(false)
         } catch (error) {
           console.error('Error fetching conversations:', error);
+          setLoading(false)
         }
       }
     };
@@ -95,7 +99,7 @@ const ChatPage = () => {
       {matches ? (
         <div className='flex h-screen'>
           {currentUser.id === '' ? (
-            <ChatSideBar role={role} conversations={conversations} setCurrentUser={setCurrentUser} />
+            <ChatSideBar role={role} conversations={conversations} setCurrentUser={setCurrentUser} loading={loading}/>
           ) : (
             <ChatMessageContainer
               currentUser={currentUser}
@@ -107,7 +111,7 @@ const ChatPage = () => {
         </div>
       ) : (
         <div className='flex h-screen'>
-          <ChatSideBar role={role} conversations={conversations} setCurrentUser={setCurrentUser} />
+          <ChatSideBar role={role} conversations={conversations} setCurrentUser={setCurrentUser} loading={loading}/>
           <ChatMessageContainer
             currentUser={currentUser}
             setCurrentUser={setCurrentUser}

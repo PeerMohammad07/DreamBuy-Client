@@ -22,6 +22,18 @@ export const sendMessage = async (senderId:string,recieverId:string,message:stri
   }
 }
 
+export const uploadChatFile = async (formData:any)=>{
+  try {
+    return await Api.post(chatEndpoints.uploadFile,formData, {headers: {
+      'Content-Type': 'multipart/form-data',
+    }})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
 export const getMessages = async (senderId:string|undefined,receiverId:string)=>{
   try {
     return await Api.get(`${chatEndpoints.getMessages}?senderId=${senderId}&receiverId=${receiverId}`)
