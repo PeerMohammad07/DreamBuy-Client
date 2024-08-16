@@ -137,7 +137,7 @@ const SellerSidebar: React.FC<SidebarProps> = () => {
           <SidebarItem
             icon={<IoIosChatboxes size={20} />}
             text="Chat"
-            active={location.pathname === '/seller/chat/:seller"'}
+            active={location.pathname === '/seller/chat/:seller'}
             link="/seller/chat/seller"
           />
         </Link>

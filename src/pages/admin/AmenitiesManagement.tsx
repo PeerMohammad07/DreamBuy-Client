@@ -8,6 +8,7 @@ import { IoMdAddCircle } from 'react-icons/io';
 import { FaEdit } from "react-icons/fa";
 import AddAndEditAmenity, { AmenityFormData } from '../../components/admin/AddAndEditAmenity';
 import Swal from 'sweetalert2';
+import {toast} from "react-hot-toast"
 
 export interface Iaminities {
   _id: string;
@@ -81,9 +82,22 @@ const AmenitiesManagement = () => {
   const submitHandler = async (data: AmenityFormData) => {
     try {
       if (status === 'add') {
+        const checkExist = amenities.some((ame:{name:string}) =>  ame.name.toLowerCase() === data.name.toLowerCase());
+        console.log(checkExist,"checkexist")
+        if(checkExist){
+          toast.error("Ameniti already exist with this name")
+          return
+        }
         const response = await addAmenitites(data.name);
-        console.log(response);
+        if(response.data.amenity){
+          toast.success("ameniti added successfully")
+        }
       } else {
+        const checkExist = amenities.some((ame:{_id:string,name:string}) => ame._id != data.id && ame.name.toLowerCase() === data.name.toLowerCase());
+        if(checkExist){
+          toast.error("Ameniti already exist with this name")
+          return
+        }   
         const response = await editAmenities(initialData?.id, data.name);
         console.log(response);
       }

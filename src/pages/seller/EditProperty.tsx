@@ -7,12 +7,13 @@ import { Buffer } from "buffer";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAmenities, getCategory } from "../../api/adminApi";
 import { Iaminities } from "../../pages/admin/AmenitiesManagement";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, useMediaQuery } from "@mui/material";
 import LocationSearch from "../../components/common/LocationSearch";
 import { IoClose } from "react-icons/io5";
 import { productDetail } from "../../api/userApi";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { toast } from "react-toastify";
+import { useExpandContext } from "../../Context/ExpandContext";
 
 export interface PropertyFormData {
   features: string[];
@@ -84,6 +85,19 @@ const EditProperty = () => {
   const seller = useSelector(
     (prevState: rootState) => prevState.seller.sellerData
   );
+
+  const { setExpanded } = useExpandContext();
+
+
+  const matches = useMediaQuery('(max-width:768px)');
+  useEffect(() => {
+    if(matches){
+      setExpanded(false);
+    }
+    return () => {
+      setExpanded(true);
+    };
+  }, [setExpanded]);
 
   useEffect(() => {
     async function getProduct() {

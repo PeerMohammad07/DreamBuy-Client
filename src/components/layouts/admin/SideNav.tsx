@@ -54,42 +54,54 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           </div>
 
           <SidebarContext.Provider value={{ expanded }}>
+            <Link to={'/admin/'}>
             <SidebarItem
               icon={<TbLayoutDashboard size={20} />}
               text={"Dashboard"}
               active={location.pathname == "/admin/"}
               link={"/admin/"}
             />
+            </Link>
+            <Link to={'/admin/user'}>
             <SidebarItem
               icon={<FaUser size={20} />}
               text={"User management"}
               active={location.pathname == "/admin/user"}
               link={"/admin/user"}
             />
+            </Link>
+            <Link to={'/admin/seller'}>
             <SidebarItem
               icon={<FaUserFriends size={20} />}
               text={"Seller management"}
               active={location.pathname == "/admin/seller"}
               link={"/admin/seller"}
             />
+            </Link>
+            <Link to={'/admin/category'}>
             <SidebarItem
               icon={<BiCategoryAlt size={20} />}
               text={"Category management"}
               active={location.pathname == "/admin/category"}
               link={"/admin/category"}
             />
+            </Link>
+            <Link to={'/admin/property'}>
             <SidebarItem
               icon={<IoHome size={20} />}
               text={"Property management"}
               active={location.pathname == "/admin/property"}
               link={"/admin/property"}
             />
+            </Link>
+            <Link to={"/admin/amenities"}>
             <SidebarItem
               icon={<RiHomeGearLine size={20}/>}
               text={"Amenties management"}
               active={location.pathname == "/admin/amenities"}
               link={"/admin/amenities"}
             />
+            </Link>
           </SidebarContext.Provider>
         </nav>
       </aside>

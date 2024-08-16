@@ -10,9 +10,10 @@ import { Link } from 'react-router-dom';
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  email:string|undefined
 }
 
-const GetOwnerDetails: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const GetOwnerDetails: React.FC<ModalProps> = ({ isOpen, onClose,email }) => {
   if (!isOpen) return null;
 
   return (
@@ -27,7 +28,7 @@ const GetOwnerDetails: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           </div>
           <hr className='border-1 h-1 mt-2' />
           <div className='flex pt-5'>
-            <h2 className='text-md text-black'>Owner details will be sent shortly to your  <span className='text-blue-700'>dreambuyrealestate@gmail.com</span></h2>
+            <h2 className='text-md text-black'>Owner details will be sent shortly to your  <span className='text-blue-700'>{email}</span></h2>
           </div>
           <div className='flex justify-between pt-5'>
             <div className='flex'>

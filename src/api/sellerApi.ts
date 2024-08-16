@@ -161,11 +161,3 @@ export const updateProperty = async (id:string|undefined,data:PartialPropertyFor
   }
 }
 
-export const setSellerBrowserToken = async (token:string,userId:string|undefined)=>{
-  try {
-    return await Api.post(sellerEndpoints.setBrowserToken,{token,userId})
-  } catch (error) {
-    const err: Error = error as Error;
-    errorHandle(err);
-  }
-}

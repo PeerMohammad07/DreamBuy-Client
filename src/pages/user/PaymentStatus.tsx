@@ -16,15 +16,14 @@ const PaymentStatus = () => {
   const typeOfSub = queryParams.get("Type")
 
   const payment = async () => {
-    try {
-      console.log(success,user,typeOfSub);
-      
+    try {      
       if (success == "true"&&user?._id&&typeOfSub) {        
         const res = await updatePremium(typeOfSub, user?._id)
-        console.log(res,"res");
         dispatch(userLogin(res.data))
         if (res?.status === 200) {
-          toast.success("Updated to Premium")
+          toast.success("Updated to Premium",{
+            id: "same"
+          })
         }
       } else {
         toast.error("Payment is Cancelled")

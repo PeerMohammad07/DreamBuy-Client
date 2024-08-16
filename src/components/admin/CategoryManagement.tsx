@@ -5,8 +5,7 @@ import { addCategory, blockCategory, editCategory, getCategory } from '../../api
 import Swal from 'sweetalert2';
 import { IoMdAddCircle } from "react-icons/io";
 import AddAndEditCategory from './AddAndEditCategory';
-import { toast } from 'react-toastify';
-import { FaEdit } from "react-icons/fa";
+import { toast } from 'react-hot-toast';
 
 
 const CategoryManagement = () => {
@@ -121,6 +120,13 @@ const CategoryManagement = () => {
           status={addEditModalOpen.role}
           submitHandler={async (data) => {            
             if (data?.id == '') {
+              const checkExist = category.map((cat:{name:string}) => {
+                return cat.name.toLowerCase() === data.name.toLowerCase();
+              });
+              if(checkExist){
+                toast.error("Category already exist with this email")
+                return
+              }
               const response = await addCategory(data)
               if (response) {
                 setAddEditModalOpen({
@@ -132,6 +138,11 @@ const CategoryManagement = () => {
                 fetchCategory()
               }
             } else {
+              const checkExist = category.some((cat:{_id:string,name:string}) => cat._id != data.id && cat.name.toLowerCase() === data.name.toLowerCase());
+              if(checkExist){
+                toast.error("Category already exist with this name")
+                return
+              }
               const response = await editCategory(data)
               if (response) {
                 setAddEditModalOpen({

@@ -12,6 +12,8 @@ import PaymentStatus from "../pages/user/PaymentStatus";
 import PropertyDetails from "../pages/user/PropertyDetails";
 import ChatPage from "../pages/Chat/ChatPage";
 import { ExpandProvider } from "../Context/ExpandContext";
+import Whishlist from "../pages/user/Whishlist";
+import About from "../pages/user/About";
 
 const UserRoutes = () => {
   return (
@@ -46,6 +48,8 @@ const UserRoutes = () => {
           <Route path="/paymentStatus" element={<PaymentStatus/>} />
           <Route path="/propertyDetails" element={<PropertyDetails/>} />
           <Route path="/chat/:role" element={<ExpandProvider><ChatPage/></ExpandProvider>}/>
+          <Route path="/wishlist" element={<Whishlist/>}/>
+          <Route path="/about" element={<About/>}/>
         </Route>
 
       </Routes>

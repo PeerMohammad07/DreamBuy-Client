@@ -24,13 +24,14 @@ const AddAndEditCategory: React.FC<FormModalProps> = ({
   onClose,
   status,
   submitHandler,
-  initialData = { name: '', description: '' }
+  initialData = {id:'', name: '', description: '' }
 }) => {
   const { control, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     defaultValues: initialData
   });
 
   useEffect(() => {
+    setValue('id',initialData.id)
     setValue('name', initialData.name);
     setValue('description', initialData.description);
   }, [initialData, setValue]);

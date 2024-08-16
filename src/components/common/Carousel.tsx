@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { Carousel, CarouselResponsiveOption } from 'primereact/carousel';
 import {getRentProperty, getSaleProperty } from '../../api/userApi';
 import CardLoading from './LoadingSkelton/CardLoading';
-import { useSelector } from 'react-redux';
-import { rootState } from '../../Redux/store/store';
 import ProductTemplate from './ProductCard';
 
 export interface location {
@@ -53,7 +51,12 @@ export interface PropertySaleData {
 export interface IWishlist {
   _id: string
   userId: string
-  propertyId: string
+  propertyId: {
+    _id:string,
+    propertyImage : string[],
+    propertyName : string,
+    description:string
+  }
 }
 
 export default function BasicDemo() {
@@ -61,16 +64,16 @@ export default function BasicDemo() {
   const [saleProperty, setSaleProperty] = useState<PropertySaleData[]>([]);
   const [propertyLoading, setPropertyLoading] = useState(false)
 
-  const userData = useSelector((prevState: rootState) => prevState.user.userData)
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         setPropertyLoading(true)
         const rentData = await getRentProperty();
         const saleData = await getSaleProperty();
-        setRentProperty(rentData.data);
-        setSaleProperty(saleData.data);
+        const rentProeprty = rentData.data.filter((data:PropertyRentData)=> data.propertyStatus != true)
+        const saleProperty = saleData.data.filter((data:PropertySaleData)=> data.propertyStatus != true)
+        setRentProperty(rentProeprty);
+        setSaleProperty(saleProperty);
         setPropertyLoading(false)
       } catch (error) {
         console.error('Error fetching property data:', error);
@@ -101,17 +104,17 @@ export default function BasicDemo() {
     {
       breakpoint: '1200px',
       numVisible: 4, 
-      numScroll: 1
+      numScroll: 2
     },
     {
       breakpoint: '1400px',
       numVisible: 4,
-      numScroll: 1
+      numScroll: 2
     },
     {
       breakpoint: '1800px',
       numVisible: 5,
-      numScroll: 1
+      numScroll: 3
     }
   ];
 

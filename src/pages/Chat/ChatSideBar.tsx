@@ -63,16 +63,6 @@ const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser
         <AiFillMessage size={25} className={`text-gray-600`} />
       </div>
       <hr className="border-t border-gray-300 mb-4" />
-      {/* <div className="relative flex items-center mb-4">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search users"
-          className={inputStyles}
-        />
-        <TbUserSearch size={22} className={`absolute left-3 ${textColor}`} />
-      </div> */}
       <div
         className="flex-1 overflow-y-auto space-y-2"
         ref={containerRef}

@@ -238,14 +238,6 @@ export const getUser = async (id:string,role:string|undefined)=>{
   }
 }
 
-export const setUserBrowserToken = async (token:string,userId:string|undefined)=>{
-  try {
-    return await Api.post(userEndPoints.setBrowserToken,{token,userId})
-  } catch (error) {
-    const err: Error = error as Error;
-    errorHandle(err);
-  }
-}
 
 
 export const getAllWhishlistProperty = async (userId:string|undefined) =>{

@@ -15,30 +15,30 @@ import { addToWishlist, getAllWhishlistProperty, removeFromWishlist } from '../.
 import { useEffect, useState } from 'react';
 import { rootState } from '../../Redux/store/store';
 import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
 
-const ProductTemplate = (product: PropertyRentData | PropertySaleData ) => {
+const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
   const [whishlistProperty, setWhishlistProperty] = useState<IWishlist[] | []>([])
-  const userData = useSelector((prevState:rootState)=> prevState.user.userData)
+  const userData = useSelector((prevState: rootState) => prevState.user.userData)
   const [isWhish, setIswish] = useState<boolean>(false)
 
   useEffect(() => {
-    const getWishlist = async () => {
-      try {
-        const whishlistData = await getAllWhishlistProperty(userData?._id)
-        setWhishlistProperty(whishlistData?.data)
-      } catch (error) {
-        console.log(error)
+    if (userData) {
+      const getWishlist = async () => {
+        try {
+          const whishlistData = await getAllWhishlistProperty(userData?._id)
+          setWhishlistProperty(whishlistData?.data)
+        } catch (error) {
+          console.log(error)
+        }
       }
+      getWishlist()
     }
-
-    getWishlist()
   }, [])
 
   useEffect(() => {
     if (whishlistProperty.length > 0) {
-      const isWishlisted = whishlistProperty.some((whishlistData) => {
-        return whishlistData.propertyId === product?._id;
-      });
+      const isWishlisted = whishlistProperty.some((whishlistData) => whishlistData.propertyId._id == product?._id);
       setIswish(isWishlisted);
     } else {
       setIswish(false);
@@ -49,7 +49,7 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData ) => {
     try {
       if (isWhish && userData?._id && productId) {
         await removeFromWishlist(userData?._id, productId);
-        setWhishlistProperty(prev => prev.filter(item => item.propertyId !== productId));
+        setWhishlistProperty(prev => prev.filter(item => item.propertyId._id !== productId));
       } else if (userData?._id) {
         const response = await addToWishlist(userData?._id, productId);
         setWhishlistProperty(prev => [...prev, response?.data.data]);
@@ -72,13 +72,16 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData ) => {
             />
           </Link>
           <Button
-            onClick={() => handleWhishlist(product._id)}
+            onClick={(e) => {
+              e.stopPropagation()
+              userData ? handleWhishlist(product._id) : toast.error("please login before add to wishlist")
+            }}
             className="rounded-full h-7 w-7 text-black bg-white absolute bottom-1 right-1"
           >
             {isWhish ? (
-              <FaHeart className='text-xl text-red-500 relative left-1' /> 
+              <FaHeart className='text-xl text-red-500 relative left-1' />
             ) : (
-              <FaRegHeart className='text-xl relative left-1' /> 
+              <FaRegHeart className='text-xl relative left-1' />
             )}
           </Button>
         </CardActionArea>
@@ -126,7 +129,7 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData ) => {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card >
     </>
   );
 };

@@ -2,13 +2,15 @@ import { AiFillFileAdd } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import KycVerificationModal from "./KycVerificationModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineBookmarkAdded } from "react-icons/md";
 import ChangePassword from "../common/ChangePassword";
 import { useForm } from "react-hook-form";
 import { updateSeller } from "../../api/sellerApi";
 import { toast } from "react-toastify";
 import { sellerLogin } from "../../Redux/slice/sellerAuthSlice";
+import { useExpandContext } from "../../Context/ExpandContext";
+import { useMediaQuery } from "@mui/system";
 
 interface SellerProfile {
   email: string;
@@ -40,6 +42,18 @@ const Profile = () => {
     (state: rootState) => state.seller.sellerData
   );
 
+  const { setExpanded } = useExpandContext();
+
+
+  const matches = useMediaQuery('(max-width:768px)');
+  useEffect(() => {
+    if(matches){
+      setExpanded(false);
+    }
+    return () => {
+      setExpanded(true);
+    };
+  }, [setExpanded]);
 
   function handleCloseModal() {
     setVerificationModal(false);

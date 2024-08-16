@@ -158,3 +158,13 @@ export const blockAmenitie = async (id:string,status:boolean)=>{
     throw err;
   }
 }
+
+export const getAllDashboardData = async ()=>{
+  try {
+    return await Api.get(adminEndpoints.getDashboardData)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}

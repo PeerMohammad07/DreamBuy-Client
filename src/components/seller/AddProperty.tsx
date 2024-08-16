@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { getAmenities, getCategory } from "../../api/adminApi";
 import { Iaminities } from "../../pages/admin/AmenitiesManagement";
 import { IoClose } from "react-icons/io5";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, useMediaQuery } from "@mui/material";
+import { useExpandContext } from "../../Context/ExpandContext";
 
 
 export interface PropertyFormData {
@@ -73,6 +74,7 @@ const AddProperty = () => {
   const [amenities, setAmenities] = useState<Iaminities[] | []>([])
   const [location, setLocation] = useState<location>({ location: '', geometry: [0, 0] });
   const [inputValue, setInputValue] = useState<string[]>([])
+  const { setExpanded } = useExpandContext();
   const navigate = useNavigate();
 
   const seller = useSelector(
@@ -82,6 +84,18 @@ const AddProperty = () => {
   useEffect(() => {
     fetchCategory();
   }, []);
+
+
+
+  const matches = useMediaQuery('(max-width:768px)');
+  useEffect(() => {
+    if(matches){
+      setExpanded(false);
+    }
+    return () => {
+      setExpanded(true);
+    };
+  }, [setExpanded]);
 
   const fetchCategory = async () => {
     try {
@@ -511,8 +525,8 @@ const AddProperty = () => {
                     message: "Description must be at least 20 characters long",
                   },
                   maxLength: {
-                    value: 1000,
-                    message: "Description cannot exceed 1000 characters",
+                    value: 3000,
+                    message: "Description cannot exceed 3000 characters",
                   },
                 })}
               />

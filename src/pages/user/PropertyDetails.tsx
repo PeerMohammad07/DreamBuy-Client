@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { addToWishlist, getAllWhishlistProperty, productDetail, removeFromWishlist, sendOwnerDetails } from "../../api/userApi";
@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import Modal from "../../components/user/Modal";
 import GetOwnerDetails from "../../components/user/GetOwnerDetails";
 import { createConversation } from "../../api/chatApi";
+import LoginModal from "../../components/common/LoginModal";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXJmYW4zNzQiLCJhIjoiY2xwZmlqNzVyMWRuMDJpbmszdGszazMwaCJ9.7wdXsKdpOXmDR9l_ISdIqA'
 
@@ -55,6 +56,7 @@ const PropertyDetails = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [getOwnerDetails, setGetOwnerDetails] = useState(false)
+  const [loginModal,setLoginModal] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -78,16 +80,18 @@ const PropertyDetails = () => {
 
 
   useEffect(() => {
-    const getWishlist = async () => {
-      try {
-        const whishlistData = await getAllWhishlistProperty(userData?._id)
-        setWhishlistProperty(whishlistData?.data)
-      } catch (error) {
-        console.log(error)
+    if(userData){
+      const getWishlist = async () => {
+        try {
+          const whishlistData = await getAllWhishlistProperty(userData?._id)
+          setWhishlistProperty(whishlistData?.data)
+        } catch (error) {
+          console.log(error)
+        }
       }
+  
+      getWishlist()
     }
-
-    getWishlist()
   }, [])
 
   useEffect(() => {
@@ -168,6 +172,7 @@ const PropertyDetails = () => {
       try {
         setGetOwnerDetails(true);
         const sellerId = product?.sellerId;
+        console.log(userData.email)
         await sendOwnerDetails(userData?.name, product, sellerId, userData?.email);
       } catch (error) {
         console.error('Failed to send owner details:', error);
@@ -177,15 +182,7 @@ const PropertyDetails = () => {
     }
   };
 
-  const sendOwnerDetail = async () => {
-    try {
-      const sellerId = product?.sellerId
-      const response = await sendOwnerDetails(userData?.name, product, sellerId, userData?.email)
-      return response
-    } catch (error) {
-      console.error(error);
-    }
-  }
+
 
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -345,13 +342,13 @@ const PropertyDetails = () => {
             <h1 className="text-2xl font-bold text-center py-5">Thinking of Buying ❓</h1>
             <div className="p-6">
               <button onClick={() => {
-                handleSendOwnerDetails()
+                userData ?  userData?.isPremium ? handleSendOwnerDetails() : setIsModalOpen(true) : setLoginModal(true)
               }} className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                 Get Owner Details
               </button>
               <p className="text-center text-xl px-5 font-serif">OR</p>
               <button onClick={() => {
-                userData?.isPremium ? contactOwnerHandle(product?.sellerId) : setIsModalOpen(true)
+                userData ?  userData?.isPremium ? contactOwnerHandle(product?.sellerId) : setIsModalOpen(true) : setLoginModal(true)
               }} className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 mt-2">
                 Contact Owner
               </button>
@@ -362,7 +359,8 @@ const PropertyDetails = () => {
           </div>
         </div>
 
-        <GetOwnerDetails isOpen={getOwnerDetails} onClose={ownerDetailsModalClose} />
+        <LoginModal open={loginModal} onClose={setLoginModal} />
+        <GetOwnerDetails isOpen={getOwnerDetails} onClose={ownerDetailsModalClose} email={userData?.email}/>
         <Modal isOpen={isModalOpen} onClose={handleModalClose} />
 
         <div className="ps-6 w-2/3" ref={aboutRef}>

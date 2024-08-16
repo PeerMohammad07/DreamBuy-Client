@@ -43,6 +43,7 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
         navigate("/seller/");
       }
     } catch (error) {
+      console.log(error)
       if (axios.isAxiosError(error) && error.response?.status === 403) {
         if (error.response?.data.otpVerified === "false") {
           localStorage.setItem("otpTimer", "60");

@@ -13,7 +13,6 @@ import PropertyManagement from '../pages/seller/PropertyManagement'
 import EditProperty from '../pages/seller/EditProperty'
 
 const SellerRoutes = () => {
-
   return (
     <>
       <ExpandProvider>
@@ -21,7 +20,7 @@ const SellerRoutes = () => {
           <Route path='/register' element={<ProtectLogin><SellerLoginAndRegisteration /></ProtectLogin>} />
           <Route path='/resetPassword/:token' element={<ProtectLogin><ResetPassword /></ProtectLogin>} />
           <Route path='/' element={<ProtectSellerRoutes><Mainpage /></ProtectSellerRoutes>}>
-            <Route index element={<Profile />} />
+            <Route index element={<Profile/>} />
             <Route path='/addProperty' element={<AddProperty />} />
             <Route path='/chat/:role' element={<ChatPage />} />
             <Route path='/property' element={<PropertyManagement/>} />

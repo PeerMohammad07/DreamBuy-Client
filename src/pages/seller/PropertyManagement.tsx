@@ -5,12 +5,14 @@ import { rootState } from "../../Redux/store/store";
 import { IProperty } from "../user/PropertyDetails";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { Skeleton } from "@mui/material";
+import { Skeleton, useMediaQuery } from "@mui/material";
+import { useExpandContext } from "../../Context/ExpandContext";
 
 const PropertyManagement = () => {
   const [properties, setProperties] = useState<IProperty[]>([])
   const [loading, setLoading] = useState(false)
   const userData = useSelector((prevState: rootState) => prevState.seller.sellerData)
+  const { setExpanded } = useExpandContext();
 
   const fetchProperty = async () => {
     setLoading(true)
@@ -18,6 +20,18 @@ const PropertyManagement = () => {
     setProperties(response?.data)
     setLoading(false)
   }
+
+
+
+  const matches = useMediaQuery('(max-width:768px)');
+  useEffect(() => {
+    if(matches){
+      setExpanded(false);
+    }
+    return () => {
+      setExpanded(true);
+    };
+  }, [setExpanded]);
 
   useEffect(() => {
     fetchProperty()

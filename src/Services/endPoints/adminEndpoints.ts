@@ -10,6 +10,7 @@ export const adminEndpoints = {
   editCategory : "/api/admin/editCategory",
   blockProperty : "/api/admin/blockProperty",
   amenities : "/api/admin/amenities",
-  blockAmenitie : "/api/admin/amenityBlock"
+  blockAmenitie : "/api/admin/amenityBlock",
+  getDashboardData : "/api/admin/getAllDashbaordData"
 }
 

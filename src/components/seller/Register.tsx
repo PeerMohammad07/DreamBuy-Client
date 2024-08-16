@@ -40,6 +40,7 @@ const register = ({ showModal, setShowModal }: OtpComponentProps) => {
         localStorage.setItem("otpTimer", "60")
         setShowModal(true)
       }
+      console.log(response)
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("cav");
