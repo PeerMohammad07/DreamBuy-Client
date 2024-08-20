@@ -77,7 +77,7 @@ const Premium = () => {
   const makePayment = async (index: number) => {
     const str = await loadStripe('pk_test_51PhCDcE8SQUFEEKnkpF84S1iZrE6GoXn6ZzIUbngwjiaJt0s5XEtApuQquOe6KK2ZQDi96CETk6eZbjTlECZ0b6B00E7uwqiAy');
     const response = await getPremium(plan[index]);
-    if (response.status === 200) {
+    if (response.status) {
       str?.redirectToCheckout({ sessionId: response.data.session.id });
     }
   };

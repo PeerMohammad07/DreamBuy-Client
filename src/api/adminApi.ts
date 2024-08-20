@@ -168,3 +168,13 @@ export const getAllDashboardData = async ()=>{
     throw err;
   }
 }
+
+export const getMonthlyrevenue = async ()=>{
+  try {
+    return await Api.get(adminEndpoints.getMonthlyRevenue)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}

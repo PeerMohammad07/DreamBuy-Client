@@ -37,6 +37,7 @@ export interface IProperty {
   propertyImage: string[];
   location: location;
   sellerId: string;
+  createdAt : string;
 }
 
 const PropertyDetails = () => {
@@ -97,7 +98,7 @@ const PropertyDetails = () => {
   useEffect(() => {
     if (whishlistProperty.length > 0) {
       const isWishlisted = whishlistProperty.some((whishlistData) => {
-        return whishlistData.propertyId === product?._id;
+        return whishlistData.propertyId._id === product?._id;
       });
       setIswish(isWishlisted);
     } else {
@@ -110,7 +111,7 @@ const PropertyDetails = () => {
       if (isWhish && userData?._id && productId) {
         await removeFromWishlist(userData?._id, productId);
         toast.success("removed from wishlist")
-        setWhishlistProperty(prev => prev.filter(item => item.propertyId !== productId));
+        setWhishlistProperty(prev => prev.filter(item => item.propertyId._id !== productId));
       } else if (userData?._id) {
         const response = await addToWishlist(userData?._id, productId);
         toast.success("added to wishlist")

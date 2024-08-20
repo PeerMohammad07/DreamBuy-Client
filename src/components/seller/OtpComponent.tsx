@@ -111,7 +111,7 @@ const OtpComponent = ({ showModal, setShowModal }: OtpComponentProps) => {
   const handleResendOtp = async () => {
     try {
       const response = await resendOtp();
-      if (response.status) {
+      if (response&&response.status) {
         setTimer(60);
         localStorage.setItem("otpTimer", "60");
       }

@@ -11,6 +11,7 @@ export const adminEndpoints = {
   blockProperty : "/api/admin/blockProperty",
   amenities : "/api/admin/amenities",
   blockAmenitie : "/api/admin/amenityBlock",
-  getDashboardData : "/api/admin/getAllDashbaordData"
+  getDashboardData : "/api/admin/getAllDashbaordData",
+  getMonthlyRevenue : "/api/admin/getMonthlyRevenue"
 }
 

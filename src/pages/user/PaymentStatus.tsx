@@ -19,6 +19,7 @@ const PaymentStatus = () => {
     try {      
       if (success == "true"&&user?._id&&typeOfSub) {        
         const res = await updatePremium(typeOfSub, user?._id)
+        console.log(res.data)
         dispatch(userLogin(res.data))
         if (res?.status === 200) {
           toast.success("Updated to Premium",{

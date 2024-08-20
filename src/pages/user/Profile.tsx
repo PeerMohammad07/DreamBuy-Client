@@ -10,7 +10,6 @@ const Profile = () => {
 
   const [activeTab,handleTabClick] = useState('profile')
   const [profileImage,setProfileImage] = useState<File|null>(null)
-  const [loading,setLoading] = useState(false)
   const user = useSelector((prevState:rootState)=> prevState.user.userData)
 
   return (

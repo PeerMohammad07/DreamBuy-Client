@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MdMoreVert, MdChevronRight, MdChevronLeft } from "react-icons/md";
+import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 import { IoHome } from "react-icons/io5";
 import { TbLayoutDashboard } from "react-icons/tb";
 import Navbar from "./Navbar";
@@ -108,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
 
       <div className="flex flex-col w-full">
         <Navbar />
-        <main className="flex-grow p-4">{children}</main>
+        <main className={`flex-grow ${location.pathname == "/admin"|| "/admin/" ? 'p-0' : 'p-4'}`}>{children}</main>
       </div>
     </div>
   );

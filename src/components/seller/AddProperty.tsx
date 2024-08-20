@@ -11,7 +11,7 @@ import { Iaminities } from "../../pages/admin/AmenitiesManagement";
 import { IoClose } from "react-icons/io5";
 import { CircularProgress, useMediaQuery } from "@mui/material";
 import { useExpandContext } from "../../Context/ExpandContext";
-
+import toast from "react-hot-toast"
 
 export interface PropertyFormData {
   propertyFor: "rent" | "sale" | "";
@@ -181,6 +181,7 @@ const AddProperty = () => {
       if (response && response.data == "successfully added the user") {
         setLoading(false);
         navigate("/seller/");
+        toast.success("You property added")
       }
     } catch (error) {
       console.error("Error submitting property:", error);

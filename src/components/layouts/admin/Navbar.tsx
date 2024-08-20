@@ -1,15 +1,17 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { LuLogOut } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { adminLogout } from "../../../Redux/slice/adminAuthSlice";
 import { Avatar } from "@mui/material";
 import { logout } from "../../../api/adminApi";
+import { rootState } from "../../../Redux/store/store";
 
 const Navbar = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const adminLogin = useSelector((prevState:rootState)=> prevState.admin.adminLogin)
 
   const handleLogout = async () => {
     await logout()
@@ -33,14 +35,14 @@ const Navbar = () => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
+          <h1 className="text-xl  pe-3"><span className="text-xl ">Hello</span> Admin</h1>
           <Avatar
             alt="Admin"
             src="/avatar-4.png"
             sx={{ width: 34, height: 34 }}
           />
-          <h1 className="text-xl font-serif pl-3">Admin</h1>
 
-          {isUserMenuOpen && (
+          {isUserMenuOpen && adminLogin && (
             <div className="absolute right-0 mt-16 w-44 bg-white rounded-md shadow-lg z-10">
               <button
                 className="flex items-center justify-around px-2 py-2 text-gray-800 hover:bg-gray-200 w-full text-left"

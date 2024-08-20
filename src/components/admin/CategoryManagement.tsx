@@ -120,11 +120,12 @@ const CategoryManagement = () => {
           status={addEditModalOpen.role}
           submitHandler={async (data) => {            
             if (data?.id == '') {
-              const checkExist = category.map((cat:{name:string}) => {
+              const checkExist = category.some((cat:{name:string}) => {
                 return cat.name.toLowerCase() === data.name.toLowerCase();
               });
+              console.log(checkExist)
               if(checkExist){
-                toast.error("Category already exist with this email")
+                toast.error("Category already exist with this name")
                 return
               }
               const response = await addCategory(data)

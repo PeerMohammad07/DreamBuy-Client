@@ -14,6 +14,7 @@ import ChatPage from "../pages/Chat/ChatPage";
 import { ExpandProvider } from "../Context/ExpandContext";
 import Whishlist from "../pages/user/Whishlist";
 import About from "../pages/user/About";
+import PropertyListing from "../pages/user/PropertyListing";
 
 const UserRoutes = () => {
   return (
@@ -50,6 +51,7 @@ const UserRoutes = () => {
           <Route path="/chat/:role" element={<ExpandProvider><ChatPage/></ExpandProvider>}/>
           <Route path="/wishlist" element={<Whishlist/>}/>
           <Route path="/about" element={<About/>}/>
+          <Route path="/homes/:type?" element={<PropertyListing/>}/>
         </Route>
 
       </Routes>

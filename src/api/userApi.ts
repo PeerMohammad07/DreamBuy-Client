@@ -266,3 +266,19 @@ export const addToWishlist = async (userId:string,propertyId:string|undefined)=>
     errorHandle(err);
   }
 }
+
+export const propertyListing = async (
+  search: any,
+  filter: any,
+  sort: any
+) => {
+  try {
+    return await Api.get(
+      `${userEndPoints.listProperty}?search=${search}&filter=${filter}&sort=${sort}`
+    );
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Ensure the error is re-thrown for react-query to catch
+  }
+};;

@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
 import Login from '../components/admin/Login'
-import Dashboard from '../components/admin/Dashboard'
 import Layout from '../components/layouts/admin/Layout'
 import UserManagement from '../components/admin/UserManagement'
 import ProtectLogin from './Private/protectLoginAdmin'
@@ -8,6 +7,7 @@ import SellerManagement from '../components/admin/SellerManagement'
 import CategoryManagement from '../components/admin/CategoryManagement'
 import PropertyManagement from '../pages/admin/PropertyManagement'
 import AmenitiesManagement from '../pages/admin/AmenitiesManagement'
+import Dashboard from '../pages/admin/Dashboard'
 
 const AdminRoutes = () => {
   return (

@@ -8,7 +8,7 @@ const UserMainPage = () => {
     <>
        <Navbar/>
        <Outlet/>
-       {location.pathname == "/chat/user"?<></>:<Footer/>}
+       {location.pathname == "/chat/user"||"/homes/sale/"||"/homes/rent/"||"/homes/"?<></>:<Footer/>}
     </>
   )
 }

@@ -19,8 +19,6 @@ export default function Layout({ children }:node) {
   },[])
 
   return (
-    <div>
       <Sidebar>{children}</Sidebar>
-    </div>
   );
 }

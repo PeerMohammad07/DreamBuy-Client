@@ -18,5 +18,6 @@ export const  userEndPoints = {
   sendOwnerDetail : "/api/sendOwnerDetail",
   getUser : "/api/getUser",
   setBrowserToken:"/api/setBrowserToken",
-  whishlist : "/api/whishlist"
+  whishlist : "/api/whishlist",
+  listProperty : "/api/listProeprty"
 }

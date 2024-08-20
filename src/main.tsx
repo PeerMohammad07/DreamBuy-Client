@@ -8,6 +8,8 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from 'react-hot-toast';
 import { SocketProvider } from './Context/SocketContext.tsx'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/firebase-messaging-sw.js')
@@ -19,6 +21,7 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+const queryClient = new QueryClient();
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -29,7 +32,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <GoogleOAuthProvider clientId={clientId}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}></PersistGate>
-          <App />
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
         </Provider>
       </GoogleOAuthProvider>
     </SocketProvider>

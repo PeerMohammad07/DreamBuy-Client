@@ -37,8 +37,8 @@ const Navbar = () => {
           </Link>
           <ul className="items-center space-x-12 text-lg hidden xl:flex lg:flex md:flex">
             <li className="font-semibold hover:font-bold"><Link to={'/seller'}>Sell</Link></li>
-            <li className="font-semibold hover:font-bold">Buy</li>
-            <li className="font-semibold hover:font-bold">Rent</li>
+            <Link to={'/homes/sale'}><li className="font-semibold hover:font-bold">Buy</li></Link>
+            <Link to={'/homes/rent'}><li className="font-semibold hover:font-bold">Rent</li></Link>
             <Link to={'/about'}><li className="font-semibold hover:font-bold">About us</li></Link>
             {userStatus ?  <Link to={'/wishlist'}><li className="font-semibold hover:font-bold">Wishlist</li></Link>:<></>}          </ul>
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { addAmenitites, blockAmenitie, editAmenities, getAmenities } from '../../api/adminApi';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination } from '@mui/material';
 import { styled } from '@mui/system';
+
 import { ImBlocked } from "react-icons/im";
 import { CgUnblock } from "react-icons/cg";
 import { IoMdAddCircle } from 'react-icons/io';
