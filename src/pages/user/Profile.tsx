@@ -54,7 +54,7 @@ const Profile = () => {
                  Current Plan
                 </a>
               </li>
-              <li className="me-2 px-5">
+              {/* <li className="me-2 px-5">
                 <a
                   onClick={() => handleTabClick("settings")}
                   className={`inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group ${activeTab === "settings" ? "text-blue-600 border-blue-600 dark:text-blue-500 dark:border-blue-500" : "text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300"}`}
@@ -70,8 +70,8 @@ const Profile = () => {
                   </svg>
                   Purchase History
                 </a>
-              </li>
-              <li className="me-2 px-5">
+              </li> */}
+              {/* <li className="me-2 px-5">
                 <a
                   onClick={() => handleTabClick("contacts")}
                   className={`inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group ${activeTab === "contacts" ? "text-blue-600 border-blue-600 dark:text-blue-500 dark:border-blue-500" : "text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300"}`}
@@ -87,7 +87,7 @@ const Profile = () => {
                   </svg>
                   Contacts
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

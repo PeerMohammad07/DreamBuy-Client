@@ -8,7 +8,7 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { RiMoneyRupeeCircleFill } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { IWishlist, PropertyRentData, PropertySaleData } from './Carousel';
 import { addToWishlist, getAllWhishlistProperty, removeFromWishlist } from '../../api/userApi';
@@ -21,6 +21,7 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
   const [whishlistProperty, setWhishlistProperty] = useState<IWishlist[] | []>([])
   const userData = useSelector((prevState: rootState) => prevState.user.userData)
   const [isWhish, setIswish] = useState<boolean>(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (userData) {
@@ -59,9 +60,27 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
     }
   };
 
+  const handleSeeAllResults = () => {
+    navigate('/homes')
+  }
+
+  if ('seeAll' in product) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Button
+          onClick={handleSeeAllResults}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          See All Your Results
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <>
-      <Card sx={{ maxWidth: 300, height: 300, display: 'flex', flexDirection: 'column', margin: '0 15px' }} className='rounded-2xl'>
+      <Card sx={{ maxWidth: 300, height: 300, display: 'flex', flexDirection: 'column', margin: '0 15px' }}
+        className={`rounded-2xl ${product.isBoosted ? 'border-4 shadow-xl' : ''}`}>
         <CardActionArea className="flex-1 relative">
           <Link to={`/propertyDetails?id=${product._id}`}>
             <CardMedia
@@ -84,6 +103,13 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
               <FaRegHeart className='text-xl relative left-1' />
             )}
           </Button>
+          {product.isBoosted && (
+            <div className="absolute top-0 right-0 bg-cyan-500 p-1 rounded-bl-lg">
+              <Typography variant="caption" color="white">
+                Premium
+              </Typography>
+            </div>
+          )}
         </CardActionArea>
         <CardContent className="flex-1 flex flex-col">
           <div className="flex justify-between items-center mb-2">

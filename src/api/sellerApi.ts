@@ -161,3 +161,23 @@ export const updateProperty = async (id:string|undefined,data:PartialPropertyFor
   }
 }
 
+// boost property 
+export const getBoostProperty = async (planId:string,duration:string,propertyId:string|undefined)=> {
+  try {
+    return await Api.post(sellerEndpoints.boostProperty,{planId,duration,propertyId})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
+export const boostProperty = async (id:string,type:string)=>{
+  try {
+    return Api.patch(sellerEndpoints.boostProperty,{propertyId:id,type})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}

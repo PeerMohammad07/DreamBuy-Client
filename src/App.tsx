@@ -1,45 +1,30 @@
-// import { useState } from 'react'
-import { ToastContainer } from 'react-toastify'
+import { Suspense, lazy } from 'react';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import UserRoutes from './Routes/UserRoutes'
-import AdminRoutes from './Routes/AdminRoutes'
-import SellerRoutes from './Routes/SellerRoutes'
-import './App.css'
-import { createBrowserRouter ,RouterProvider} from 'react-router-dom'
-import { useEffect, useState } from 'react';
+import './App.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AllApplicationSkelton from './components/common/LoadingSkelton/AllApplicationSkelton';
 
+// Lazy loading the route components
+const UserRoutes = lazy(() => import('./Routes/UserRoutes'));
+const SellerRoutes = lazy(() => import('./Routes/SellerRoutes'));
+const AdminRoutes = lazy(() => import('./Routes/AdminRoutes'));
+
 function App() {
-  const [loading,setLoading] = useState(true)
-
-  useEffect(()=>{
-    setTimeout(()=>{
-      setLoading(false)
-    },2000)
-  })
-
-
   const router = createBrowserRouter([
-    {path:"/*",element:<UserRoutes/>},
-    {path:"/seller/*",element:<SellerRoutes/>},
-    {path:"/admin/*",element:<AdminRoutes/>}
-  ])
+    { path: "/*", element: <UserRoutes /> },
+    { path: "/seller/*", element: <SellerRoutes /> },
+    { path: "/admin/*", element: <AdminRoutes /> },
+  ]);
 
   return (
     <>
-    {
-      loading ? <>
-      <div className='flex justify-center items-center'>
-      <AllApplicationSkelton/>
-      </div>
-      </> :
-      <>
-      <ToastContainer/>
-      <RouterProvider router={router}/>
-      </>
-    }
+      <ToastContainer />
+      <Suspense fallback={<><AllApplicationSkelton/></>}>
+        <RouterProvider router={router} />
+      </Suspense>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

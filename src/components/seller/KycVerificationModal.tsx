@@ -59,6 +59,7 @@ const KycVerificationModal: React.FC<KycVerificationModalProps> = ({
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
+      event.stopPropagation()
       setLoading(true);
       if (file) {
         const buffer = await readFileAsArrayBuffer(file);

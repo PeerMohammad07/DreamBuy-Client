@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Carousel, CarouselResponsiveOption } from 'primereact/carousel';
 import {getRentProperty, getSaleProperty } from '../../api/userApi';
-import CardLoading from './LoadingSkelton/CardLoading';
-import ProductTemplate from './ProductCard';
+import CardLoading from '../../components/common/LoadingSkelton/CardLoading';
+import ProductTemplate from '../../components/common/ProductCard';
+
 
 export interface location {
   location: string
@@ -61,26 +62,17 @@ export interface IWishlist {
   }
 }
 
-export default function BasicDemo() {
-  const [rentProperty, setRentProperty] = useState<PropertyRentData[]>([]);
-  const [saleProperty, setSaleProperty] = useState<PropertySaleData[]>([]);
-  const [propertyLoading, setPropertyLoading] = useState(false)
+interface BoostCarouselProps {
+  premiumProperty: any; 
+}
+
+const BoostCarousel: React.FC<BoostCarouselProps> = ({ premiumProperty }) => {
+  const [isLoading,setLoading]  = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setPropertyLoading(true)
-        const rentData = await getRentProperty();
-        const saleData = await getSaleProperty();
-        const rentProperty = rentData.data
-        .filter((data: PropertyRentData) => data.propertyStatus !== true)
-        .sort((a:any, b:any) => (b.isBoosted ? 1 : 0) - (a.isBoosted ? 1 : 0));
-        const saleProperty = saleData.data.filter((data:PropertySaleData)=> data.propertyStatus != true).sort((a:any, b:any) => (a.isBoosted === b.isBoosted) ? 0 : a.isBoosted ? -1 : 1);
-
-        console.log(rentProperty,"retnt")
-        setRentProperty(rentProperty);
-        setSaleProperty(saleProperty);
-        setPropertyLoading(false)
+       
       } catch (error) {
         console.error('Error fetching property data:', error);
       }
@@ -126,31 +118,22 @@ export default function BasicDemo() {
 
   return (
     <>
-      <div className="card">
-        <h2 className='font-bold text-3xl text-center py-5'>Rent Properties</h2>
+      <div className="card shadow-lg">
         {
-          propertyLoading ? <>
+          isLoading ? <>
             <div className='flex justify-center items-center px-8'>
               <CardLoading />
               <CardLoading />
               <CardLoading />
             </div>
-          </> : <Carousel value={rentProperty } numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={ProductTemplate} />
+          </> : <Carousel autoplayInterval={2000} value={premiumProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={ProductTemplate} />
 
-        }      </div>
-      <div className='pt-5'>
-        <h2 className='font-bold text-3xl text-center py-8'>Sale Properties</h2>
-        {
-          propertyLoading ? <>
-            <div className='flex justify-center items-center px-8'>
-              <CardLoading />
-              <CardLoading />
-              <CardLoading />
-            </div>
-          </> :
-            <Carousel value={saleProperty} numVisible={5} numScroll={3} className='cutom-carousel' responsiveOptions={responsiveOptions} itemTemplate={ProductTemplate} />
-        }
-      </div>
+        } 
+         </div>
+  
     </>
   );
 }
+
+
+export default BoostCarousel

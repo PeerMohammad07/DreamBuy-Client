@@ -29,4 +29,31 @@
   animation: shake-y 0.5s ease-in-out;
 }
 
+/* styles.css */
+.mapbox-custom-search-bar {
+  /* Add your custom styles here */
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 0 10px;
+  font-size: 16px;
+}
 
+/* Customize the appearance of the search results */
+.mapbox-custom-search-bar .mapboxgl-ctrl-geocoder--input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+/* Customize the suggestion box */
+.mapbox-custom-search-bar .mapboxgl-ctrl-geocoder--results {
+  border-radius: 0 0 20px 20px;
+}
+
+.font-seller {
+  font-family: "Patua One", serif;
+  font-weight: 400;
+  font-style: normal;
+}

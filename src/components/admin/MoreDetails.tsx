@@ -71,7 +71,7 @@ const MoreDetails: React.FC<MoreDetailsProps> = ({
           <img
             src={seller.verificationImageUrl}
             alt="Seller"
-            className="w-full h-auto mb-4 rounded-md"
+            className="w-full h-52 mb-4 rounded-md"
           />
           <div className="mb-4">
             <p><strong>Phone:</strong> {seller.phone}</p>

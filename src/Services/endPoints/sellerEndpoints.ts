@@ -15,5 +15,6 @@ export const sellerEndpoints = {
     getMyProperty : "/api/seller/getMyProperty",
     deleteProperty : "/api/seller/deleteProperty",
     updateProperty : "/api/seller/updateProperty",
-    setBrowserToken : "/api/seller/setBrowserToken"
+    setBrowserToken : "/api/seller/setBrowserToken",
+    boostProperty : "/api/seller/boostProperty"
 }

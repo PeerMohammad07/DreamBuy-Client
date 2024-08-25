@@ -18,6 +18,9 @@ import notificationSound from "../../assets/notificationSound/frontend_src_asset
 import { toast } from "react-toastify";
 import { LineWave } from "react-loader-spinner";
 import { IoClose } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { ToastBar } from "react-hot-toast";
+import ShowToastWithActions from "../../components/common/CustomToast";
 
 
 interface ChatMessageContainerProps {
@@ -58,6 +61,7 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
   const { socket } = useSocket()
   const scrollRef = useRef<HTMLDivElement>(null)
   const [noti, setNoti] = useState<Imessage[] | []>([])
+  const navigate = useNavigate()
 
   const userData =
     role === "user"
@@ -163,6 +167,33 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
     }
   }, [messages])
 
+  const handleVideoCall = async ()=>{
+    try {
+      if(currentUser){
+        socket.emit("call:start",{
+          senderId:  userData?._id,
+          receiverId : currentUser.id
+        })
+          navigate(`/videoCall/${userData?._id}/${currentUser.id}/${role}`)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
+  useEffect(()=>{
+    socket.on('call:start',(senderId)=>{
+      const onAccept = ()=>{
+        navigate(`/videoCall/${senderId}/${userData?._id}/${role}`)
+      }
+      const onDecline = ()=>{
+        toast.error("You decline this call")
+      }
+      ShowToastWithActions({ accept: onAccept, decline: onDecline, name: "dummy now" });
+    }) 
+  },[])
 
   return (
     <>
@@ -194,7 +225,7 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
                   </div>
                 </div>
                 <div className="flex me-5 justify-center items-center">
-                  <IoVideocam size={30} className={`${role == "user" ? "" : "text-white"} me-5`} />
+                  <IoVideocam onClick={handleVideoCall} size={30} className={`${role == "user" ? "" : "text-white"} me-5`} />
                   <SlOptionsVertical size={23} className={`${role == "user" ? "" : "text-white"} `} />
                 </div>
               </div>
@@ -224,7 +255,7 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
               {sendFileLoading ?
                 <>
                   <div
-                    className="mb-1  absolute flex gap-1 overflow-x-auto"
+                    className="mb-5 ms-5 absolute flex gap-1 overflow-x-auto"
                     style={{ bottom: role === "seller" ? '85px' : '30px' }}
                   >
                     <LineWave
@@ -314,3 +345,4 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
 };
 
 export default ChatMessageContainer;
+

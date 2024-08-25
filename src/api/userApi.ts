@@ -270,11 +270,12 @@ export const addToWishlist = async (userId:string,propertyId:string|undefined)=>
 export const propertyListing = async (
   search: any,
   filter: any,
-  sort: any
+  sort: any,
+  locationSearch : any
 ) => {
   try {
     return await Api.get(
-      `${userEndPoints.listProperty}?search=${search}&filter=${filter}&sort=${sort}`
+      `${userEndPoints.listProperty}?search=${search}&filter=${filter}&sort=${sort}&locationSearch=${locationSearch}`
     );
   } catch (error) {
     const err: Error = error as Error;

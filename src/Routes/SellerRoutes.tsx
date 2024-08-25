@@ -11,6 +11,9 @@ import { ExpandProvider } from '../Context/ExpandContext'
 import ChatPage from '../pages/Chat/ChatPage'
 import PropertyManagement from '../pages/seller/PropertyManagement'
 import EditProperty from '../pages/seller/EditProperty'
+import VideoCall from '../pages/Chat/VideoCall'
+import BoostProperty from '../pages/seller/BoostProperty'
+import PaymentStatus from '../pages/seller/PaymentStatus'
 
 const SellerRoutes = () => {
   return (
@@ -25,6 +28,9 @@ const SellerRoutes = () => {
             <Route path='/chat/:role' element={<ChatPage />} />
             <Route path='/property' element={<PropertyManagement/>} />
             <Route path='/editProperty/:id' element={<EditProperty/>} />
+            <Route path='/videoCall/:senderId/:receiverId' element={<VideoCall/>} />
+            <Route path='/boost/:id' element={<BoostProperty/>}/>
+            <Route path='/paymentStatus' element={<PaymentStatus/>}/>
           </Route>
         </Routes>
       </ExpandProvider>

@@ -17,6 +17,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const userStatus = useSelector((state: rootState) => state.user.userLogin);
   const userData = useSelector((state: rootState) => state.user.userData);
+  const sellerData = useSelector((state: rootState) => state.seller.sellerData)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -28,6 +29,8 @@ const Navbar = () => {
     dispatch(userLogout());
   };
 
+
+
   return (
     <>
       <nav>
@@ -36,11 +39,21 @@ const Navbar = () => {
             <img src="/dreambuylogo.png" alt="DreamBuy Logo" className="h-12 mt-2 ms-2" />
           </Link>
           <ul className="items-center space-x-12 text-lg hidden xl:flex lg:flex md:flex">
-            <li className="font-semibold hover:font-bold"><Link to={'/seller'}>Sell</Link></li>
-            <Link to={'/homes/sale'}><li className="font-semibold hover:font-bold">Buy</li></Link>
+            {sellerData ? <li className="font-semibold hover:font-bold"><Link to={'/seller'}>Sell</Link></li> :
+              <li>
+                <Link to={'/seller'}>
+                  <button className="bg-gray-50 py-1 shadow-sm text-sm flex items-center px-1  rounded-lg space-x-2 hover:bg-gray-100 transition">
+                    <span className="text-gray-800 font-rounded">Post Your Property</span>
+                    <span className="bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white px-2  rounded-lg ">
+                      Free
+                    </span>
+                  </button>
+                </Link>
+              </li>
+            }           <Link to={'/homes/sale'}><li className="font-semibold hover:font-bold">Buy</li></Link>
             <Link to={'/homes/rent'}><li className="font-semibold hover:font-bold">Rent</li></Link>
             <Link to={'/about'}><li className="font-semibold hover:font-bold">About us</li></Link>
-            {userStatus ?  <Link to={'/wishlist'}><li className="font-semibold hover:font-bold">Wishlist</li></Link>:<></>}          </ul>
+            {userStatus ? <Link to={'/wishlist'}><li className="font-semibold hover:font-bold">Wishlist</li></Link> : <></>}          </ul>
 
           {/* Hamburger */}
           <div className="xl:hidden lg:hidden md:hidden flex items-center z-50">

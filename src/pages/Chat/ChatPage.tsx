@@ -7,7 +7,7 @@ import { rootState } from '../../Redux/store/store';
 import { getConversation } from '../../api/chatApi';
 import { User } from '../../Redux/slice/userAuthSlice';
 import { SellerProfile } from '../../Redux/slice/sellerAuthSlice';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSocket } from '../../Context/SocketContext';
 import { useMediaQuery } from '@mui/system';
 
@@ -29,12 +29,19 @@ const ChatPage = () => {
   const { socket } = useSocket();
   const [onlineUsers, setOnlineUsers] = useState<IonlineUsers[]>([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
 
   const userData = role === 'user'
     ? useSelector((prevState: rootState) => prevState.user.userData)
     : role === 'seller'
       ? useSelector((prevState: rootState) => prevState.seller.sellerData)
       : null;
+
+  useEffect(()=>{
+    if(!userData){
+      navigate("/")
+    }
+  },[userData])
 
   const userOnline = (id: string): boolean => {
     return onlineUsers.some(user => user.id === id);
@@ -47,6 +54,7 @@ const ChatPage = () => {
     }
   }, [socket, userData]);
 
+  
 
   useEffect(() => {
     if (socket) {

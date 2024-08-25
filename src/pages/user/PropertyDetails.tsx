@@ -18,8 +18,30 @@ import Modal from "../../components/user/Modal";
 import GetOwnerDetails from "../../components/user/GetOwnerDetails";
 import { createConversation } from "../../api/chatApi";
 import LoginModal from "../../components/common/LoginModal";
+import { FaSwimmer } from "react-icons/fa";
+import { IoIosWifi } from "react-icons/io";
+import { TbSunElectricity } from "react-icons/tb";
+import { FaCar } from "react-icons/fa";
+import { MdOutlineSecurity } from "react-icons/md";
+import { MdLocalLaundryService } from "react-icons/md";
+import { MdFitnessCenter } from "react-icons/md";
+import { GiLift } from "react-icons/gi";
+import { PiThermometerHot } from "react-icons/pi";
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXJmYW4zNzQiLCJhIjoiY2xwZmlqNzVyMWRuMDJpbmszdGszazMwaCJ9.7wdXsKdpOXmDR9l_ISdIqA'
+
+const featureIconMap: any = {
+  'Swimming pool': <FaSwimmer size={25} className="text-blue-500" />,
+  '24/7 Security': <MdOutlineSecurity size={25} className="text-red-500" />,
+  'Car Parking': <FaCar size={25} className="text-gray-700" />,
+  'Electrecity and solar': <TbSunElectricity size={25} className="text-yellow-500" />,
+  'Laundry Facilities': <MdLocalLaundryService size={25} />,
+  'Fitness Center': <MdFitnessCenter size={25} />,
+  'Elevator Access': <GiLift size={25} />,
+  'Heating': <PiThermometerHot size={25} />,
+  'Wi-Fi': <IoIosWifi size={25} />
+};
 
 export interface IProperty {
   _id: string;
@@ -31,13 +53,14 @@ export interface IProperty {
   noOfBedroom: number;
   noOfBathroom: number;
   Price: string;
-  features: string;
+  features: string[];
   description: string;
   sqft: string;
   propertyImage: string[];
   location: location;
   sellerId: string;
-  createdAt : string;
+  createdAt: string;
+  isBoosted : true
 }
 
 const PropertyDetails = () => {
@@ -57,7 +80,7 @@ const PropertyDetails = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [getOwnerDetails, setGetOwnerDetails] = useState(false)
-  const [loginModal,setLoginModal] = useState(false)
+  const [loginModal, setLoginModal] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -81,7 +104,7 @@ const PropertyDetails = () => {
 
 
   useEffect(() => {
-    if(userData){
+    if (userData) {
       const getWishlist = async () => {
         try {
           const whishlistData = await getAllWhishlistProperty(userData?._id)
@@ -90,7 +113,7 @@ const PropertyDetails = () => {
           console.log(error)
         }
       }
-  
+
       getWishlist()
     }
   }, [])
@@ -106,7 +129,7 @@ const PropertyDetails = () => {
     }
   }, [whishlistProperty, product?._id]);
 
-  const handleWhishlist = async (productId: string|undefined) => {
+  const handleWhishlist = async (productId: string | undefined) => {
     try {
       if (isWhish && userData?._id && productId) {
         await removeFromWishlist(userData?._id, productId);
@@ -262,7 +285,7 @@ const PropertyDetails = () => {
           Features
         </h1>
         <h1 className="flex items-center p-4 cursor-pointer hover:bg-gray-100 hover:rounded-xl hover:text-gray-800">
-          {isWhish ? <FaHeart className='text-red-500 mr-2' onClick={() => handleWhishlist(product?._id)} />:<FaRegHeart className="mr-2" onClick={() => handleWhishlist(product?._id)} />
+          {isWhish ? <FaHeart className='text-red-500 mr-2' onClick={() => handleWhishlist(product?._id)} /> : <FaRegHeart className="mr-2" onClick={() => handleWhishlist(product?._id)} />
           } Wishlist
         </h1>
         <h1 onClick={copyUrl} className="flex items-center p-4 cursor-pointer hover:bg-gray-100 hover:rounded-xl hover:text-gray-800">
@@ -315,13 +338,13 @@ const PropertyDetails = () => {
                 <h1 className="text-4xl font-bold">{product?.propertyName}</h1>
                 <div className="flex items-center mt-3 gap-4 pt-5">
                   <h2 className="text-3xl font-semibold">₹{product?.Price}</h2>
-                  <div className="flex items-center ms-5 flex-1 basis-1/4">
+                  <div className="flex items-center ms-5 flex-1 basis-2/4">
                     <FaBed className="mr-2 text-xl" /> {product?.noOfBedroom} Beds
                   </div>
-                  <div className="flex items-center flex-1 basis-1/4">
+                  <div className="flex items-center flex-1 basis-2/4">
                     <FaBath className="mr-2 text-xl" /> {product?.noOfBathroom} Baths
                   </div>
-                  <div className="flex items-center flex-1 basis-1/4">
+                  <div className="flex items-center flex-1 basis-2/4">
                     <MdPermDataSetting className="mr-2 text-xl" /> {product?.sqft} sqft
                   </div>
                 </div>
@@ -343,13 +366,13 @@ const PropertyDetails = () => {
             <h1 className="text-2xl font-bold text-center py-5">Thinking of Buying ❓</h1>
             <div className="p-6">
               <button onClick={() => {
-                userData ?  userData?.isPremium ? handleSendOwnerDetails() : setIsModalOpen(true) : setLoginModal(true)
+                userData ? userData?.isPremium ? handleSendOwnerDetails() : setIsModalOpen(true) : setLoginModal(true)
               }} className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                 Get Owner Details
               </button>
               <p className="text-center text-xl px-5 font-serif">OR</p>
               <button onClick={() => {
-                userData ?  userData?.isPremium ? contactOwnerHandle(product?.sellerId) : setIsModalOpen(true) : setLoginModal(true)
+                userData ? userData?.isPremium ? contactOwnerHandle(product?.sellerId) : setIsModalOpen(true) : setLoginModal(true)
               }} className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 mt-2">
                 Contact Owner
               </button>
@@ -361,7 +384,7 @@ const PropertyDetails = () => {
         </div>
 
         <LoginModal open={loginModal} onClose={setLoginModal} />
-        <GetOwnerDetails isOpen={getOwnerDetails} onClose={ownerDetailsModalClose} email={userData?.email}/>
+        <GetOwnerDetails isOpen={getOwnerDetails} onClose={ownerDetailsModalClose} email={userData?.email} />
         <Modal isOpen={isModalOpen} onClose={handleModalClose} />
 
         <div className="ps-6 w-2/3" ref={aboutRef}>
@@ -371,10 +394,22 @@ const PropertyDetails = () => {
           </div>
         </div>
 
-        <div className="ps-6 w-2/3 pt-5" ref={featureRef}>
-          <div>
-            <h1 className="text-3xl font-bold ">Features</h1>
-            {<p className="pt-6">{product?.features}</p>}
+        <div className="ps-6 w-2/3 pt-7">
+        <h1 className="font-bold text-3xl font-rounded">Features</h1>
+          <div className="bg-gray-200 p-4 rounded-lg">
+            <div className="grid grid-cols-2 gap-4">
+              {product?.features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="flex items-center bg-white p-4 rounded-lg shadow-md"
+                >
+                  <p className="flex-1">{feature}</p>
+                  <div className="ml-4">
+                    {featureIconMap[feature] || <span className="text-gray-500"></span>}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
           <hr className="h-5 w-2/3 mt-10 border-t-2" />
         </div>

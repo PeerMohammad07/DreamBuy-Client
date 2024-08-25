@@ -2,8 +2,18 @@ import { useEffect, useState } from 'react';
 import DashboardCount from '../../components/admin/DashboardCount';
 import DashboardTable from '../../components/admin/DashboardTable';
 import { getAllDashboardData, getMonthlyrevenue } from '../../api/adminApi';
-import { PieChart } from '@mui/x-charts/PieChart';
-import { LineChart } from '@mui/x-charts/LineChart';
+import { Pie, Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Tooltip,
+  Legend
+);
 
 interface Counts {
   noOfAmenities: number;
@@ -48,16 +58,21 @@ const Dashboard = () => {
   const [userSellerGrowth, setUserSellerGrowth] = useState<GrowthData[]>([]);
   const [monthlyRevenue, setMonthlyRevenue] = useState<MonthlyRevenueData[]>([]);
 
-  const monthlyRevenueData = monthlyRevenue.map(rev => rev.totalRevenue);
-  const monthlyRevenueLabels = monthlyRevenue.map(rev => rev.month);
-  const newUsers = userSellerGrowth.map((data)=> data.newUsers)
-  const newSellers = userSellerGrowth.map((data)=> data.newSellers)
-  newUsers.push(30)
-  newUsers.push(10)
-  newSellers.push(38)
-  newSellers.push(28)
-  monthlyRevenueData.push(300)
-  monthlyRevenueLabels.push(7)
+  const monthlyRevenueData = [0,0,0,0,0,0,0,0,0,0,0,0];
+  monthlyRevenue.forEach((eachMonth) => {
+    monthlyRevenueData[eachMonth.month] = eachMonth.totalRevenue;
+  });
+  monthlyRevenueData[7] = 500
+
+  const monthlyRevenueLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const newUsers = [0,0,0,0,0,0,0,0,0,0,0,0];
+  const newSellers = [0,0,0,0,0,0,0,0,0,0,0,0];
+  userSellerGrowth.forEach((eachMonth) => {
+    newUsers[eachMonth.month] = eachMonth.newUsers;
+    newSellers[eachMonth.month] = eachMonth.newSellers;
+  });
+  newUsers[7] = 8
+  newSellers[7] =1
 
   useEffect(() => {
     async function getData() {
@@ -79,6 +94,46 @@ const Dashboard = () => {
     getData();
   }, []);
 
+  const pieData = {
+    labels: ['Users', 'Sellers', 'Premium'],
+    datasets: [{
+      data: [countData.noOfUsers, countData.noOfSellers, countData.noOfPremiumUsers],
+      backgroundColor: ['#e82e2e', '#35e6d4', '#058515'],
+    }],
+  };
+
+  const revenueData = {
+    labels: monthlyRevenueLabels,
+    datasets: [{
+      label: 'Total Revenue',
+      data: monthlyRevenueData,
+      backgroundColor: 'rgba(5, 133, 21, 0.2)',
+      borderColor: '#058515',
+      borderWidth: 1,
+      fill: true,
+    }],
+  };
+
+  const growthData = {
+    labels: monthlyRevenueLabels,
+    datasets: [
+      {
+        label: 'New Users',
+        data: newUsers,
+        borderColor: '#e82e2e',
+        backgroundColor: 'rgba(232, 46, 46, 0.2)',
+        fill: true,
+      },
+      {
+        label: 'New Sellers',
+        data: newSellers,
+        borderColor: '#35e6d4',
+        backgroundColor: 'rgba(53, 230, 212, 0.2)',
+        fill: true,
+      },
+    ],
+  };
+
   return (
     <div className='bg-gray-50'>
       <div className='ps-10 pt-5'>
@@ -88,21 +143,8 @@ const Dashboard = () => {
       <DashboardCount countData={countData} />
       <div className='flex justify-center gap-10 pt-5'>
         <div className='w-1/3 pt-10'>
-          <PieChart
-            series={[
-              {
-                data: [
-                  { id: 0, value: countData.noOfUsers, label: 'Users' },
-                  { id: 1, value: countData.noOfSellers, label: 'Sellers' },
-                  { id: 2, value: countData.noOfPremiumUsers, label: 'Premium' },
-                ],
-              },
-            ]}
-            width={400}
-            height={200}
-            colors={['#e82e2e', '#35e6d4', '#058515']}
-          />
-          <div className="flex gap-8 pt-4 justify-center ps-5">
+          <Pie data={pieData} width={250} height={120} />
+          <div className="flex gap-6 pt-4 justify-center ps-5">
             <span className="flex items-center gap-2">
               <span style={{ backgroundColor: '#e82e2e' }} className='block w-3 h-3 rounded-full'></span>
                Users
@@ -112,52 +154,22 @@ const Dashboard = () => {
               Sellers
             </span>
             <span className="flex items-center gap-2">
-              <span style={{ backgroundColor: '#42eb42' }} className='block w-3 h-3 rounded-full'></span>
-               Users
+              <span style={{ backgroundColor: '#058515' }} className='block w-3 h-3 rounded-full'></span>
+               Premium
             </span>
           </div>
         </div>
 
         {/* Monthly Revenue Line Chart */}
         <div className='w-2/3 flex justify-center'>
-          <LineChart
-            xAxis={[{ data: monthlyRevenueLabels }]}
-            series={[
-              {
-                data: monthlyRevenueData,
-                area: true,
-                label: 'Total Revenue',
-                color: '#058515',
-              },
-            ]}
-            width={500}
-            height={300}
-            margin={{ top: 20, right: 20, bottom: 40, left: 40 }}
-          />
+          <Line data={revenueData} width={300} height={150} />
         </div>
       </div>
 
       {/* User and Seller Growth Line Chart */}
-      <h1 className='font-rounded text-center text-2xl py-10'>Users and Sellers Growth Rate</h1>
+      <h1 className='font-rounded text-center text-2xl pb-5 pt-8'>Users and Sellers Growth Rate</h1>
       <div className='flex justify-center pt-5'>
-        <LineChart
-          xAxis={[{ data: [1,2,3,4,5]}]}
-          series={[
-            {
-              data: newUsers,
-              label: 'New Users',
-              color: '#e82e2e',
-            },
-            {
-              data: newSellers,
-              label: 'New Sellers',
-              color: '#35e6d4',
-            },
-          ]}
-          width={800}
-          height={300}
-          margin={{ top: 20, right: 20, bottom: 40, left: 40 }}
-        />
+        <Line data={growthData} width={500} height={200} />
       </div>
 
       <div className='flex justify-around pt-5'>
