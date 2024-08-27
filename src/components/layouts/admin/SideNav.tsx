@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 import { IoHome } from "react-icons/io5";
 import { TbLayoutDashboard } from "react-icons/tb";
@@ -8,6 +8,7 @@ import { FaUserFriends } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { BiCategoryAlt } from "react-icons/bi";
 import { RiHomeGearLine } from "react-icons/ri";
+import { useMediaQuery } from "@mui/system";
 
 
 // Define the Sidebar context type
@@ -28,6 +29,11 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const [expanded, setExpanded] = useState(true);
   const location = useLocation();
+  const isSmallScreen = useMediaQuery('(max-width: 900px)')
+  
+  useEffect(() => {
+    setExpanded(!isSmallScreen);
+  }, [isSmallScreen]);
 
   return (
     <div className="flex">

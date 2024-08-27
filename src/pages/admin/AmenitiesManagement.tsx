@@ -68,7 +68,14 @@ const AmenitiesManagement = () => {
         const response = await blockAmenitie(_id, status);
         if (response.data === `${action.toLowerCase()}ed successfully`) {
           Swal.fire(`${action}ed!`, `The amenity has been ${action.toLowerCase()}ed.`, "success");
-          fetchCategory();
+          setAmenities((prevState) =>
+            prevState.map((prevProperty) =>
+              prevProperty._id === _id
+                ? { ...prevProperty, isBlocked: !status }
+                : prevProperty
+            )
+          );
+          
         }
       }
     } catch (error) {

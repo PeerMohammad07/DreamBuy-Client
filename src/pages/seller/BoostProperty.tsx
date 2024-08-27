@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { FaRegStar } from "react-icons/fa";
@@ -10,15 +10,41 @@ import { useParams } from 'react-router-dom';
 
 const BoostProperty = () => {
   const [selectedPlan, setSelectedPlan] = useState<number|null>(null);
-  const {id} = useParams()
+  const [paymentButton, setPaymentButton] = useState(localStorage.getItem('PaymentButton') || 'false');
+  const { id } = useParams();
+
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'PaymentButton') {
+        setPaymentButton(event.newValue || 'false');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      if (paymentButton === 'true') {
+        localStorage.setItem('PaymentButton', 'false');
+        setPaymentButton('false');
+      }
+    };
+  }, [paymentButton]);
+
+
   const boostPlan = async ()=>{
     const stripeId = import.meta.env.VITE_STRIPE_SECRET_KEY
+    if(paymentButton=="true"){
+      return toast.error("Already payment is proceeding")
+    }
     if(selectedPlan!=null&&selectedPlan>=0&&plans[selectedPlan]){
       const str = await loadStripe(stripeId);
       const response = await getBoostProperty(plans[selectedPlan].id,plans[selectedPlan].duration,id);
-      console.log(response)
-      if (response.status) {
+      if (response.data.session.status) {
+        localStorage.setItem("PaymentButton","true")
         str?.redirectToCheckout({ sessionId: response.data.session.id });
+      }else{
+        toast.error(response.data.session.message)
       }
     }
   }

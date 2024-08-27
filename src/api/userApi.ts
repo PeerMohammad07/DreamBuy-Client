@@ -282,4 +282,5 @@ export const propertyListing = async (
     errorHandle(err);
     throw err; // Ensure the error is re-thrown for react-query to catch
   }
-};;
+};
+

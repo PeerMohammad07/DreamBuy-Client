@@ -19,11 +19,13 @@ const PaymentStatus = () => {
   const type = getQueryParam('type')
   
   const boostPropertyPayment = async ()=>{
+    localStorage.setItem("PaymentButton","false")
     if(status&&propertyId&&type){
       const response = await boostProperty(propertyId,type)
-      console.log(response)
       if(response.data.response.status){
-        toast.success("your property boosted ⚡")
+        toast.success("your property boosted ⚡",{
+          id:"unique"
+        })
       }
     }else if(status=='false'){
       toast.error("failed to boost your property try again")

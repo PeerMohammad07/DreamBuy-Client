@@ -8,6 +8,7 @@ import CategoryManagement from '../components/admin/CategoryManagement'
 import PropertyManagement from '../pages/admin/PropertyManagement'
 import AmenitiesManagement from '../pages/admin/AmenitiesManagement'
 import Dashboard from '../pages/admin/Dashboard'
+import FourNotFourPage from '../components/common/404page'
 
 const AdminRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const AdminRoutes = () => {
          <Route path='/category' element={<Layout><CategoryManagement/></Layout>}/>
          <Route path='/property' element={<Layout><PropertyManagement/></Layout>}/>
          <Route path='/amenities' element={<Layout><AmenitiesManagement/></Layout>}/>
+         <Route path="*" element={<FourNotFourPage />} />
       </Routes>
     </>
   )

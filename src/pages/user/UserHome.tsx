@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { FlipWords } from '../../components/aceternity/FlipWord'
 import BasicDemo from '../../components/common/Carousel'
 
@@ -7,7 +8,7 @@ const UserHome = () => {
 
   return (
     <>
-      <div className="relative bg-[url('/homeImage.jpg')] bg-cover bg-center" style={{height:'500px'}}>
+      <div className="relative bg-[url('/homeImage.jpg')] bg-cover bg-center" style={{ height: '500px' }}>
         {/* <img src="/homeImage.jpg" alt="Hero Image" className="w-full h-full object-cover" /> */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center">
           <div className="text-white font-bold p-4 rounded-lg mb-2 sm:mb-3 md:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center">
@@ -38,7 +39,9 @@ const UserHome = () => {
             </div>
             <div className='pt-5 mt-auto'>
               <button className="bg-white text-blue-600 border border-blue-600 rounded-lg p-2  hover:bg-blue-600 hover:text-white transition-colors duration-300">
-                <span className='font-bold'>Browse Home</span>
+                <Link to={'/homes/'}>
+                  <span className='font-bold'>Browse Home</span>
+                </Link>
               </button>
             </div>
           </div>
@@ -50,7 +53,9 @@ const UserHome = () => {
             </div>
             <div className='pt-10 mt-auto'>
               <button className="bg-white text-blue-600 border border-blue-600 rounded-lg p-2  hover:bg-blue-600 hover:text-white transition-colors duration-300">
-                <span className='font-bold'>See Your Options</span>
+                <Link to={'/seller'}>
+                  <span className='font-bold'>See Your Options</span>
+                </Link>
               </button>
             </div>
           </div>
@@ -62,7 +67,9 @@ const UserHome = () => {
             </div>
             <div className='pt-5 mt-auto'>
               <button className="bg-white text-blue-600 border border-blue-600 rounded-lg p-2  hover:bg-blue-600 hover:text-white transition-colors duration-300">
-                <span className='font-bold'>Find Rentals</span>
+                <Link to={'/homes/rent'}>
+                  <span className='font-bold'>Find Rentals</span>
+                </Link>
               </button>
             </div>
           </div>

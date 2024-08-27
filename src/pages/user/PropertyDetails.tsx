@@ -82,6 +82,7 @@ const PropertyDetails = () => {
   const [getOwnerDetails, setGetOwnerDetails] = useState(false)
   const [loginModal, setLoginModal] = useState(false)
 
+
   useEffect(() => {
     window.scrollTo(0, 0)
     const fetchProductDetail = async () => {
@@ -89,12 +90,15 @@ const PropertyDetails = () => {
         try {
           setLoading(true)
           const response = await productDetail(id);
+          if(response.data.message == 'Property has been blocked'){
+            navigate('/')
+          }
           setProduct(response.data.data);
           setMainImage(response.data.data.propertyImage[0]);
           setLoading(false)
         } catch (error) {
-          console.error('Failed to fetch product details:', error);
           setLoading(false)
+          navigate('/404')
         }
       }
     };
@@ -135,10 +139,12 @@ const PropertyDetails = () => {
         await removeFromWishlist(userData?._id, productId);
         toast.success("removed from wishlist")
         setWhishlistProperty(prev => prev.filter(item => item.propertyId._id !== productId));
-      } else if (userData?._id) {
+      } else if (userData?._id&&productId) {
         const response = await addToWishlist(userData?._id, productId);
-        toast.success("added to wishlist")
-        setWhishlistProperty(prev => [...prev, response?.data.data]);
+        if(response?.status&&response?.data.data){
+          toast.success("added to wishlist")
+          setWhishlistProperty(prev => [...prev, response?.data.data]);
+        }
       }
     } catch (error) {
       console.log(error);

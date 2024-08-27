@@ -14,6 +14,7 @@ import EditProperty from '../pages/seller/EditProperty'
 import VideoCall from '../pages/Chat/VideoCall'
 import BoostProperty from '../pages/seller/BoostProperty'
 import PaymentStatus from '../pages/seller/PaymentStatus'
+import FourNotFourPage from '../components/common/404page'
 
 const SellerRoutes = () => {
   return (
@@ -32,6 +33,7 @@ const SellerRoutes = () => {
             <Route path='/boost/:id' element={<BoostProperty/>}/>
             <Route path='/paymentStatus' element={<PaymentStatus/>}/>
           </Route>
+          <Route path="*" element={<FourNotFourPage />} />
         </Routes>
       </ExpandProvider>
     </>

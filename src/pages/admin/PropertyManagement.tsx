@@ -23,7 +23,7 @@ const PropertyManagement = () => {
   const [rentProperty, setRentProperty] = useState<PropertyRentData[]>([]);
   const [saleProperty, setSaleProperty] = useState<PropertySaleData[]>([]);
   const [property, setProperty] = useState<PropertyRentData[] | PropertySaleData[]>([]);
-  
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -37,7 +37,7 @@ const PropertyManagement = () => {
       setRentProperty(rentPropertyy.data);
       const salePropertyy = await getSaleProperty();
       setSaleProperty(salePropertyy.data);
-      setProperty(value === 0 ? rentPropertyy.data : salePropertyy.data); 
+      setProperty(value === 0 ? rentPropertyy.data : salePropertyy.data);
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +53,7 @@ const PropertyManagement = () => {
   };
 
   const handleBlock = async (id: string, status: boolean) => {
-    try {      
+    try {
       const action = status ? "Unblock" : "Block";
       const confirmation = await Swal.fire({
         title: `${action} Property?`,
@@ -67,12 +67,22 @@ const PropertyManagement = () => {
       });
 
       if (confirmation.isConfirmed) {
-        const response = await blockProperty(id, status);   
-        console.log(response.data === `${action.toLowerCase()}ed successfully`);
-                     
+        const response = await blockProperty(id, status);
         if (response.data === `${action.toLowerCase()}ed successfully`) {
           Swal.fire(`${action}ed!`, `The property has been ${action.toLowerCase()}ed.`, "success");
-          getProduct();
+          if (value === 0) { 
+            setProperty((prevProperties) =>
+              (prevProperties as PropertyRentData[]).map((prop) =>
+                prop._id === id ? { ...prop, propertyStatus: !status } : prop
+              )
+            );
+          } else { 
+            setProperty((prevProperties) =>
+              (prevProperties as PropertySaleData[]).map((prop) =>
+                prop._id === id ? { ...prop, propertyStatus: !status } : prop
+              )
+            );
+          }
         }
       }
     } catch (error) {
@@ -144,21 +154,12 @@ const PropertyManagement = () => {
                   <TableCell style={{ textAlign: 'center' }}>{prop.propertyFor}</TableCell>
                   <TableCell style={{ textAlign: 'center' }}>{prop.Price}</TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {prop.propertyStatus ? (
-                      <button
-                        className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br shadow-md shadow-red-500/50 dark:shadow-md dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2 mb-2"
-                        onClick={() => handleBlock(prop._id, prop.propertyStatus)}
-                      >
-                        Blocked
-                      </button>
-                    ) : (
-                      <button
-                        className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br shadow-md shadow-red-500/50 dark:shadow-md dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2 mb-2"
-                        onClick={() => handleBlock(prop._id, prop.propertyStatus)}
-                      >
-                        Block
-                      </button>
-                    )}
+                    <button
+                      className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br shadow-md shadow-red-500/50 dark:shadow-md dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2 mb-2"
+                      onClick={() => handleBlock(prop._id, prop.propertyStatus)}
+                    >
+                      {prop.propertyStatus ? "Blocked" : "Block"}
+                    </button>
                   </TableCell>
                 </TableRow>
               ))}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import SellerSidebar from '../../components/layouts/seller/SellerSidebar';
 import { useExpandContext } from '../../Context/ExpandContext';
+import ChatBot from '../../components/common/ChatBot';
 
 const Mainpage: React.FC = () => {
   const {expanded} = useExpandContext()
@@ -12,6 +13,7 @@ const Mainpage: React.FC = () => {
         <div className={`flex-grow bg-gray-900 ${expanded ? 'ml-72':'ml-14'} overflow-auto`}>
           <Outlet />
         </div>
+        <ChatBot/>
       </div>
   );
 };

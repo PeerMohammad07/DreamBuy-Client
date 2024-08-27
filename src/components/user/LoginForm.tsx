@@ -79,8 +79,6 @@ const LoginForm = () => {
             emailErr: "",
             passwordErr: "Incorrect password",
           });
-        } else if (error.response?.data.message == "this user is blocked ") {
-          toast.error("This user is blocked")
         } else {
           setError({
             emailErr: "invalid email user not found",

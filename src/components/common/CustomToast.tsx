@@ -44,7 +44,8 @@ const ShowToastWithActions = ({ accept, decline, name }: ShowToastWithActionsPro
       </div>
     </div>
   ),{
-    duration:60000
+    duration:60000,
+    id:"uniqueId"
   });
 };
 

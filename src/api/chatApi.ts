@@ -53,3 +53,13 @@ export const createConversation = async (senderId:string|undefined,receiverId:st
     throw err;
   }
 }
+
+export const sendAiMessage = async (text:string)=> {
+  try {
+    return await Api.post(chatEndpoints.sendMessageAi,{text})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}

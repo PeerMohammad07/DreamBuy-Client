@@ -42,7 +42,13 @@ const UserManagement =() => {
         const response = await blockUser(_id, status);        
         if (response.data === `${action.toLowerCase()}ed successfully`) {
           Swal.fire(`${action}ed!`, `The user has been ${action.toLowerCase()}ed.`, "success");
-          fetchUser()
+          setUsers((prevState:any) =>
+            prevState.map((user:any) =>
+              user._id === _id
+                ? { ...user, isBlocked: !status }
+                : user
+            )
+          );
         }
       }
     } catch (error) {

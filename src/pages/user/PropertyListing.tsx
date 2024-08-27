@@ -191,7 +191,7 @@ const PropertyListing = () => {
               onChange={handleForChange}
               className="border border-gray-300 rounded-lg p-1"
             >
-              <option value="">Property For</option>
+              <option value="">All</option>
               <option value="rent">Rent</option>
               <option value="sale">Sale</option>
             </select>
@@ -213,6 +213,7 @@ const PropertyListing = () => {
                 {[...Array(6)].map((_, index) => (
                   <>
                     <div className="flex w-full">
+                      <CardLoading key={index} />
                       <CardLoading key={index} />
                       <CardLoading key={index} />
                     </div>

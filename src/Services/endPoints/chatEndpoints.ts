@@ -3,5 +3,6 @@ export const chatEndpoints = {
   sendMessage : "/api/chat/sendMessage",
   getMessages : "/api/chat/getMessages",
   createConversation : "/api/chat/createConversation",
-  uploadFile : "/api/chat/uploadFile"
+  uploadFile : "/api/chat/uploadFile",
+  sendMessageAi : "/api/chat/sendMessageAi"
 }

@@ -61,7 +61,13 @@ const SellerManagement = () => {
         console.log(response)
         if (response&&response.data === `${action.toLowerCase()}ed successfully`) {
           Swal.fire(`${action}ed!`, `The seller has been ${action.toLowerCase()}ed.`, "success");
-          fetchSeller()
+          setSellers((prevState:any) =>
+            prevState.map((seller:any) =>
+              seller._id === _id
+                ? { ...seller, isBlocked: !status }
+                : seller
+            )
+          );
         }
       }
     } catch (error) {

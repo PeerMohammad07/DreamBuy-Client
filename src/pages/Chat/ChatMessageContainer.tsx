@@ -17,9 +17,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 import notificationSound from "../../assets/notificationSound/frontend_src_assets_sounds_notification.mp3"
 import { toast } from "react-toastify";
 import { LineWave } from "react-loader-spinner";
-import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { ToastBar } from "react-hot-toast";
 import ShowToastWithActions from "../../components/common/CustomToast";
 
 
@@ -189,9 +187,9 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
         navigate(`/videoCall/${senderId}/${userData?._id}/${role}`)
       }
       const onDecline = ()=>{
-        toast.error("You decline this call")
+        toast.error("You decline this call",{toastId:"decline call"})
       }
-      ShowToastWithActions({ accept: onAccept, decline: onDecline, name: "dummy now" });
+      ShowToastWithActions({ accept: onAccept, decline: onDecline, name: "" });
     }) 
   },[])
 

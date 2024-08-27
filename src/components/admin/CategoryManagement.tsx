@@ -51,7 +51,14 @@ const CategoryManagement = () => {
         const response = await blockCategory(_id, status);
         if (response.data === `${action.toLowerCase()}ed successfully`) {
           Swal.fire(`${action}ed!`, `The user has been ${action.toLowerCase()}ed.`, "success");
-          fetchCategory();
+          setCategory((prevState:any) =>
+            prevState.map((prevCategory:any) =>
+              prevCategory._id === _id
+                ? { ...prevCategory, isBlocked: !status }
+                : prevCategory
+            )
+          );
+          
         }
       }
     } catch (error) {

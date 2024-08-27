@@ -16,6 +16,7 @@ import Whishlist from "../pages/user/Whishlist";
 import About from "../pages/user/About";
 import PropertyListing from "../pages/user/PropertyListing";
 import VideoCall from "../pages/Chat/VideoCall";
+import FourNotFourPage from "../components/common/404page";
 
 const UserRoutes = () => {
   return (
@@ -37,25 +38,30 @@ const UserRoutes = () => {
             </ProtectLogin>
           }
         />
-        <Route
-          path="/resetPassword/:token"
-          element={
-            <ResetPassword />
-          }
-        />
+        <Route path="/resetPassword/:token" element={<ResetPassword />} />
         <Route element={<UserMainPage />}>
           <Route path="/" element={<UserHome />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<Premium />} />
-          <Route path="/paymentStatus" element={<PaymentStatus/>} />
-          <Route path="/propertyDetails" element={<PropertyDetails/>} />
-          <Route path="/chat/:role" element={<ExpandProvider><ChatPage/></ExpandProvider>}/>
-          <Route path="/wishlist" element={<Whishlist/>}/>
-          <Route path="/about" element={<About/>}/>
-          <Route path="/homes/:type?" element={<PropertyListing/>}/>
+          <Route path="/paymentStatus" element={<PaymentStatus />} />
+          <Route path="/propertyDetails" element={<PropertyDetails />} />
+          <Route
+            path="/chat/:role"
+            element={
+              <ExpandProvider>
+                <ChatPage />
+              </ExpandProvider>
+            }
+          />
+          <Route path="/wishlist" element={<Whishlist />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/homes/:type?" element={<PropertyListing />} />
+          <Route path="*" element={<FourNotFourPage />} />
         </Route>
-          <Route path="/videoCall/:senderId/:receiverId/:role" element={<VideoCall/>}/>
-
+        <Route
+          path="/videoCall/:senderId/:receiverId/:role"
+          element={<VideoCall />}
+        />
       </Routes>
     </>
   );
