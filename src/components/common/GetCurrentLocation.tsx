@@ -14,41 +14,6 @@ interface GetCurrentLocationProps {
 
 
 const GetCurrentLocation:React.FC<GetCurrentLocationProps> = ({setLocation}) => {
-  // const [streetAddress, setStreetAddress] = useState<string>('');
-  // const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
-
-  // const getCurrentAddress = async () => {
-  //   if (location.latitude && location.longitude) {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${accessToken}`
-  //       );
-  //       console.log(response)
-  //       return response.data.results[0]?.formatted_address || 'Address not found';
-  //     } catch (error) {
-  //       console.error('Error fetching address:', error);
-  //       toast.error('Failed to fetch address');
-  //       return 'Error';
-  //     }
-  //   }
-  //   return 'Location not available';
-  // };
-
-
-
-  // const { data } = useQuery({
-  //   queryKey: ['locationData', location],
-  //   queryFn: getCurrentAddress,
-  //   enabled: !!location.latitude && !!location.longitude, 
-  // });
-
-
-  // useEffect(() => {
-  //   if (data) {
-  //     setStreetAddress(data);
-  //   }
-  // }, [data]);
-
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -61,21 +26,17 @@ const GetCurrentLocation:React.FC<GetCurrentLocationProps> = ({setLocation}) => 
         setLocation({ latitude, longitude });
       },
       (error) => {
-        console.error('Geolocation error:', error);
         toast.error('Failed to get location');
       }
     );
   };
 
   useEffect(() => {
+    console.log("does it works twice")
     getCurrentLocation();
   }, []);
 
-  return (
-    <>
-      {/* <h1>{streetAddress}</h1> */}
-    </>
-  );
+  return null;
 };
 
 export default GetCurrentLocation;

@@ -4,10 +4,12 @@ import storage from 'redux-persist/lib/storage';
 import userReducer from "../slice/userAuthSlice";
 import sellerReducer from "../slice/sellerAuthSlice";
 import adminReducer from "../slice/adminAuthSlice";
+import chatReducer, { ChatState } from "../slice/chatCurrentUserSlice"
 import { UserState } from "../slice/userAuthSlice"; 
 import { SellerState } from "../slice/sellerAuthSlice"; 
 import { AdminState } from "../slice/adminAuthSlice"; 
 import { PersistPartial } from 'redux-persist/es/persistReducer';
+
 
 
 const userPersistConfig = {
@@ -33,12 +35,15 @@ const rootReducer = combineReducers({
   user: persistedUserReducer,
   seller: persistedSellerReducer,
   admin: persistedAdminReducer,
+  chat : chatReducer
+
 });
 
 export type rootState = {
   user: UserState & PersistPartial; 
   seller: SellerState & PersistPartial; 
   admin: AdminState & PersistPartial; 
+  chat : ChatState
 };
 
 const store = configureStore({

@@ -64,24 +64,24 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
     navigate('/homes')
   }
 
-  if ('seeAll' in product) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <Button
-          onClick={handleSeeAllResults}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
-          See All Your Results
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <>
-      <Card sx={{ maxWidth: 300, height: 300, display: 'flex', flexDirection: 'column', margin: '0 15px' }}
-        className={`rounded-2xl ${product.isBoosted ? 'border-4 shadow-xl' : ''}`}>
-        <CardActionArea className="flex-1 relative">
+      <Card
+        sx={{
+          maxWidth: 300,
+          height: 300,
+          display: 'flex',
+          flexDirection: 'column',
+          margin: '0 5px',
+          '@media (max-width: 600px)': {
+            margin: '0',
+          },
+          borderRadius: '12px',
+          border: product.isBoosted ? '2px solid #FF5722' : 'none',
+        }}
+        className={`${product.isBoosted ? 'border-3 shadow-xl' : ''}`}
+      >
+        <CardActionArea className="relative flex-1">
           <Link to={`/propertyDetails?id=${product._id}`}>
             <CardMedia
               component="img"
@@ -90,19 +90,7 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
               sx={{ objectFit: 'cover', height: 180 }}
             />
           </Link>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation()
-              userData ? handleWhishlist(product._id) : toast.error("please login before add to wishlist")
-            }}
-            className="rounded-full h-7 w-7 text-black bg-white absolute bottom-1 right-1"
-          >
-            {isWhish ? (
-              <FaHeart className='text-xl text-red-500 relative left-1' />
-            ) : (
-              <FaRegHeart className='text-xl relative left-1' />
-            )}
-          </Button>
+
           {product.isBoosted && (
             <div className="absolute top-0 right-0 bg-cyan-500 p-1 rounded-bl-lg">
               <Typography variant="caption" color="white">
@@ -110,7 +98,22 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
               </Typography>
             </div>
           )}
+
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              userData ? handleWhishlist(product._id) : toast.error("Please login before adding to wishlist");
+            }}
+            className="rounded-full h-8 w-8 text-black bg-white absolute bottom-2 right-2 z-10 flex items-center justify-center"
+          >
+            {isWhish ? (
+              <FaHeart className='text-xl text-red-500' />
+            ) : (
+              <FaRegHeart className='text-xl' />
+            )}
+          </Button>
         </CardActionArea>
+
         <CardContent className="flex-1 flex flex-col">
           <div className="flex justify-between items-center mb-2">
             <Typography
@@ -155,7 +158,7 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
             </div>
           </div>
         </CardContent>
-      </Card >
+      </Card>
     </>
   );
 };

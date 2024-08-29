@@ -75,7 +75,7 @@ const Premium = () => {
   ];
 
   const makePayment = async (index: number) => {
-    const stripeId = import.meta.env.VITE_STRIPE_SECRET_KEY
+    const stripeId = import.meta.env.VITE_STRIPE_SECRET_KEY;
     const str = await loadStripe(stripeId);
     const response = await getPremium(plan[index]);
     if (response.status) {
@@ -84,7 +84,7 @@ const Premium = () => {
   };
 
   return (
-    <div className='flex justify-center gap-2'>
+    <div className="flex flex-col md:flex-row justify-center gap-2 md:gap-8">
       {plan.map((p, index) => (
         <PremiumCard
           key={index}

@@ -3,10 +3,9 @@ import InputEmoji from "react-input-emoji";
 import { BiSolidMessageDots } from "react-icons/bi";
 import { IoVideocam } from "react-icons/io5";
 import { LuSendHorizonal } from "react-icons/lu";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import { getMessages, sendMessage, uploadChatFile } from "../../api/chatApi";
-import { IcurrentUser } from "./ChatPage";
 import { getUser } from "../../api/userApi";
 import { useSocket } from "../../Context/SocketContext";
 import { SlOptionsVertical } from "react-icons/sl";
@@ -14,16 +13,13 @@ import { BackgroundBeams } from "../../components/aceternity/Background";
 import Message from "./Message";
 import MyDropzone from "./DropZone";
 import { FaArrowLeft } from "react-icons/fa6";
-import notificationSound from "../../assets/notificationSound/frontend_src_assets_sounds_notification.mp3"
 import { toast } from "react-toastify";
 import { LineWave } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import ShowToastWithActions from "../../components/common/CustomToast";
-
+import { clearCurrentUser, setCurrentUserData } from "../../Redux/slice/chatCurrentUserSlice";
 
 interface ChatMessageContainerProps {
-  currentUser: IcurrentUser;
-  setCurrentUser: React.Dispatch<React.SetStateAction<IcurrentUser>>;
   role: string | undefined;
   isOnline: boolean
 }
@@ -44,8 +40,6 @@ export interface file {
 }
 
 const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
-  currentUser,
-  setCurrentUser,
   role,
   isOnline
 }) => {
@@ -60,6 +54,9 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null)
   const [noti, setNoti] = useState<Imessage[] | []>([])
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const currentUser = useSelector((prevState: rootState) => prevState.chat.userData)
+  const currentUserId = useSelector((prevState: rootState) => prevState.chat.id)
 
   const userData =
     role === "user"
@@ -91,7 +88,7 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
         formData.append('files', file);
       });
       formData.append('senderId', userData?._id)
-      formData.append('recieverId', currentUser.id)
+      formData.append('recieverId', currentUserId)
       const response = await uploadChatFile(formData)
       if (!Array.isArray(response.data.data) && response.data.data.message.endsWith('.mp4')) {
         setMessages((prevState) => [...prevState, response.data.data])
@@ -115,18 +112,16 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
       return;
     }
     if (userData) {
-      const response = await sendMessage(userData?._id, currentUser.id, text);
+      const response = await sendMessage(userData?._id, currentUserId, text);
       setMessages([...messages, response.data])
-      socket.emit('message', response.data, currentUser.id)
+      socket.emit('message', response.data, currentUserId, userData.name, userData._id)
       setText("")
     }
   }
 
   useEffect(() => {
     const handleMessageContent = (message: Imessage) => {
-      if (message.senderId === currentUser.id || message.senderId === userData?._id) {
-        const sound = new Audio(notificationSound)
-        sound.play()
+      if (message.senderId === currentUserId || message.senderId === userData?._id) {
         setMessages((prevMessages) => [...prevMessages, message]);
       } else {
         setNoti([message, ...noti])
@@ -138,25 +133,22 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
     return () => {
       socket.off('messageContent', handleMessageContent);
     };
-  }, [currentUser.id, userData?._id, socket]);
+  }, [currentUserId, userData?._id, socket]);
 
 
   useEffect(() => {
     const getCurrentUserdata = async () => {
-      if (currentUser && currentUser.id) {
+      if (currentUserId) {
         setLoading(true)
-        const currUser = await getUser(currentUser.id, role);
+        const currUser = await getUser(currentUserId, role);
         const messages = await getMessages(userData?._id, currUser.data._id);
-        setCurrentUser((prevState: IcurrentUser) => ({
-          ...prevState,
-          userData: currUser.data,
-        }));
+        dispatch(setCurrentUserData(currUser.data))
         setMessages(messages.data);
         setLoading(false)
       }
     };
     getCurrentUserdata();
-  }, [currentUser.id, userData, role]);
+  }, [currentUserId, userData, role]);
 
 
   useEffect(() => {
@@ -165,14 +157,14 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
     }
   }, [messages])
 
-  const handleVideoCall = async ()=>{
+  const handleVideoCall = async () => {
     try {
-      if(currentUser){
-        socket.emit("call:start",{
-          senderId:  userData?._id,
-          receiverId : currentUser.id
+      if (currentUser) {
+        socket.emit("call:start", {
+          senderId: userData?._id,
+          receiverId: currentUserId
         })
-          navigate(`/videoCall/${userData?._id}/${currentUser.id}/${role}`)
+        navigate(`/videoCall/${userData?._id}/${currentUserId}/${role}`)
       }
     } catch (error) {
       console.log(error)
@@ -180,23 +172,22 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
   }
 
 
-
-  useEffect(()=>{
-    socket.on('call:start',(senderId)=>{
-      const onAccept = ()=>{
+  useEffect(() => {
+    socket.on('call:start', (senderId) => {
+      const onAccept = () => {
         navigate(`/videoCall/${senderId}/${userData?._id}/${role}`)
       }
-      const onDecline = ()=>{
-        toast.error("You decline this call",{toastId:"decline call"})
+      const onDecline = () => {
+        toast.error("You decline this call", { toastId: "decline call" })
       }
       ShowToastWithActions({ accept: onAccept, decline: onDecline, name: "" });
-    }) 
-  },[])
+    })
+  }, [])
 
   return (
     <>
       <div className="flex flex-grow h-full xl:flex flex-col bg-gray-100" >
-        {currentUser.userData ? (
+        {currentUser ? (
           <>
             <div className={`flex flex-col h-screen ${role == "user" ? "bg-white" : "bg-gray-900"}`}>
               {/* Header */}
@@ -204,21 +195,18 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
                 <div className="flex items-center">
                   <FaArrowLeft
                     onClick={() => {
-                      setCurrentUser(() => ({
-                        id: '',
-                        userData: null,
-                      }))
+                      dispatch(clearCurrentUser())
                     }}
                     className={`${role == "seller" ? "text-white" : ""} xl:hidden lg:hidden md:hidden me-2`}
                     size={18}
                   />
                   <img
-                    src={currentUser.userData.image}
+                    src={currentUser.image}
                     alt="User Profile"
                     className="w-10 h-10 rounded-full object-cover mr-3"
                   />
                   <div>
-                    <h1 className={`${role == "user" ? "text-black" : "text-white"} font-bold`}>{currentUser.userData.name}</h1>
+                    <h1 className={`${role == "user" ? "text-black" : "text-white"} font-bold`}>{currentUser.name}</h1>
                     {isOnline ? <span className="text-green-500 text-sm">Online</span> : <span className="text-sm text-gray-400">offline</span>}
                   </div>
                 </div>
@@ -241,8 +229,8 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
                     key={message._id}
                     message={message}
                     isSender={message.senderId === userData?._id}
-                    userImage={message.senderId === userData?._id ? userData?.image : currentUser.userData?.image}
-                    userName={currentUser.userData?.name}
+                    userImage={message.senderId === userData?._id ? userData?.image : currentUser.image}
+                    userName={currentUser.name}
                     role={role}
                   />
                 ))}
@@ -325,17 +313,37 @@ const ChatMessageContainer: React.FC<ChatMessageContainerProps> = ({
             </div>
           </>
         ) : (
-          <div className="flex flex-col justify-center items-center flex-grow h-full bg-gray-300">
-            <BiSolidMessageDots size={60} className="mb-4 text-gray-600" />
-            <div className="text-center">
-              <h1 className="text-2xl font-semibold text-gray-800 mb-4">
-                Welcome 👋 {userData?.name}
-              </h1>
-              <p className="text-lg text-gray-600">
-                Select a user to start messaging.
-              </p>
-            </div>
-          </div>
+          <>
+            {
+              loading ? <>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <LineWave
+                      visible={true}
+                      height="100"
+                      width="100"
+                      color="#4fa94d"
+                      ariaLabel="line-wave-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      firstLineColor=""
+                      middleLineColor=""
+                      lastLineColor=""
+                    />                </div>
+              </> :
+                <div className="flex flex-col justify-center items-center flex-grow h-full bg-gray-300">
+                  <BiSolidMessageDots size={60} className="mb-4 text-gray-600" />
+                  <div className="text-center">
+                    <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+                      Welcome 👋 {userData?.name}
+                    </h1>
+                    <p className="text-lg text-gray-600">
+                      Select a user to start messaging.
+                    </p>
+                  </div>
+                </div>
+            }
+          </>
+
         )}
       </div >
     </>

@@ -143,13 +143,11 @@ const PropertyListing = () => {
     setLocationSearch(selectedLocation);
   };
 
-  const premiumProperty = data?.data.filter((eachProperty:any)=> eachProperty.isBoosted == true)
-  console.log(premiumProperty,"chcl")
+  const premiumProperty = data?.data.filter((eachProperty: any) => eachProperty.isBoosted == true)
 
   return (
     <div className="bg-gray-50 flex flex-col" style={{ maxHeight: "calc(100vh - 56px)" }}>
-
-      <div className="flex justify-between items-center text-center p-3 bg-white shadow-md">
+      <div className="flex justify-between items-center text-center px-3 py-2 bg-white shadow-md">
         {locationSearch ?
           <form className="relative inline-block w-full max-w-md ms-96">
             <input
@@ -167,7 +165,6 @@ const PropertyListing = () => {
             mapboxAccessToken="pk.eyJ1IjoiaXJmYW4zNzQiLCJhIjoiY2xwZmlqNzVyMWRuMDJpbmszdGszazMwaCJ9.7wdXsKdpOXmDR9l_ISdIqA"
           />
         }
-
         {/* Sort and Filter */}
         <div className="flex space-x-4">
           {/* Sort */}
@@ -183,7 +180,6 @@ const PropertyListing = () => {
               <option value="dateDesc">Date: New to Old</option>
             </select>
           </div>
-
           {/* Filter */}
           <div className="w-40">
             <select
@@ -198,7 +194,6 @@ const PropertyListing = () => {
           </div>
         </div>
       </div>
-
 
       <div className="flex" style={{ maxHeight: "calc(100vh - 56px)" }}>
         <div className="w-1/3 bg-white shadow-md rounded-lg p-4 sticky top-0 overflow-y-auto" style={{ maxHeight: "calc(100vh - 56px)" }}>
@@ -231,7 +226,7 @@ const PropertyListing = () => {
                 <>
                   {premiumProperty.length > 0 && index > 0 && index % 6 == 0 ?
                     <div className="col-span-full">
-                      <BoostCarousel premiumProperty={premiumProperty.slice(index-6,index)}/>
+                      <BoostCarousel premiumProperty={premiumProperty.slice(index - 6, index)} />
                     </div> : <Link to={`/propertyDetails?id=${property._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                       <Card sx={{ width: 400, maxWidth: '100%', boxShadow: 'lg', position: 'relative' }} key={property._id}>
                         <CardOverflow>
@@ -243,8 +238,8 @@ const PropertyListing = () => {
                             {isWisH(property._id) ? (
                               <PiHeartStraightFill
                                 onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
+                                  e.preventDefault()
+                                  e.stopPropagation()
                                   userData ? handleWhishlist(property._id) : toast.error("please login before add to wishlist");
                                 }}
                                 className="absolute top-2 right-2"
@@ -293,8 +288,6 @@ const PropertyListing = () => {
             )}
           </div>
         </div>
-
-
       </div>
     </div>
   );

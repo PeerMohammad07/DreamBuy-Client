@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { AiFillMessage } from "react-icons/ai";
-import { TbUserSearch } from "react-icons/tb";
 import ChatBox from "./ChatBox";
 import { rootState } from "../../Redux/store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IcurrentUser } from "./ChatPage";
 import { Avatar, Skeleton, Typography } from "@mui/material";
+import { setCurrentUserId } from "../../Redux/slice/chatCurrentUserSlice";
 
 export interface IConversation extends Document {
   senderId: string;
@@ -16,21 +16,22 @@ export interface IConversation extends Document {
 
 interface ChatSideBarProps {
   conversations: IConversation[];
-  setCurrentUser: React.Dispatch<React.SetStateAction<IcurrentUser>>;
   role: string | undefined;
   loading: boolean
+  onlineUsers : any[]
 }
 
-const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser, role, loading }) => {
+const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, role, loading ,onlineUsers}) => {
   const userData = role === 'user'
     ? useSelector((prevState: rootState) => prevState.user.userData)
     : role === 'seller'
       ? useSelector((prevState: rootState) => prevState.seller.sellerData)
       : null;
 
-  const [search, setSearch] = useState("");
+
   const [conversationUsers, setConversationUsers] = useState<IConversation[] | []>([]);
   const containerRef = useRef(null);
+  const dispatch = useDispatch()
 
   const alreadyMessagedUsers = conversationUsers.map((value) => {
     if (value.receiverId === userData?._id) {
@@ -40,19 +41,17 @@ const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser
     }
   });
 
+  const userOnline = (id: string): boolean => {
+    return onlineUsers.some(user => user.id === id);
+  };
 
   useEffect(() => {
     setConversationUsers(conversations);
   }, [conversations]);
 
-  // Define color schemes based on the role
   const sidebarStyles = role === 'user'
     ? "bg-white text-blue-800 border "
     : "bg-gray-900 text-white";
-
-  const inputStyles = role === 'user'
-    ? "pl-10 pr-4 py-2 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    : "pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   const textColor = role === 'user' ? "text-blue-800" : "text-white";
 
@@ -71,12 +70,13 @@ const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, setCurrentUser
         {alreadyMessagedUsers.length > 0 ? (
           alreadyMessagedUsers.map((id) => (
             <div key={id} onClick={() => {
-              setCurrentUser((prevState: IcurrentUser) => ({
-                ...prevState,
-                id: id
-              }));
+              dispatch(setCurrentUserId(id))
+              // setCurrentUser((prevState: IcurrentUser) => ({
+              //   ...prevState,
+              //   id: id
+              // }));
             }}>
-              <ChatBox id={id} setCurrentUser={setCurrentUser} role={role} />
+              <ChatBox id={id}  role={role} isOnline={userOnline(id)} />
             </div>
           ))
         ) : (

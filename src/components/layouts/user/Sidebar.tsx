@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { IoHome } from 'react-icons/io5';
 import { HiOutlineLogin } from 'react-icons/hi';
 import { LuLogOut } from 'react-icons/lu';
 import { CgProfile } from 'react-icons/cg';
@@ -8,7 +7,6 @@ import { TiTick } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogout } from '../../../Redux/slice/userAuthSlice';
 import { logout } from '../../../api/userApi';
-import { User } from '../../common/Table';
 import { rootState } from '../../../Redux/store/store';
 
 interface SidebarProps {
@@ -23,7 +21,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, userStatus }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      // Close sidebar if window width is greater than a certain breakpoint (e.g., 1024px)
       if (window.innerWidth >= 1024) {
         onClose();
       }
@@ -32,7 +29,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, userStatus }) => {
     // Add event listener
     window.addEventListener('resize', handleResize);
 
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -50,31 +46,28 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, userStatus }) => {
       <div
         className={`fixed top-0 left-0 w-64 h-full bg-white shadow-lg transform transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} z-40`}
       >
-        <div className="flex items-center justify-between p-4 border-b">
-          <img src="/dreambuylogo.png" alt="Dream Buy Logo" className="h-12" />
+        <div className="flex items-center justify-between p-4 border-b h-16 bg-blue-500">
+          <img src="/dreambuywhitelogo.png" alt="Dream Buy Logo" className="h-12 w-52" />
         </div>
         <div className="mt-8 space-y-4 px-4 overflow-y-auto h-full">
-          <Link to="/sell" className="flex items-center text-lg border-b py-2" onClick={onClose}>
+          <Link to="/seller" className="flex items-center text-lg border-b py-2" onClick={onClose}>
             <span className="ml-2">Sell</span>
           </Link>
-          <Link to="/buy" className="flex items-center text-lg border-b py-2" onClick={onClose}>
+          <Link to="/homes/sale" className="flex items-center text-lg border-b py-2" onClick={onClose}>
             <span className="ml-2">Buy</span>
           </Link>
-          <Link to="/rent" className="flex items-center text-lg border-b py-2" onClick={onClose}>
+          <Link to="/homes/rent" className="flex items-center text-lg border-b py-2" onClick={onClose}>
             <span className="ml-2">Rent</span>
           </Link>
           <Link to="/about" className="flex items-center text-lg border-b py-2" onClick={onClose}>
             <span className="ml-2">About us</span>
           </Link>
-          <Link to="/contact" className="flex items-center text-lg border-b py-2" onClick={onClose}>
-            <span className="ml-2">Contact us</span>
+          <Link to="/chat/user" className="flex items-center text-lg border-b py-2" onClick={onClose}>
+            <span className="ml-2">Chat</span>
           </Link>
           {userData?.isPremium ? (
-            <Link to="/premium">
-              <button className="flex items-center text-lg text-orange-500 w-full border-b py-2">
-                <span className="ml-2">Premium</span>
-                <TiTick className="text-xl ml-2" />
-              </button>
+             <Link to="/premium" className="flex items-center text-lg border-b py-2" onClick={onClose}>
+              <span className="ml-2">Premium</span>
             </Link>
           ) : (
             <Link to="/premium">

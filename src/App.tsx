@@ -4,7 +4,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AllApplicationSkelton from './components/common/LoadingSkelton/AllApplicationSkelton';
-import FourNotFourPage from './components/common/404page';
 
 // Lazy loading the route components
 const UserRoutes = lazy(() => import('./Routes/UserRoutes'));
@@ -17,6 +16,7 @@ function App() {
     { path: "/seller/*", element: <SellerRoutes /> },
     { path: "/admin/*", element: <AdminRoutes /> },
   ]);
+
 
   return (
     <>

@@ -26,7 +26,8 @@ const queryClient = new QueryClient();
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <>
     <Toaster position="top-center" reverseOrder={false} />
     <SocketProvider>
       <GoogleOAuthProvider clientId={clientId}>
@@ -38,5 +39,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </Provider>
       </GoogleOAuthProvider>
     </SocketProvider>
-  </React.StrictMode>
+    </>
+  // </React.StrictMode>
 )

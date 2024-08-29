@@ -1,4 +1,3 @@
-import { IWishlist } from "../components/common/Carousel";
 import { editFormData } from "../pages/user/EditProfile";
 import { IProperty } from "../pages/user/PropertyDetails";
 import Api from "../Services/axios";
@@ -37,7 +36,7 @@ export const signUp = async (data: signUpData): Promise<response> => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -48,7 +47,7 @@ export const verifyOtp = async (otp: number) => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -59,7 +58,7 @@ export const logout = async () => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -70,7 +69,7 @@ export const getToken = async () => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -81,7 +80,7 @@ export const signIn = async (email: string, password: string) => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -92,7 +91,7 @@ export const resendOtp = async () => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -103,7 +102,7 @@ export const googleAuthLogin = async (name: string, email: string, image: string
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -114,7 +113,7 @@ export const googleAuthRegister = async (name: string, email: string, image: str
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 }
 
@@ -126,7 +125,7 @@ export const forgotPassword = async (email: string) => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -137,7 +136,7 @@ export const resetPassword = async (password: string, userId: string, token: str
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -148,7 +147,7 @@ export const getRentProperty = async () => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -159,7 +158,7 @@ export const getSaleProperty = async () => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Re-throw the error after handling it
+    throw err; 
   }
 };
 
@@ -280,7 +279,7 @@ export const propertyListing = async (
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
-    throw err; // Ensure the error is re-thrown for react-query to catch
+    throw err; 
   }
 };
 

@@ -210,26 +210,23 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   link,
 }) => {
   const { expanded } = useExpandContext();
+  const navigate = useNavigate()
 
   return (
+    <>
     <li
-      className={`relative flex items-center py-3 px-3 my-2 font-medium rounded-md cursor-pointer transition-colors group
-        ${
-          active
-            ? "bg-indigo-600 text-white"
-            : "hover:bg-indigo-500 text-gray-300"
-        }`}
+      className={`relative flex items-center py-3 px-3 my-2 font-medium rounded-md cursor-pointer transition-colors group ${
+        active ? "bg-indigo-600 text-white" : "hover:bg-indigo-500 text-gray-300"
+      }`}  
     >
       {icon}
-      <Link
-        to={link}
-        className={`overflow-hidden transition-all ${
-          expanded ? "ml-3" : "w-0"
-        }`}
-      >
-        <span>{text}</span>
-      </Link>
+      <span onClick={() => {
+        navigate(link)
+      }} className={`overflow-hidden transition-all ${expanded ? "ml-3" : "w-0"}`}>
+        {text}
+      </span>
     </li>
+    </>
   );
 };
 

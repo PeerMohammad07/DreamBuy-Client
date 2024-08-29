@@ -13,6 +13,7 @@ const errorHandle = (error:Error|AxiosError)=> {
       const errResp = axiosError.response.data as Error
       if(errResp.message.includes("Not authorized")){
         toast.error("You are not Authorized")
+        return
       }else if(errResp.message == 'You are blocked by admin!'){
         toast.error(errResp.message)
       }else {

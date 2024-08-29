@@ -22,10 +22,10 @@ const Footer = () => {
             <div>
                 <h3 className="text-lg font-semibold mb-2">Quick Links</h3>
                 <ul className="list-none">
-                    <li><a href="#" className="text-white hover:text-gray-400 pt-3">Home</a></li>
-                    <li><a href="#" className="text-white hover:text-gray-400 pt-3">Properties</a></li>
-                    <li><a href="#" className="text-white hover:text-gray-400 pt-3">About Us</a></li>
-                    <li><a href="#" className="text-white hover:text-gray-400 pt-3">Contact Us</a></li>
+                    <li><a className="text-white hover:text-gray-400 pt-3">Home</a></li>
+                    <li><a className="text-white hover:text-gray-400 pt-3">Properties</a></li>
+                    <li><a className="text-white hover:text-gray-400 pt-3">About Us</a></li>
+                    <li><a className="text-white hover:text-gray-400 pt-3">Contact Us</a></li>
                 </ul>
             </div>
 
@@ -33,16 +33,16 @@ const Footer = () => {
             <div>
                 <h3 className="text-lg font-semibold mb-2">Follow Us</h3>
                 <div className="flex space-x-3 pt-3">
-                    <a href="#" className="text-white hover:text-gray-400">
+                    <a className="text-white hover:text-gray-400">
                       <FontAwesomeIcon icon={faFacebook} size='xl'/>
                     </a>
-                    <a href="#" className="text-white hover:text-gray-400">
+                    <a className="text-white hover:text-gray-400">
                       <FontAwesomeIcon icon={faLinkedin} size='xl'/>
                     </a>
-                    <a href="#" className="text-white hover:text-gray-400">
+                    <a className="text-white hover:text-gray-400">
                       <FontAwesomeIcon icon={faTwitter} size='xl'/>
                     </a>
-                    <a href="#" className="text-white hover:text-gray-400">
+                    <a className="text-white hover:text-gray-400">
                         <FontAwesomeIcon icon={faInstagram} size='xl'/>
                     </a>
                 </div>
