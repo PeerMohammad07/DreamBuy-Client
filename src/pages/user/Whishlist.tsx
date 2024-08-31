@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { rootState } from '../../Redux/store/store';
 import { useEffect, useState } from 'react';
 import { getAllWhishlistProperty, removeFromWishlist } from '../../api/userApi';
@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import CardLoading from '../../components/common/LoadingSkelton/CardLoading';
 
 const Whishlist = () => {
+  const dispatch = useDispatch()
   const userData = useSelector((prevState: rootState) => prevState.user.userData);
   const [wishlist, setWishlist] = useState<IWishlist[] | []>([]);
   const [loading,setLoading] = useState(false)
@@ -17,7 +18,7 @@ const Whishlist = () => {
     async function getAllWishlist() {
       if (userData) {
         setLoading(true)
-        const response = await getAllWhishlistProperty(userData._id);
+        const response = await getAllWhishlistProperty(userData._id,dispatch);
         setWishlist(response?.data);
         setLoading(false)
       }
@@ -28,8 +29,10 @@ const Whishlist = () => {
   const removeFromWish = async (productId:string)=>{
     try {
       if(userData?._id){
-        await removeFromWishlist(userData?._id, productId);
-        setWishlist((prev)=> prev.filter((wish)=> wish.propertyId._id != productId))
+        const response = await removeFromWishlist(userData?._id, productId,dispatch);
+        if(response){
+          setWishlist((prev)=> prev.filter((wish)=> wish.propertyId._id != productId))
+        }
         toast.success("removed from wishlist")
       }
     } catch (error) {

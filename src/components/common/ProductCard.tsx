@@ -8,26 +8,26 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { RiMoneyRupeeCircleFill } from 'react-icons/ri';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { IWishlist, PropertyRentData, PropertySaleData } from './Carousel';
 import { addToWishlist, getAllWhishlistProperty, removeFromWishlist } from '../../api/userApi';
 import { useEffect, useState } from 'react';
 import { rootState } from '../../Redux/store/store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 
 const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
   const [whishlistProperty, setWhishlistProperty] = useState<IWishlist[] | []>([])
   const userData = useSelector((prevState: rootState) => prevState.user.userData)
   const [isWhish, setIswish] = useState<boolean>(false)
-  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (userData) {
       const getWishlist = async () => {
         try {
-          const whishlistData = await getAllWhishlistProperty(userData?._id)
+          const whishlistData = await getAllWhishlistProperty(userData?._id,dispatch)
           setWhishlistProperty(whishlistData?.data)
         } catch (error) {
           console.log(error)
@@ -49,20 +49,21 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
   const handleWhishlist = async (productId: string) => {
     try {
       if (isWhish && userData?._id && productId) {
-        await removeFromWishlist(userData?._id, productId);
-        setWhishlistProperty(prev => prev.filter(item => item.propertyId._id !== productId));
+        const response = await removeFromWishlist(userData?._id, productId , dispatch);
+        if(response){
+          setWhishlistProperty(prev => prev.filter(item => item.propertyId._id !== productId));
+        }
       } else if (userData?._id) {
-        const response = await addToWishlist(userData?._id, productId);
-        setWhishlistProperty(prev => [...prev, response?.data.data]);
+        const response = await addToWishlist(userData?._id, productId , dispatch);
+        if(response?.status){
+          setWhishlistProperty(prev => [...prev, response?.data.data]);
+        }
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleSeeAllResults = () => {
-    navigate('/homes')
-  }
 
   return (
     <>

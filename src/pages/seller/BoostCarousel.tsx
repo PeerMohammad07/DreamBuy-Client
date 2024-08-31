@@ -69,19 +69,6 @@ interface BoostCarouselProps {
 const BoostCarousel: React.FC<BoostCarouselProps> = ({ premiumProperty }) => {
   const [isLoading,setLoading]  = useState(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-       
-      } catch (error) {
-        console.error('Error fetching property data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-
   // Carousel Responsive
   const responsiveOptions: CarouselResponsiveOption[] = [
     {
@@ -106,7 +93,7 @@ const BoostCarousel: React.FC<BoostCarouselProps> = ({ premiumProperty }) => {
     },
     {
       breakpoint: '1400px',
-      numVisible: 4,
+      numVisible: 3,
       numScroll: 2
     },
     {
@@ -126,7 +113,7 @@ const BoostCarousel: React.FC<BoostCarouselProps> = ({ premiumProperty }) => {
               <CardLoading />
               <CardLoading />
             </div>
-          </> : <Carousel autoplayInterval={2000} value={premiumProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={ProductTemplate} />
+          </> : <Carousel autoplayInterval={5000} value={premiumProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={ProductTemplate} />
 
         } 
          </div>

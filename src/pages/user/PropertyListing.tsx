@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { FaBath, FaBed, FaSearchLocation } from "react-icons/fa";
+import { useCallback, useEffect, useState } from "react";
+import { FaBath, FaBed } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import GetCurrentLocation, { Location } from "../../components/common/GetCurrentLocation";
 import Filter, { Filters } from "./Filter";
@@ -23,12 +23,14 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import Typography from '@mui/joy/Typography';
 import CardLoading from "../../components/common/LoadingSkelton/CardLoading";
 import { MdPermDataSetting } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import { IWishlist } from "../../components/common/Carousel";
 import toast from "react-hot-toast";
 import MapboxSearch from "../../components/user/SearchBar";
 import BoostCarousel from "../seller/BoostCarousel";
+import { BsFilterLeft } from "react-icons/bs";
+
 
 type ParamsType = {
   type?: string;
@@ -41,11 +43,13 @@ export interface location {
 
 const PropertyListing = () => {
   const { type } = useParams<ParamsType>();
+  const dispatch = useDispatch()
   const [location, setLocation] = useState<Location>({ latitude: null, longitude: null });
   const [locationSearch, setLocationSearch] = useState<location | null>(null);
   const [sortOption, setSortOption] = useState<string>("priceAsc");
   const [whishlistProperty, setWhishlistProperty] = useState<IWishlist[] | []>([])
   const userData = useSelector((prevState: rootState) => prevState.user.userData)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [filters, setFilters] = useState<Filters>({
     propertyFor: type || '',
     bedrooms: '',
@@ -105,7 +109,7 @@ const PropertyListing = () => {
     if (userData) {
       const getWishlist = async () => {
         try {
-          const whishlistData = await getAllWhishlistProperty(userData?._id)
+          const whishlistData = await getAllWhishlistProperty(userData?._id, dispatch)
           setWhishlistProperty(whishlistData?.data)
         } catch (error) {
           console.log(error)
@@ -116,18 +120,18 @@ const PropertyListing = () => {
   }, [])
 
 
-  function isWisH(productId: string) {
-    return whishlistProperty.some((whishlistData) => whishlistData.propertyId._id == productId);
-  }
+  const isWisH = useCallback((productId: string) => {
+    return whishlistProperty.some((wishlistItem) => wishlistItem.propertyId._id === productId);
+  }, [whishlistProperty]);
 
   const handleWhishlist = async (productId: string) => {
     try {
       const status = await isWisH(productId)
       if (status && userData?._id && productId) {
-        await removeFromWishlist(userData?._id, productId);
+        await removeFromWishlist(userData?._id, productId, dispatch);
         setWhishlistProperty(prev => prev.filter(item => item.propertyId._id !== productId));
       } else if (userData?._id) {
-        const response = await addToWishlist(userData?._id, productId);
+        const response = await addToWishlist(userData?._id, productId, dispatch);
         setWhishlistProperty(prev => [...prev, response?.data.data]);
       }
     } catch (error) {
@@ -143,36 +147,46 @@ const PropertyListing = () => {
     setLocationSearch(selectedLocation);
   };
 
-  const premiumProperty = data?.data.filter((eachProperty: any) => eachProperty.isBoosted == true)
+  const premiumProperty = data?.data && data?.data.filter((eachProperty: any) => eachProperty.isBoosted == true)
 
   return (
     <div className="bg-gray-50 flex flex-col" style={{ maxHeight: "calc(100vh - 56px)" }}>
-      <div className="flex justify-between items-center text-center px-3 py-2 bg-white shadow-md">
-        {locationSearch ?
-          <form className="relative inline-block w-full max-w-md ms-96">
-            <input
-              value={locationSearch.location}
-              type="text"
-              placeholder="Search Properties based on the location..."
-              className="bg-white w-full h-12 pl-4 pr-12 flex-grow rounded-full shadow-lg border border-gray-300 transition duration-300 ease-in-out transform hover:scale-105"
-            />
-            <AiOutlineCloseCircle onClick={() => {
-              setLocationSearch(null)
-            }} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          </form> :
-          <MapboxSearch
-            onLocationSelect={handleLocationSelect}
-            mapboxAccessToken="pk.eyJ1IjoiaXJmYW4zNzQiLCJhIjoiY2xwZmlqNzVyMWRuMDJpbmszdGszazMwaCJ9.7wdXsKdpOXmDR9l_ISdIqA"
-          />
-        }
-        {/* Sort and Filter */}
-        <div className="flex space-x-4">
-          {/* Sort */}
-          <div className="w-40">
+
+      <div className="flex flex-wrap justify-center md:justify-between items-center px-3 py-2 bg-white shadow-md">
+        
+        <div className="w-full md:w-auto flex justify-center md:justify-start mt-2 md:mt-0">
+          {locationSearch ? (
+            <form className="relative w-full xl:ms-90 lg:ms-72 md:ms-32  lg:ps-20 xl:ps-28 ">
+              <input
+                value={locationSearch.location}
+                type="text"
+                placeholder="Search Properties based on the location..."
+                className="bg-white w-full h-12 pl-4 pr-12  shadow-lg border border-gray-300 transition duration-300 ease-in-out transform hover:scale-105"
+              />
+              <AiOutlineCloseCircle
+                onClick={() => setLocationSearch(null)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+              />
+            </form>
+          ) : (
+            <>
+              <div className="md:hidden md:pe-5">
+                <BsFilterLeft size={30} />
+              </div>
+              <MapboxSearch
+                onLocationSelect={handleLocationSelect}
+                mapboxAccessToken="pk.eyJ1IjoiaXJmYW4zNzQiLCJhIjoiY2xwZmlqNzVyMWRuMDJpbmszdGszazMwaCJ9.7wdXsKdpOXmDR9l_ISdIqA"
+              />
+            </>
+          )}
+        </div>
+
+        <div className="flex space-x-4 w-full md:w-auto justify-end mt-2 md:mt-0">
+          <div className="w-full md:w-40">
             <select
               value={sortOption}
               onChange={handleSortChange}
-              className="border border-gray-300 rounded-lg p-1"
+              className="border border-gray-300 rounded-lg p-1 w-full"
             >
               <option value="priceAsc">Price: Low to High</option>
               <option value="priceDesc">Price: High to Low</option>
@@ -180,12 +194,12 @@ const PropertyListing = () => {
               <option value="dateDesc">Date: New to Old</option>
             </select>
           </div>
-          {/* Filter */}
-          <div className="w-40">
+
+          <div className="w-full md:w-40">
             <select
               value={filters.propertyFor}
               onChange={handleForChange}
-              className="border border-gray-300 rounded-lg p-1"
+              className="border border-gray-300 rounded-lg p-1 w-full"
             >
               <option value="">All</option>
               <option value="rent">Rent</option>
@@ -196,11 +210,12 @@ const PropertyListing = () => {
       </div>
 
       <div className="flex" style={{ maxHeight: "calc(100vh - 56px)" }}>
-        <div className="w-1/3 bg-white shadow-md rounded-lg p-4 sticky top-0 overflow-y-auto" style={{ maxHeight: "calc(100vh - 56px)" }}>
+        <div className="hidden md:block w-1/3 bg-white shadow-md rounded-lg p-4 sticky top-0 overflow-y-auto" style={{ maxHeight: "calc(100vh - 56px)" }}>
           <Filter setFilters={setFilters} filters={filters} />
         </div>
 
-        <div className="w-2/3 bg-gray-50 overflow-y-auto ps-3">
+
+        <div className="xl:w-2/3 lg:w-2/3 bg-gray-50 overflow-y-auto ps-3">
           <GetCurrentLocation setLocation={setLocation} />
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-4 pt-5">
             {isLoading ? (
@@ -208,14 +223,14 @@ const PropertyListing = () => {
                 {[...Array(6)].map((_, index) => (
                   <>
                     <div className="flex w-full">
-                      <CardLoading key={index} />
-                      <CardLoading key={index} />
-                      <CardLoading key={index} />
+                      <CardLoading key={index+1} />
+                      <CardLoading key={index+2} />
+                      <CardLoading key={index+3} />
                     </div>
                   </>
                 ))}
               </div>
-            ) : data?.data.length === 0 ? (
+            ) : !data?.data||data?.data.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full w-full text-center p-5 col-span-full">
                 <FcSearch size={60} />
                 <h2 className="text-xl font-semibold text-gray-700 mt-3">We could not find any matching results</h2>

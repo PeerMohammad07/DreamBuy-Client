@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { rootState } from '../../../Redux/store/store';
-import { userLogin, userLogout } from '../../../Redux/slice/userAuthSlice';
+import { userLogout } from '../../../Redux/slice/userAuthSlice';
 import { logout } from '../../../api/userApi';
 import { Link } from 'react-router-dom';
 import { IoHome } from 'react-icons/io5';
@@ -24,12 +24,8 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     const response = await logout();
-    console.log(response, 'logout response');
-    dispatch(userLogin(null));
     dispatch(userLogout());
   };
-
-
 
   return (
     <>

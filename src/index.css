@@ -72,3 +72,52 @@
     transform: translateX(0);
   }
 }
+
+
+/* Custom CSS for Mapbox Geocoder */
+.mapboxgl-ctrl-geocoder {
+  border-radius: 8px;
+  height: 40px;
+  width: 550px !important;
+  font-size: 16px;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .mapboxgl-ctrl-geocoder {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .mapboxgl-ctrl-geocoder {
+    width: 100% !important; 
+  }
+}
+
+.mapboxgl-ctrl-geocoder--input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.mapboxgl-ctrl-geocoder--input:focus {
+  outline: none !important;
+  box-shadow: none !important; 
+}
+
+/* Change the placeholder color */
+.mapboxgl-ctrl-geocoder--input::placeholder {
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 510px !important;
+}
+
+/* Custom styling for the search results */
+.suggestions {
+  background-color: white;
+  border: 1px solid #ccc;
+}

@@ -30,16 +30,14 @@ interface CredentialPayload extends JwtPayload {
   picture: string;
 }
 
+interface formData {
+  name: string
+  email: string
+  password: string
+  confirmPassword: string
+}
 
 const RegisterForm = () => {
-
-  interface formData {
-    name: string
-    email: string
-    password: string
-    confirmPassword: string
-  }
-
   const [closeEye, setCloseEye] = useState(true)
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -72,7 +70,7 @@ const RegisterForm = () => {
       const googleRegisterResponse = await googleAuthRegister(
         credentails.name,
         credentails.email,
-        credentails.picture
+        credentails.picture,
       );
       if (
         googleRegisterResponse.data.message == "google register succesfull" &&

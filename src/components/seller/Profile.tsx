@@ -80,7 +80,7 @@ const Profile = () => {
     try {
       const name = watch('name')
       const phone = watch('phone')
-      const updateResponse = await updateSeller(name, phone, seller?._id)    
+      const updateResponse = await updateSeller(name, phone, seller?._id,dispatch)    
       if (updateResponse && updateResponse.data.message == "seller updated") {     
         dispatch(sellerLogin(updateResponse.data.seller))
         toast.success("profile updated successfully")

@@ -6,12 +6,14 @@ import toast from 'react-hot-toast';
 import { loadStripe } from '@stripe/stripe-js';
 import { getBoostProperty } from '../../api/sellerApi';
 import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 
 const BoostProperty = () => {
   const [selectedPlan, setSelectedPlan] = useState<number|null>(null);
   const [paymentButton, setPaymentButton] = useState(localStorage.getItem('PaymentButton') || 'false');
   const { id } = useParams();
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
@@ -39,7 +41,7 @@ const BoostProperty = () => {
     }
     if(selectedPlan!=null&&selectedPlan>=0&&plans[selectedPlan]){
       const str = await loadStripe(stripeId);
-      const response = await getBoostProperty(plans[selectedPlan].id,plans[selectedPlan].duration,id);
+      const response = await getBoostProperty(plans[selectedPlan].id,plans[selectedPlan].duration,id,dispatch);
       if (response.data.session.status) {
         localStorage.setItem("PaymentButton","true")
         str?.redirectToCheckout({ sessionId: response.data.session.id });

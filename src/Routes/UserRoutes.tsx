@@ -17,6 +17,7 @@ import About from "../pages/user/About";
 import PropertyListing from "../pages/user/PropertyListing";
 import VideoCall from "../pages/Chat/VideoCall";
 import FourNotFourPage from "../components/common/404page";
+import ProtectUserRoutes from "./Private/ProtectUser";
 
 const UserRoutes = () => {
   return (
@@ -41,9 +42,9 @@ const UserRoutes = () => {
         <Route path="/resetPassword/:token" element={<ResetPassword />} />
         <Route element={<UserMainPage />}>
           <Route path="/" element={<UserHome />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/premium" element={<Premium />} />
-          <Route path="/paymentStatus" element={<PaymentStatus />} />
+          <Route path="/profile" element={<ProtectUserRoutes><Profile/></ProtectUserRoutes>} />
+          <Route path="/premium" element={<ProtectUserRoutes><Premium /></ProtectUserRoutes>} />
+          <Route path="/paymentStatus" element={ <PaymentStatus />} />
           <Route path="/propertyDetails" element={<PropertyDetails />} />
           <Route
             path="/chat/:role"

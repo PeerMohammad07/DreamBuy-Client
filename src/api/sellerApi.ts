@@ -1,9 +1,10 @@
 import { formDataProps } from "../components/common/ChangePassword";
 import { Property } from "../components/seller/AddProperty";
 import { PartialPropertyFormData } from "../pages/seller/EditProperty";
+import { AppDispatch } from "../Redux/store/store";
 import Api from "../Services/axios";
 import { sellerEndpoints } from "../Services/endPoints/sellerEndpoints";
-import errorHandle from "./errorHandling";
+import errorHandle from "./errorHandlingSeller";
 
 interface SignUpData {
   name: string,
@@ -80,12 +81,12 @@ export const resetPasswordSeller = async (password: string, userId: string, toke
   }
 };
 
-export const updateKycImage = async (buffer: string, type: string, id: string) => {
+export const updateKycImage = async (buffer: string, type: string, id: string,dispatch:AppDispatch) => {
   try {
     return await Api.post(sellerEndpoints.updateKycImage, { buffer, type, id });
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
   }
 };
 
@@ -107,12 +108,12 @@ export const blockSeller = async (id: string, status: boolean) => {
   }
 };
 
-export const addProperty = async (data: Property) => {
+export const addProperty = async (data: Property,dispatch:AppDispatch) => {
   try {    
     return await Api.post(sellerEndpoints.addProperty, { data });
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
   }
 };
 
@@ -125,59 +126,59 @@ export const changePassword = async (data: formDataProps) => {
   }
 };
 
-export const updateSeller = async (name: string, phone: string, sellerId: string | undefined) => {
+export const updateSeller = async (name: string, phone: string, sellerId: string | undefined,dispatch:AppDispatch) => {
   try {
     return await Api.post(sellerEndpoints.updateSeller, { name, phone, sellerId });
   } catch (error) {
     const err: Error = error as Error;
-     errorHandle(err);
+     errorHandle(err,dispatch);
   }
 };
 
-export const getMyProperty = async (id:string|undefined)=>{
+export const getMyProperty = async (id:string|undefined,dispatch:AppDispatch)=>{
   try {
     return await Api.get(`${sellerEndpoints.getMyProperty}/${id}`)
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
   }
 }
 
-export const deleteProperty = async (id:string)=>{
+export const deleteProperty = async (id:string,dispatch:AppDispatch)=>{
   try {
     return await Api.post(sellerEndpoints.deleteProperty,{id})
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
   }
 }
 
-export const updateProperty = async (id:string|undefined,data:PartialPropertyFormData)=>{
+export const updateProperty = async (id:string|undefined,data:PartialPropertyFormData,dispatch:AppDispatch)=>{
   try {
     return await Api.put(sellerEndpoints.updateProperty,{id,data})
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
   }
 }
 
 // boost property 
-export const getBoostProperty = async (planId:string,duration:string,propertyId:string|undefined)=> {
+export const getBoostProperty = async (planId:string,duration:string,propertyId:string|undefined,dispatch:AppDispatch)=> {
   try {
     return await Api.post(sellerEndpoints.boostProperty,{planId,duration,propertyId})
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
     throw err;
   }
 }
 
-export const boostProperty = async (id:string,type:string)=>{
+export const boostProperty = async (id:string,type:string,dispatch:AppDispatch)=>{
   try {
     return Api.patch(sellerEndpoints.boostProperty,{propertyId:id,type})
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
     throw err;
   }
 }

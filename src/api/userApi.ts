@@ -1,5 +1,6 @@
 import { editFormData } from "../pages/user/EditProfile";
 import { IProperty } from "../pages/user/PropertyDetails";
+import { AppDispatch } from "../Redux/store/store";
 import Api from "../Services/axios";
 import { userEndPoints } from "../Services/endPoints/userEndpoints";
 import errorHandle from "./errorHandling";
@@ -163,32 +164,32 @@ export const getSaleProperty = async () => {
 };
 
 // update User
-export const updateUser = async (data:editFormData) => {
+export const updateUser = async (data:editFormData,dispatch:AppDispatch) => {
   try {    
     return await Api.put(userEndPoints.updateUser, data);
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
     throw err;
   }
 };
 
 // premium 
-export const getPremium = async (data:premiumData)=> {
+export const getPremium = async (data:premiumData,dispatch:AppDispatch)=> {
   try {
     return await Api.patch(userEndPoints.getPremium,{
       data
     })
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
     throw err;
   }
 }
 
 
 // updateUserPremium
-export const updatePremium = async (type:string,id:string)=>{
+export const updatePremium = async (type:string,id:string,dispatch:AppDispatch)=>{
   try {
     return await Api.patch(userEndPoints.updatePremium,{
       type,
@@ -196,7 +197,7 @@ export const updatePremium = async (type:string,id:string)=>{
     })
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
     throw err;
   }
 }
@@ -215,12 +216,12 @@ export const productDetail = async (id:string|undefined)=>{
 
 // Send Owner Details
 
-export const sendOwnerDetails = async (userName:string|undefined,PropertyDetails:IProperty|null,sellerId:string|undefined,email:string|undefined)=>{
+export const sendOwnerDetails = async (userName:string|undefined,PropertyDetails:IProperty|null,sellerId:string|undefined,email:string|undefined,dispatch:AppDispatch)=>{
   try{
     return await Api.post(userEndPoints.sendOwnerDetail,{sellerId,email,userName,PropertyDetails})
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
     throw err;
   }
 }
@@ -239,30 +240,30 @@ export const getUser = async (id:string,role:string|undefined)=>{
 
 
 
-export const getAllWhishlistProperty = async (userId:string|undefined) =>{
+export const getAllWhishlistProperty = async (userId:string|undefined,dispatch:AppDispatch) =>{
   try {
     return await Api.get(`${userEndPoints.whishlist}/${userId}`)
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
   }
 }
 
-export const removeFromWishlist = async (userId:string,propertyId:string)=> {
+export const removeFromWishlist = async (userId:string,propertyId:string,dispatch:AppDispatch)=> {
   try {
     return await Api.delete(`${userEndPoints.whishlist}/${userId}/${propertyId}`)
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
   }
 }
 
-export const addToWishlist = async (userId:string,propertyId:string|undefined)=>{
+export const addToWishlist = async (userId:string,propertyId:string|undefined,dispatch:AppDispatch)=>{
   try {
     return await Api.post(userEndPoints.whishlist,{userId,propertyId})
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
   }
 }
 

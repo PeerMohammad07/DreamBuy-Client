@@ -3,6 +3,8 @@ import { toast } from "react-toastify"
 import { AppDispatch } from "../Redux/store/store"
 import { userLogout } from "../Redux/slice/userAuthSlice"
 import { logout } from "./userApi"
+import { sellerLogout } from "../Redux/slice/sellerAuthSlice"
+import { Logout } from "./sellerApi"
 
 
 interface Error {
@@ -15,15 +17,14 @@ const errorHandle = async (error:Error|AxiosError,dispatch?:AppDispatch)=> {
     if(axiosError.response?.data){
       const errResp = axiosError.response.data as Error
       if(errResp.message.includes("Not authorized")){
-        if(dispatch){
-          dispatch(userLogout())
-          await logout()
-        }
-        localStorage.setItem('authError',"You are not authorized")
-        window.location.href = '/login'
-        return
+       toast.error(errResp.message)
       }else if(errResp.message == 'You are blocked by admin!'){
-        toast.error(errResp.message)
+        if(dispatch){
+          dispatch(sellerLogout())
+          await Logout()
+        }
+        localStorage.setItem('sellerAuthError',"You are not authorized")
+        window.location.href = '/seller/register'
         return
       }else {
         toast.error(errResp.message) 

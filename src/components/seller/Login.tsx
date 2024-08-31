@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { sellerLogin } from "../../Redux/slice/sellerAuthSlice";
 import ForgotPassword from "../common/ForgotPassword";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiEyeCloseFill } from "react-icons/ri";
 import { FaEye } from "react-icons/fa6";
 
@@ -28,6 +28,14 @@ const Login = ({ showModal, setShowModal }: OtpComponentProps) => {
   const dispatch = useDispatch();
   const [forgotPass, setForgotPass] = useState(false);
   const [closeEye, setCloseEye] = useState(true)
+
+  useEffect(()=>{
+    const err = localStorage.getItem('sellerAuthError')
+    if(err){
+      toast.error(err)
+      localStorage.removeItem('sellerAuthError')
+    }
+  },)
 
   const passwordWatch = watch('password')
 

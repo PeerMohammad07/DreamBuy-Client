@@ -64,7 +64,7 @@ const KycVerificationModal: React.FC<KycVerificationModalProps> = ({
       if (file) {
         const buffer = await readFileAsArrayBuffer(file);
         const base64String = Buffer.from(buffer).toString("base64");
-        const response = await updateKycImage(base64String, file.type, id);
+        const response = await updateKycImage(base64String, file.type, id,dispatch);
         if (response?.data.message == "Kyc image added") {
           console.log(response.data);
           dispatch(sellerLogin(response.data.seller));

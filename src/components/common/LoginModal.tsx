@@ -1,6 +1,5 @@
-import { Modal, Box, Typography, Button, IconButton } from '@mui/material';
+import { Modal, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
-import CloseIcon from '@mui/icons-material/Close';
 
 interface LoginModalProps {
   open: boolean;

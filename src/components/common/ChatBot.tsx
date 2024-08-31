@@ -9,11 +9,29 @@ interface Imessage {
   loading?: boolean; // Optional loading state
 }
 
+const truncateMessage = (message: string, maxLength: number) => {
+  if (message.length <= maxLength) return message;
+  return `${message.substring(0, maxLength)}...`;
+};
+
+const MAX_LENGTH = 100;
+
 const ChatBot = () => {
   const [expanded, setExpanded] = useState(false);
   const [text, setText] = useState<string>('');
   const [chat, setChat] = useState<Imessage[]>([{ message: "Hello, how can I assist you today?", isUser: false }]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [expandedMessages, setExpandedMessages] = useState<Set<number>>(new Set());
+
+
+  const toggleExpand = (index: number) => {
+    setExpandedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) newSet.delete(index);
+      else newSet.add(index);
+      return newSet;
+    });
+  };
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +47,7 @@ const ChatBot = () => {
 
     try {
       const response = await sendAiMessage(text);
+      console.log(response.data, "chat bot message")
       setChat((prev) => {
         const updatedChat = prev.map((msg) =>
           msg.loading ? { ...msg, message: response.data, loading: false } : msg
@@ -48,20 +67,19 @@ const ChatBot = () => {
 
   return (
     <>
+      {/* Chatbot Icon */}
       <div
         className={`fixed bottom-8 right-8 z-30 cursor-pointer transition-transform duration-300 ease-in-out ${expanded ? 'scale-110' : 'scale-100'
-          }`}
+          } ${expanded ? 'hidden' : 'block'}`}
+        style={{ zIndex: 1000 }}
         onClick={() => setExpanded(prevState => !prevState)}
       >
-        {expanded
-          ? <></>
-          : <img src="/chatBotIcon.png" alt="Open chatbot icon" className="rounded-full w-16 h-16" />
-        }
+        <img src="/chatBotIcon.png" alt="Open chatbot icon" className="rounded-full w-16 h-16" />
       </div>
 
+      {/* Chatbot Window */}
       <div
-        className={`fixed bottom-5 right-8 z-40 w-96 h-[95vh] bg-teal-600 rounded-xl shadow-lg border-l-4 border-r-4 border-teal-700 transition-all duration-300 ease-in-out transform ${expanded ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
-          }`}
+        className={`fixed bottom-0 right-0 z-40 w-full h-full md:w-96 md:h-[95vh] bg-teal-600 rounded-t-xl md:rounded-xl shadow-lg border-l-4 border-r-4 border-teal-700 transition-all duration-300 ease-in-out transform ${expanded ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
         style={{ transition: 'opacity 0.3s ease-in-out' }}
       >
         <div className="flex flex-col h-full">
@@ -78,7 +96,12 @@ const ChatBot = () => {
               message.isUser ? (
                 <div key={index} className="flex justify-end">
                   <div className="bg-gray-700 text-white p-3 rounded-lg max-w-xs">
-                    {message.message}
+                    {expandedMessages.has(index) ? message.message : truncateMessage(message.message, MAX_LENGTH)}
+                    {message.message.length > MAX_LENGTH && (
+                      <button onClick={() => toggleExpand(index)} className="text-blue-500">
+                        {expandedMessages.has(index) ? "Read Less" : "Read More"}
+                      </button>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -87,7 +110,12 @@ const ChatBot = () => {
                     <CircularProgress color='success' />
                   ) : (
                     <div className="bg-gray-300 text-gray-800 p-3 rounded-lg max-w-xs">
-                      {message.message}
+                      {expandedMessages.has(index) ? message.message : truncateMessage(message.message, MAX_LENGTH)}
+                      {message.message.length > MAX_LENGTH && (
+                        <button onClick={() => toggleExpand(index)} className="text-blue-500">
+                          {expandedMessages.has(index) ? "Read Less" : "Read More"}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

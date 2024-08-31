@@ -43,7 +43,7 @@ const EditProfile = ({ user, setProfileImage, profileImage }: EditProfileProps) 
       base64Image = base64Image ? base64Image : user?.image      
       const formData = { name: data.name, image: base64Image, id: user?._id, type: profileImage?.type }
       reset()
-      const response = await updateUser(formData)
+      const response = await updateUser(formData,dispatch)
       if (response.data.status) {
         console.log(response.data.user);
         dispatch(userLogin(response.data.user))

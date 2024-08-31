@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CardItem, CardContainer } from '../../components/aceternity/CardEffect';
 import { loadStripe } from '@stripe/stripe-js';
 import { getPremium } from '../../api/userApi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { rootState } from '../../Redux/store/store';
 
 interface PremiumCardProps {
@@ -68,6 +68,7 @@ const PremiumCard: React.FC<PremiumCardProps> = ({ theme, amount, month, index, 
 };
 
 const Premium = () => {
+  const dispatch = useDispatch()
   const plan = [
     { id: 'price_1Phqj2E8SQUFEEKnKX69eHd5', price: "199", interval: 'weekly' },
     { id: 'price_1Phqk4E8SQUFEEKnmyG63CVk', price: "299", interval: 'monthly ' },
@@ -77,7 +78,7 @@ const Premium = () => {
   const makePayment = async (index: number) => {
     const stripeId = import.meta.env.VITE_STRIPE_SECRET_KEY;
     const str = await loadStripe(stripeId);
-    const response = await getPremium(plan[index]);
+    const response = await getPremium(plan[index],dispatch);
     if (response.status) {
       str?.redirectToCheckout({ sessionId: response.data.session.id });
     }

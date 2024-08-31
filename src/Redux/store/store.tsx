@@ -10,8 +10,6 @@ import { SellerState } from "../slice/sellerAuthSlice";
 import { AdminState } from "../slice/adminAuthSlice"; 
 import { PersistPartial } from 'redux-persist/es/persistReducer';
 
-
-
 const userPersistConfig = {
   key: 'user',
   storage,
@@ -54,6 +52,7 @@ const store = configureStore({
     }),
 });
 
+export type AppDispatch = typeof store.dispatch;
 const persistor = persistStore(store);
 
 export { store, persistor };

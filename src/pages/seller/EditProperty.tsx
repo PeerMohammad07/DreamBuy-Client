@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { updateProperty } from "../../api/sellerApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import { Buffer } from "buffer";
 import { useNavigate, useParams } from "react-router-dom";
@@ -81,6 +81,7 @@ const EditProperty = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const seller = useSelector(
     (prevState: rootState) => prevState.seller.sellerData
@@ -218,9 +219,7 @@ const EditProperty = () => {
   const onSubmit = async (data: PropertyFormData) => {
     try {
       setLoading(true);
-
       const updatedData = { ...data, features: inputValue };
-
       let changes: PartialPropertyFormData = {};
       for (const key in updatedData) {
         if (updatedData.hasOwnProperty(key)) {
@@ -250,9 +249,7 @@ const EditProperty = () => {
       }
 
       changes.sellerId = seller?._id;
-
-      const response = await updateProperty(id, changes);
-      console.log(response)
+      const response = await updateProperty(id, changes,dispatch);
       if (response && response.data.message === "Successfully updated the property") {
         setLoading(false);
         navigate("/seller/property");

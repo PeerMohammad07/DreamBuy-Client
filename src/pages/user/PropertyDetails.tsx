@@ -44,6 +44,7 @@ export interface IProperty {
   location: location;
   sellerId: string;
   createdAt: string;
+  isBoosted:boolean
 }
 
 const PropertyDetails = () => {
@@ -86,6 +87,12 @@ const PropertyDetails = () => {
         try {
           setLoading(true)
           const response = await productDetail(id);
+          if(!response.data.status&&response.data.message=="Property has been blocked"){
+            console.log(response.data.message)
+            navigate("/")
+            toast.error("Property has been blocked")
+            return
+          }
           setProduct(response.data.data);
           setMainImage(response.data.data.propertyImage[0]);
           setLoading(false)
@@ -95,7 +102,7 @@ const PropertyDetails = () => {
         }
       }
     };
-
+    
     fetchProductDetail();
   }, [id]);
 
@@ -104,7 +111,7 @@ const PropertyDetails = () => {
     if (userData) {
       const getWishlist = async () => {
         try {
-          const whishlistData = await getAllWhishlistProperty(userData?._id)
+          const whishlistData = await getAllWhishlistProperty(userData?._id,dispatch)
           setWhishlistProperty(whishlistData?.data)
         } catch (error) {
           console.log(error)
@@ -129,11 +136,11 @@ const PropertyDetails = () => {
   const handleWhishlist = async (productId: string | undefined) => {
     try {
       if (isWhish && userData?._id && productId) {
-        await removeFromWishlist(userData?._id, productId);
+        await removeFromWishlist(userData?._id, productId,dispatch);
         toast.success("removed from wishlist")
         setWhishlistProperty(prev => prev.filter(item => item.propertyId._id !== productId));
       } else if (userData?._id) {
-        const response = await addToWishlist(userData?._id, productId);
+        const response = await addToWishlist(userData?._id, productId,dispatch);
         toast.success("added to wishlist")
         setWhishlistProperty(prev => [...prev, response?.data.data]);
       }
@@ -187,7 +194,7 @@ const PropertyDetails = () => {
 
   const contactOwnerHandle = async (sellerId: string | undefined) => {
     try {
-      const response = await createConversation(userData?._id, sellerId)
+      const response = await createConversation(userData?._id, sellerId,dispatch)
       if (response.data && response.status && sellerId) {
         dispatch(setCurrentUserId(sellerId))
       }
@@ -205,7 +212,7 @@ const PropertyDetails = () => {
         setGetOwnerDetails(true);
         const sellerId = product?.sellerId;
         console.log(userData.email)
-        await sendOwnerDetails(userData?.name, product, sellerId, userData?.email);
+        await sendOwnerDetails(userData?.name, product, sellerId, userData?.email,dispatch);
       } catch (error) {
         console.error('Failed to send owner details:', error);
       }

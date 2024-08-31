@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { boostProperty } from '../../api/sellerApi';
+import { useDispatch } from 'react-redux';
 
 const PaymentStatus = () => {
   const location = useLocation();
+  const dispatch = useDispatch()
   const queryParams = location.search;
 
   const getQueryParam = (param:string) => {
@@ -21,7 +23,7 @@ const PaymentStatus = () => {
   const boostPropertyPayment = async ()=>{
     localStorage.setItem("PaymentButton","false")
     if(status&&propertyId&&type){
-      const response = await boostProperty(propertyId,type)
+      const response = await boostProperty(propertyId,type,dispatch)
       if(response.data.response.status){
         toast.success("your property boosted ⚡",{
           id:"unique"

@@ -88,7 +88,8 @@ const Filter: React.FC<FilterProps> = ({ filters, setFilters }) => {
 
   return (
     <>
-      <div className="flex justify-between items-center px-4">
+      <div>
+      <div className="flex justify-between items-center px-4 ">
         <h1 className="text-2xl font-serif text-blue-600 text-center flex-grow">Filter</h1>
         <button onClick={()=>{
           setFilters(defaultFilters)  
@@ -189,6 +190,7 @@ const Filter: React.FC<FilterProps> = ({ filters, setFilters }) => {
             </div>
           ))}
         </div>
+      </div>
       </div>
     </>
   );

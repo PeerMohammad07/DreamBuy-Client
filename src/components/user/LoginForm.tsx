@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { signIn } from "../../api/userApi";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/slice/userAuthSlice";
 import { jwtDecode, JwtPayload } from "jwt-decode";
@@ -56,6 +56,15 @@ const LoginForm = () => {
     setValue,
     formState: { errors },
   } = useForm<formData>();
+
+
+  useEffect(()=>{
+    const err = localStorage.getItem('authError')
+    if(err){
+      toast.error(err)
+      localStorage.removeItem('authError')
+    }
+  },[])
 
   // Handling OnSubmit
   const onSubmit = async (data: formData) => {
@@ -111,7 +120,7 @@ const LoginForm = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (!error.response?.data.status) {
-          toast.error(error.response?.data.message)
+          // toast.error(error.response?.data.message)
         }
       }
       console.log(error);

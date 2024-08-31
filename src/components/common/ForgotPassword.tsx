@@ -69,7 +69,7 @@ const ForgotPassword = ({ open, role, close }: OtpComponentProps) => {
       const { email } = data;
       if(role == "user"){
         const response = await forgotPassword(email)
-        if(response.data.message == "email sended succesfully"){
+        if(response.data.message == "email send succesfully"){
           setOpenModal(false)
           close(false)
           showEmailSentAlert(email)
@@ -77,21 +77,13 @@ const ForgotPassword = ({ open, role, close }: OtpComponentProps) => {
         console.log(response);
       }else if(role == "seller"){
         const response = await forgotPasswordSeller(email)
-        if(response&&response.data.message == "email sended succesfully"){          
+        if(response&&response.data.message == "email send succesfully"){          
           setOpenModal(false)
           showEmailSentAlert(email)
         }
       }
     } catch (error) {
       console.log(error);
-      
-      if(axios.isAxiosError(error)){
-        if(error.response?.data.message == "seller doesnt exist with this email"){
-          toast.error("Seller doesnt exist with this email")
-        }else if(error.response?.data.message == 'user doesnt exist with this email'){
-          toast.error("User doesnt exist with this email")
-        }
-      }
     }
   };
 

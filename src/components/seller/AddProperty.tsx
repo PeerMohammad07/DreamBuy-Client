@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import LocationSearch from "../common/LocationSearch";
 import { useForm } from "react-hook-form";
 import { addProperty } from "../../api/sellerApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import { Buffer } from "buffer";
 import { useNavigate } from "react-router-dom";
@@ -76,6 +76,7 @@ const AddProperty = () => {
   const [inputValue, setInputValue] = useState<string[]>([])
   const { setExpanded } = useExpandContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const seller = useSelector(
     (prevState: rootState) => prevState.seller.sellerData
@@ -177,7 +178,7 @@ const AddProperty = () => {
         sellerId: seller?._id,
         images: imageBase64Strings,
       };
-      const response = await addProperty(obj);
+      const response = await addProperty(obj,dispatch);
       if (response && response.data == "successfully added the user") {
         setLoading(false);
         navigate("/seller/");

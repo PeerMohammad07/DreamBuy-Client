@@ -36,7 +36,6 @@ const Mainpage: React.FC = () => {
       const sound = new Audio(notificationSound); 
       sound.play();
       if ( currentUserId!=senderId && !isNotificationVisible) {
-        console.log("mwone check the ell",currentUserId,senderId)
         setNotification(`You got a message from ${name}`);
         setIsNotificationVisible(true);
       }

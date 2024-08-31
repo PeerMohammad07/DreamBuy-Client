@@ -38,7 +38,7 @@ const MapboxSearch: React.FC<MapboxSearchProps> = ({ onLocationSelect, mapboxAcc
   return (
     <div
       ref={geocoderContainerRef}
-      className="ms-96 ps-28"
+      className="xl:ms-90 lg:ms-72 md:ms-32  lg:ps-20 xl:ps-28 "
       style={{ width: '100%', height: '40px' }}
     />
   );

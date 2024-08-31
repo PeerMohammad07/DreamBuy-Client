@@ -1,3 +1,4 @@
+import { AppDispatch } from "../Redux/store/store";
 import Api from "../Services/axios";
 import { chatEndpoints } from "../Services/endPoints/chatEndpoints";
 import errorHandle from "./errorHandling";
@@ -44,12 +45,12 @@ export const getMessages = async (senderId:string|undefined,receiverId:string)=>
   }
 }
 
-export const createConversation = async (senderId:string|undefined,receiverId:string|undefined)=>{
+export const createConversation = async (senderId:string|undefined,receiverId:string|undefined,dispatch:AppDispatch)=>{
   try {
     return await Api.post(chatEndpoints.createConversation,{senderId,receiverId})
   } catch (error) {
     const err: Error = error as Error;
-    errorHandle(err);
+    errorHandle(err,dispatch);
     throw err;
   }
 }
