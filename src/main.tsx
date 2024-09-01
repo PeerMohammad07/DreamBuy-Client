@@ -9,23 +9,10 @@ import { Toaster } from 'react-hot-toast';
 import { SocketProvider } from './Context/SocketContext.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/firebase-messaging-sw.js')
-    .then((registration) => {
-      console.log('Service Worker registered with scope:', registration.scope);
-    })
-    .catch((error) => {
-      console.error('Service Worker registration failed:', error);
-    });
-}
-
 const queryClient = new QueryClient();
-
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  // <React.StrictMode>
   <>
     <Toaster position="top-center" reverseOrder={false} />
     <SocketProvider>
@@ -39,5 +26,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </GoogleOAuthProvider>
     </SocketProvider>
     </>
-  // </React.StrictMode>
 )

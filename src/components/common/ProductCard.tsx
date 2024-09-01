@@ -86,7 +86,7 @@ const ProductTemplate = (product: PropertyRentData | PropertySaleData) => {
           <Link to={`/propertyDetails?id=${product._id}`}>
             <CardMedia
               component="img"
-              image={product.propertyImage[2]}
+              image={product.propertyImage[0]}
               alt={product.propertyName}
               sx={{ objectFit: 'cover', height: 180 }}
             />

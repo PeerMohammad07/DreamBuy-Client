@@ -41,6 +41,8 @@ export interface location {
   cordinates: [number, number];
 }
 
+
+
 const PropertyListing = () => {
   const { type } = useParams<ParamsType>();
   const dispatch = useDispatch()
@@ -76,7 +78,7 @@ const PropertyListing = () => {
     staleTime: 60000,
   });
 
-
+  console.log(data?.data,"data")
   // Sort handling the data
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(event.target.value);
@@ -87,9 +89,7 @@ const PropertyListing = () => {
   function getDaysDifference(isoDate: string): number {
     const currentDate = new Date();
     const createdDate = new Date(isoDate);
-    // finding differnece in milli second
     const differenceInTime = currentDate.getTime() - createdDate.getTime();
-    // converting milliscond to days
     const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
     if (isNaN(differenceInDays)) {
       return 0
@@ -120,8 +120,8 @@ const PropertyListing = () => {
   }, [])
 
 
-  const isWisH = useCallback((productId: string) => {
-    return whishlistProperty.some((wishlistItem) => wishlistItem.propertyId._id === productId);
+  const isWisH = useCallback((productId: string) => {    
+    if(whishlistProperty) return whishlistProperty.some((wishlistItem) => wishlistItem.propertyId._id === productId);
   }, [whishlistProperty]);
 
   const handleWhishlist = async (productId: string) => {
@@ -153,7 +153,7 @@ const PropertyListing = () => {
     <div className="bg-gray-50 flex flex-col" style={{ maxHeight: "calc(100vh - 56px)" }}>
 
       <div className="flex flex-wrap justify-center md:justify-between items-center px-3 py-2 bg-white shadow-md">
-        
+
         <div className="w-full md:w-auto flex justify-center md:justify-start mt-2 md:mt-0">
           {locationSearch ? (
             <form className="relative w-full xl:ms-90 lg:ms-72 md:ms-32  lg:ps-20 xl:ps-28 ">
@@ -223,14 +223,14 @@ const PropertyListing = () => {
                 {[...Array(6)].map((_, index) => (
                   <>
                     <div className="flex w-full">
-                      <CardLoading key={index+1} />
-                      <CardLoading key={index+2} />
-                      <CardLoading key={index+3} />
+                      <CardLoading key={index + 1} />
+                      <CardLoading key={index + 2} />
+                      <CardLoading key={index + 3} />
                     </div>
                   </>
                 ))}
               </div>
-            ) : !data?.data||data?.data.length === 0 ? (
+            ) : data?.data.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full w-full text-center p-5 col-span-full">
                 <FcSearch size={60} />
                 <h2 className="text-xl font-semibold text-gray-700 mt-3">We could not find any matching results</h2>
@@ -280,7 +280,7 @@ const PropertyListing = () => {
                             {property.propertyName}
                           </Typography>
                           <Typography level="title-lg" sx={{ mt: 1, fontWeight: 'xl' }}>
-                            Price : ₹{property.Price}
+                            Price : ₹{property.price}
                           </Typography>
                           <Typography level="body-sm">
                             <div className="flex items-center mb-2">

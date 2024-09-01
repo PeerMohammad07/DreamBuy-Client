@@ -36,7 +36,7 @@ export interface IProperty {
   city: string;
   noOfBedroom: number;
   noOfBathroom: number;
-  Price: string;
+  price: string;
   features: string[];
   description: string;
   sqft: string;
@@ -369,7 +369,7 @@ const PropertyDetails = () => {
 
               <div className="py-4">
                 <div className="flex flex-wrap gap-6">
-                  <h2 className="text-2xl font-bold">₹{product?.Price}</h2>
+                  <h2 className="text-2xl font-bold">₹{product?.price}</h2>
                   <div className="flex items-center">
                     <FaBed className="mr-2 text-xl" /> {product?.noOfBedroom} Beds
                   </div>

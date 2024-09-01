@@ -24,7 +24,7 @@ export interface PropertyFormData {
   city: string;
   noOfBedroom: number;
   noOfBathroom: number;
-  Price: string;
+  price: number;
   description: string;
   sqft: string;
   propertyImage?: FileList;
@@ -51,7 +51,7 @@ export interface Property {
   city: string;
   noOfBedroom: number;
   noOfBathroom: number;
-  Price: string;
+  price: number;
   features: string[];
   description: string;
   sqft: string;
@@ -129,7 +129,7 @@ const EditProperty = () => {
         city: propertyData.city,
         noOfBedroom: propertyData.noOfBedroom,
         noOfBathroom: propertyData.noOfBathroom,
-        Price: propertyData.Price,
+        price: propertyData.price,
         description: propertyData.description,
         sqft: propertyData.sqft,
         propertyImage: propertyData.propertyImage as any,
@@ -495,12 +495,12 @@ const EditProperty = () => {
                   type="text"
                   placeholder="Expected Price"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  {...register("Price", {
+                  {...register("price", {
                     required: "Expected price is required",
                   })}
                 />
-                {errors.Price && (
-                  <p className="text-red-500">{errors.Price.message}</p>
+                {errors.price && (
+                  <p className="text-red-500">{errors.price.message}</p>
                 )}
               </div>
 
