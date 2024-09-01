@@ -1,6 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 export interface Location {
@@ -25,7 +23,7 @@ const GetCurrentLocation:React.FC<GetCurrentLocationProps> = ({setLocation}) => 
         const { latitude, longitude } = position.coords;
         setLocation({ latitude, longitude });
       },
-      (error) => {
+      () => {
         toast.error('Failed to get location');
       }
     );

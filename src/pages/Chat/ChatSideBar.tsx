@@ -3,7 +3,6 @@ import { AiFillMessage } from "react-icons/ai";
 import ChatBox from "./ChatBox";
 import { rootState } from "../../Redux/store/store";
 import { useDispatch, useSelector } from "react-redux";
-import { IcurrentUser } from "./ChatPage";
 import { Avatar, Skeleton, Typography } from "@mui/material";
 import { setCurrentUserId } from "../../Redux/slice/chatCurrentUserSlice";
 
@@ -71,10 +70,6 @@ const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, role, loading 
           alreadyMessagedUsers.map((id) => (
             <div key={id} onClick={() => {
               dispatch(setCurrentUserId(id))
-              // setCurrentUser((prevState: IcurrentUser) => ({
-              //   ...prevState,
-              //   id: id
-              // }));
             }}>
               <ChatBox id={id}  role={role} isOnline={userOnline(id)} />
             </div>

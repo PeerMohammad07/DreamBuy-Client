@@ -44,7 +44,7 @@ const LocationSearch: React.FC<GoogleSearchProps> = ({
           onLocationSelect({location:result.place_name,geometry:result.geometry.coordinates});
         });
 
-        geocoderRef.current.on("error", (error) => {
+        geocoderRef.current.on("error", () => {
           setError("Failed to fetch location data. Please try again.");
         });
       } catch (err) {

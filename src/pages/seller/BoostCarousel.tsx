@@ -1,7 +1,4 @@
-import { useState, useEffect } from 'react';
 import { Carousel, CarouselResponsiveOption } from 'primereact/carousel';
-import {getRentProperty, getSaleProperty } from '../../api/userApi';
-import CardLoading from '../../components/common/LoadingSkelton/CardLoading';
 import ProductTemplate from '../../components/common/ProductCard';
 
 
@@ -67,7 +64,6 @@ interface BoostCarouselProps {
 }
 
 const BoostCarousel: React.FC<BoostCarouselProps> = ({ premiumProperty }) => {
-  const [isLoading,setLoading]  = useState(false)
 
   // Carousel Responsive
   const responsiveOptions: CarouselResponsiveOption[] = [
@@ -106,16 +102,7 @@ const BoostCarousel: React.FC<BoostCarouselProps> = ({ premiumProperty }) => {
   return (
     <>
       <div className="card shadow-lg">
-        {
-          isLoading ? <>
-            <div className='flex justify-center items-center px-8'>
-              <CardLoading />
-              <CardLoading />
-              <CardLoading />
-            </div>
-          </> : <Carousel autoplayInterval={5000} value={premiumProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={ProductTemplate} />
-
-        } 
+         <Carousel autoplayInterval={5000} value={premiumProperty} numVisible={5} numScroll={3} responsiveOptions={responsiveOptions} itemTemplate={ProductTemplate} />
          </div>
   
     </>

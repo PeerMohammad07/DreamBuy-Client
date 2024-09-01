@@ -83,7 +83,7 @@ const AmenitiesManagement = () => {
     }
   };
 
-  const closeModal = (state: { state: boolean; role: string }) => {
+  const closeModal = (_: { state: boolean; role: string }) => {
     setIsModalOpen(false);
   };
 
@@ -116,7 +116,7 @@ const AmenitiesManagement = () => {
     }
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -127,7 +127,7 @@ const AmenitiesManagement = () => {
 
   const paginatedData = amenities.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  const StyledTableContainer = styled(TableContainer)(() => ({
     minWidth: 650,
     overflowX: "auto",
   }));
@@ -153,7 +153,7 @@ const AmenitiesManagement = () => {
                 <TableCell style={{ textAlign: 'center' }}>Action</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+           {isLoading ? <>...Loading</> : <TableBody>
               {paginatedData.map((prop, index) => (
                 <TableRow key={prop._id}>
                   <TableCell style={{ textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
@@ -177,7 +177,7 @@ const AmenitiesManagement = () => {
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
+            </TableBody>}
           </Table>
         </StyledTableContainer>
         <TablePagination

@@ -54,7 +54,7 @@ const Filter: React.FC<FilterProps> = ({ filters, setFilters }) => {
     setFilters(prev => ({ ...prev, bathrooms: bathroom }));
   };
 
-  const handlePriceChange = (event: Event, newValue: number | number[], activeThumb: number) => {
+  const handlePriceChange = (_: Event, newValue: number | number[]) => {
     if (Array.isArray(newValue)) {
       setFilters(prev => ({ ...prev, priceRange: newValue as SliderValue }));
     }

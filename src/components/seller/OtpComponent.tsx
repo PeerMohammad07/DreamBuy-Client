@@ -16,7 +16,6 @@ export interface OtpComponentProps {
 const OtpComponent = ({ showModal, setShowModal }: OtpComponentProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const otpInputRef = useRef<HTMLInputElement[]>([]);
   const [otpFieldErr, setOtpFieldErr] = useState(false);
   const [otp, setOtp] = useState({

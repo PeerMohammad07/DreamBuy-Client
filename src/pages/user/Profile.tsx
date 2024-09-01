@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import EditProfile from "./EditProfile"
 import { useSelector } from "react-redux"
 import { rootState } from "../../Redux/store/store"
 import { GiDiamonds } from "react-icons/gi";
 import Plan from "./Plan";
-import { useNavigate } from "react-router-dom";
 
 
 const Profile = () => {

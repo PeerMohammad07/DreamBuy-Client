@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { HiOutlineLogin } from 'react-icons/hi';
 import { LuLogOut } from 'react-icons/lu';
 import { CgProfile } from 'react-icons/cg';
-import { TiTick } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogout } from '../../../Redux/slice/userAuthSlice';
 import { logout } from '../../../api/userApi';

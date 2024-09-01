@@ -23,7 +23,7 @@ const Navbar = () => {
 
 
   const handleLogout = async () => {
-    const response = await logout();
+    await logout();
     dispatch(userLogout());
   };
 

@@ -1,8 +1,6 @@
 import  { AxiosError } from "axios"
 import { toast } from "react-toastify"
 import { AppDispatch } from "../Redux/store/store"
-import { userLogout } from "../Redux/slice/userAuthSlice"
-import { logout } from "./userApi"
 import { sellerLogout } from "../Redux/slice/sellerAuthSlice"
 import { Logout } from "./sellerApi"
 

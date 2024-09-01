@@ -34,19 +34,6 @@ const SellerSidebar: React.FC<SidebarProps> = () => {
 
   const { expanded, setExpanded } = useExpandContext();
 
-
-  // const addProperty = () => {
-  //   try {
-  //     if (sellerData?.kycVerified !== "Verified") {
-  //       showKycAlert(sellerData?.kycVerified);
-  //     } else {
-  //       navigate("/seller/addProperty");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   if (!sellerStatus) {
     navigate("/seller/register");
     return null;

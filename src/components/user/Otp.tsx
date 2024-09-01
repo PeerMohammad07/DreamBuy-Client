@@ -1,4 +1,3 @@
-// import React from 'react'
 import React, { useEffect, useRef, useState } from "react";
 import Welcome from "./Welcome";
 import { resendOtp, verifyOtp } from "../../api/userApi";

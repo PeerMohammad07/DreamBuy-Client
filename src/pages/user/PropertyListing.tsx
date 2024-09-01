@@ -13,6 +13,7 @@ import { PiHeartStraightFill } from "react-icons/pi";
 import { FaRegHeart } from "react-icons/fa";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { FcSearch } from "react-icons/fc";
+import { IoClose } from "react-icons/io5";
 
 
 // mui import 
@@ -171,7 +172,7 @@ const PropertyListing = () => {
           ) : (
             <>
               <div className="md:hidden md:pe-5">
-                <BsFilterLeft size={30} />
+                {isFilterOpen ? <IoClose size={30} onClick={()=> setIsFilterOpen(false)} />:<BsFilterLeft size={30} onClick={()=> setIsFilterOpen(true)} />}
               </div>
               <MapboxSearch
                 onLocationSelect={handleLocationSelect}
@@ -209,6 +210,14 @@ const PropertyListing = () => {
         </div>
       </div>
 
+        {
+          isFilterOpen ? <>
+          <div className="w-full pt-5">
+             <Filter setFilters={setFilters} filters={filters} />
+          </div>
+          </>:<>
+          </>
+        }
       <div className="flex" style={{ maxHeight: "calc(100vh - 56px)" }}>
         <div className="hidden md:block w-1/3 bg-white shadow-md rounded-lg p-4 sticky top-0 overflow-y-auto" style={{ maxHeight: "calc(100vh - 56px)" }}>
           <Filter setFilters={setFilters} filters={filters} />
@@ -230,7 +239,7 @@ const PropertyListing = () => {
                   </>
                 ))}
               </div>
-            ) : data?.data.length === 0 ? (
+            ) :data?.data && data?.data.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full w-full text-center p-5 col-span-full">
                 <FcSearch size={60} />
                 <h2 className="text-xl font-semibold text-gray-700 mt-3">We could not find any matching results</h2>

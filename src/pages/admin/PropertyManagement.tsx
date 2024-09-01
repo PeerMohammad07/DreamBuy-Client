@@ -43,7 +43,7 @@ const PropertyManagement = () => {
     }
   }
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     if (newValue === 0) {
       setProperty(rentProperty);
     } else if (newValue === 1) {
@@ -90,7 +90,7 @@ const PropertyManagement = () => {
     }
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -101,7 +101,7 @@ const PropertyManagement = () => {
 
   const paginatedData = property.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  const StyledTableContainer = styled(TableContainer)(() => ({
     minWidth: 650,
     overflowX: "auto",
   }));

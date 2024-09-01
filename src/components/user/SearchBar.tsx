@@ -12,6 +12,14 @@ const MapboxSearch: React.FC<MapboxSearchProps> = ({ onLocationSelect, mapboxAcc
   const geocoderContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+
+     const dummyMap = new mapboxgl.Map({
+      container: document.createElement('div'), 
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [0, 0],
+      zoom: 2,
+    });
+
     if (geocoderContainerRef.current) {
       mapboxgl.accessToken = mapboxAccessToken;
       const geocoder = new mapboxGeocoder({
@@ -20,12 +28,14 @@ const MapboxSearch: React.FC<MapboxSearchProps> = ({ onLocationSelect, mapboxAcc
         bbox: [-180, -90, 180, 90], 
         mapboxgl: mapboxgl as any
       });
+      
+      dummyMap.addControl(geocoder);
 
       geocoder.on('result', (event) => {
         onLocationSelect(event.result);
       });
 
-      geocoderContainerRef.current.appendChild(geocoder.onAdd());
+      geocoderContainerRef.current.appendChild(geocoder.onAdd(dummyMap));
     }
 
     return () => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Tab, Tabs, Typography } from "@mui/material";
 import LoginForm from "../../components/user/LoginForm";
 import RegisterForm from "../../components/user/RegisterForm";
@@ -6,7 +6,7 @@ import RegisterForm from "../../components/user/RegisterForm";
 const Login = () => {
   const [signInOrUp, setSignInOrUp] = useState("login");
 
-  const handleChange = (event:any, newValue:string) => {
+  const handleChange = (_:any, newValue:string) => {
     setSignInOrUp(newValue);
   };
 

@@ -55,7 +55,7 @@ export interface Property {
   features: string[];
   description: string;
   sqft: string;
-  propertyImage: FileList;
+  propertyImage: any;
   location: locationInterface;
   sellerId: string | undefined;
 }
@@ -241,7 +241,7 @@ const EditProperty = () => {
             } else {
               const value = updatedData[typedKey];
               if (value !== undefined) {
-                changes[typedKey] = value
+                changes[typedKey] = value as any
               }
             }
           }

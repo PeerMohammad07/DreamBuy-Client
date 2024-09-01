@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { forgotPassword } from "../../api/userApi";
 import { forgotPasswordSeller } from "../../api/sellerApi";
-import axios from "axios";
-import { toast } from "react-toastify";
 import Swal from "sweetalert2"
 
 export interface OtpComponentProps {

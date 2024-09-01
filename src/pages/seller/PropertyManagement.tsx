@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { boostProperty, deleteProperty, getMyProperty } from "../../api/sellerApi";
+import { deleteProperty, getMyProperty } from "../../api/sellerApi";
 import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../Redux/store/store";
 import { IProperty } from "../user/PropertyDetails";
@@ -77,7 +77,7 @@ const PropertyManagement = () => {
         <h1 className="text-white font-bold text-3xl text-center mb-6">My Property</h1>
 
         {/* Property Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {loading ? <>...Loading</> :<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {properties&& properties.length > 0 ? (
             properties.map((property) => (
               <div
@@ -159,7 +159,7 @@ const PropertyManagement = () => {
               </button>
             </div>
           )}
-        </div>
+        </div>}
       </div>
     </>
   )

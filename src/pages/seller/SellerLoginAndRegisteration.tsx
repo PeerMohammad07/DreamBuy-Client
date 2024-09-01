@@ -14,7 +14,7 @@ const SellerLoginAndRegistration = () => {
   const [signInOrUp, setSignInOrUp] = useState("login");
   const [showModal,setShowModal] = useState(false)
 
-  const handleChange = (event:any, newValue:string) => {
+  const handleChange = (_:any, newValue:string) => {
     setSignInOrUp(newValue);
   };
 
