@@ -53,7 +53,7 @@ interface TableData {
 }
 
 
-const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+const StyledTableContainer = styled(TableContainer)(() => ({
   minWidth: 650,
   overflowX: "auto",
 }));
@@ -77,7 +77,7 @@ const UserTable: React.FC<TableData> = ({ data, handleBlock, role, acceptOrDecli
     setMoreDetails(true);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
