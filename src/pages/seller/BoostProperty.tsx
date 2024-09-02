@@ -7,6 +7,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { getBoostProperty } from '../../api/sellerApi';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useExpandContext } from '../../Context/ExpandContext';
+import { useMediaQuery } from '@mui/system';
 
 
 const BoostProperty = () => {
@@ -33,6 +35,18 @@ const BoostProperty = () => {
     };
   }, [paymentButton]);
 
+  const { setExpanded } = useExpandContext();
+
+
+  const matches = useMediaQuery('(max-width:768px)');
+  useEffect(() => {
+    if (matches) {
+      setExpanded(false);
+    }
+    return () => {
+      setExpanded(true);
+    };
+  }, [setExpanded,matches]);
 
   const boostPlan = async ()=>{
     const stripeId = import.meta.env.VITE_STRIPE_SECRET_KEY

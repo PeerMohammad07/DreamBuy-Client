@@ -23,7 +23,7 @@ const PremiumCard: React.FC<PremiumCardProps> = ({ theme, amount, month, index, 
     <CardContainer className={`relative px-5 ${isDark ? 'shadow-lg transform translate-z-10 z-20 px-2' : 'z-10'}`}>
       <CardItem
         translateZ="100"
-        className={`rounded-2xl px-5 py-10 shadow ${isDark ? 'bg-slate-900' : 'bg-white'} transition-transform transform ${isHovered ? 'scale-105' : 'scale-100'}`}
+        className={`rounded-2xl px-5 py-5 shadow ${isDark ? 'bg-slate-900' : 'bg-white'} transition-transform transform ${isHovered ? 'scale-105' : 'scale-100'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -85,11 +85,11 @@ const Premium = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-center gap-2 md:gap-8">
+    <div className="flex flex-col sm:py-4 md:flex-row justify-center gap-2 md:gap-6">
       {plan.map((p, index) => (
         <PremiumCard
           key={index}
-          theme="light"
+          theme="dark"
           amount={Number(p.price)}
           month={p.interval}
           index={index}

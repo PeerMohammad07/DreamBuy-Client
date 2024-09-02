@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 import { IoHome } from "react-icons/io5";
@@ -12,6 +12,7 @@ import { Logout } from "../../../api/sellerApi";
 import { useExpandContext } from "../../../Context/ExpandContext";
 import { IoIosChatboxes } from "react-icons/io";
 import { TbHomePlus } from "react-icons/tb";
+import { useMediaQuery } from "@mui/system";
 
 interface SidebarProps {
   children?: React.ReactNode;
@@ -33,6 +34,19 @@ const SellerSidebar: React.FC<SidebarProps> = () => {
   };
 
   const { expanded, setExpanded } = useExpandContext();
+
+
+
+  const matches = useMediaQuery('(max-width:768px)');
+  console.log(matches,"matches")
+  useEffect(() => {
+    if (matches) {
+      setExpanded(false);
+    }
+    return () => {
+      setExpanded(true);
+    };
+  }, [setExpanded,matches]);
 
   if (!sellerStatus) {
     navigate("/seller/register");

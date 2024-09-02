@@ -12,7 +12,7 @@ interface SocketProviderProps {
 }
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-  const socket = useMemo(()=>io(import.meta.env.VITE_BACKEND_URL),[]) 
+  const socket = useMemo(()=>io("http://localhost:3000"),[]) 
 
   return (
     <SocketContext.Provider value={{ socket }}>

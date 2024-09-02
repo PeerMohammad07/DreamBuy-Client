@@ -40,8 +40,8 @@ const LocationSearch: React.FC<GoogleSearchProps> = ({
         }
 
         geocoderRef.current.on("result", (event) => {
-          const result = event.result as CustomGeocoderResult;          
-          onLocationSelect({location:result.place_name,geometry:result.geometry.coordinates});
+          const result = event.result as CustomGeocoderResult;
+          onLocationSelect({ location: result.place_name, geometry: result.geometry.coordinates });
         });
 
         geocoderRef.current.on("error", () => {
@@ -64,9 +64,11 @@ const LocationSearch: React.FC<GoogleSearchProps> = ({
   };
 
   return (
-    <div className="mt-2 flex gap-6 mb-6">
+    <div className="mt-2 flex flex-col sm:flex-row gap-6 mb-6">
       {error && <div className="error-message">{error}</div>}
-      <div className="flex-1">
+
+      {/* Show the search bar only if prevLocation is not available */}
+      <div className={`flex-1 ${prevLocation ? "hidden sm:block" : ""}`}>
         <label
           htmlFor="geocoderInput"
           className="block text-sm font-medium text-white mb-1"
@@ -79,8 +81,10 @@ const LocationSearch: React.FC<GoogleSearchProps> = ({
           style={{ zIndex: 1 }}
         ></div>
       </div>
+
+      {/* Show the input field only if prevLocation is available */}
       <div className="flex-1">
-        {prevLocation ? (
+        {prevLocation && (
           <div>
             <label
               htmlFor="locationSearch"
@@ -98,9 +102,10 @@ const LocationSearch: React.FC<GoogleSearchProps> = ({
               style={{ zIndex: 1 }}
             />
           </div>
-        ) : null}
+        )}
       </div>
     </div>
+
   );
 };
 
