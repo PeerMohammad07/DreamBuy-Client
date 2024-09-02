@@ -70,7 +70,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, userStatus }) => {
             </Link>
           ) : (
             <Link to="/premium">
-              <button className="flex items-center text-lg text-orange-500 w-full border-b py-2">
+              <button onClick={()=>{
+                onClose()
+              }} className="flex items-center text-md text-orange-500 border-b py-2">
                 <span className="ml-2">Premium</span>
                 <span className="animate-bounce">✨</span>
               </button>

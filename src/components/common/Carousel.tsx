@@ -131,14 +131,16 @@ export default function BasicDemo() {
   return (
     <>
       <div className="card">
-        <h2 className="font-bold xl:text-3xl lg:text-2xl md:text-1xl sm:text-lg text-center py-5">
-          Rent Properties
-        </h2>
+        <h2 className="font-bold text-3xl text-center py-8">Rent Properties</h2>
         {propertyLoading ? (
           <>
-            <div className="flex justify-center items-center px-8">
+             <div className="hidden md:flex justify-center items-center px-8">
               <CardLoading />
               <CardLoading />
+              <CardLoading />
+            </div>
+
+            <div className="md:hidden flex justify-center items-center px-8">
               <CardLoading />
             </div>
           </>
@@ -156,9 +158,13 @@ export default function BasicDemo() {
         <h2 className="font-bold text-3xl text-center py-8">Sale Properties</h2>
         {propertyLoading ? (
           <>
-            <div className="flex justify-center items-center px-8">
+            <div className="hidden md:flex justify-center items-center px-8">
               <CardLoading />
               <CardLoading />
+              <CardLoading />
+            </div>
+
+            <div className="md:hidden flex justify-center items-center px-8">
               <CardLoading />
             </div>
           </>

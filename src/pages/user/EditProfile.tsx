@@ -59,7 +59,7 @@ const EditProfile = ({ user, setProfileImage, profileImage }: EditProfileProps) 
 
   return (
     <>
-      {isLoading ? <LoadingSkelton /> : <div className="w-full max-w-md mx-auto">
+      {isLoading ? <LoadingSkelton /> : <div className="w-full max-w-md mx-auto px-10">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="relative z-0 w-full mb-3 group">
             <label

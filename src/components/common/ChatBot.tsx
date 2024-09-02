@@ -6,7 +6,7 @@ import { CircularProgress } from '@mui/material';
 interface Imessage {
   message: string;
   isUser: boolean;
-  loading?: boolean; // Optional loading state
+  loading?: boolean;
 }
 
 const truncateMessage = (message: string, maxLength: number) => {
@@ -85,7 +85,7 @@ const ChatBot = () => {
         <div className="flex flex-col h-full">
           <div className="bg-teal-700 text-white p-4 rounded-t-xl flex justify-between items-center">
             <h3 className="text-lg font-bold">Dream Buy AI</h3>
-            <button onClick={() => setExpanded(false)} className="text-white text-3xl hover:text-teal-400">
+            <button onClick={() => setExpanded(false)} className="z-50 text-white text-3xl hover:text-teal-400">
               &times;
             </button>
           </div>

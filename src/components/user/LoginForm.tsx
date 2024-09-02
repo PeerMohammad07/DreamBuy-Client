@@ -89,7 +89,7 @@ const LoginForm = () => {
           });
         } else {
           setError({
-            emailErr: "invalid email user not found",
+            emailErr: "",
             passwordErr: "",
           });
         }
