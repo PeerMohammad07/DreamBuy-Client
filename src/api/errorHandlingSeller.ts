@@ -16,6 +16,7 @@ const errorHandle = async (error:Error|AxiosError,dispatch?:AppDispatch)=> {
       const errResp = axiosError.response.data as Error
       if(errResp.message.includes("Not authorized")){
        toast.error(errResp.message)
+       return
       }else if(errResp.message == 'You are blocked by admin!'){
         if(dispatch){
           dispatch(sellerLogout())
