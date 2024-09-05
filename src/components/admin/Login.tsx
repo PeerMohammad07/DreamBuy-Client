@@ -31,7 +31,6 @@ const Login = () => {
       const { email, password } = data
       const response = await signIn(email, password)
       if (response.data.message == "login Successfully") {
-        console.log("adklsjfkl");
         dispatch(adminLogin())
         navigate("/admin/")
       }

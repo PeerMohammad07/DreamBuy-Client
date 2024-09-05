@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { rootState } from '../../Redux/store/store'
 import { useNavigate } from 'react-router-dom'
@@ -12,7 +12,7 @@ const ProtectLogin: React.FC<ProtectLoginProps> = ({ children }) => {
   const status = useSelector((prevState: rootState) => prevState.admin.adminLogin)
   const navigate = useNavigate()
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (status) {
       navigate('/admin/')
     }
