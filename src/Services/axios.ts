@@ -1,7 +1,7 @@
 import axios,{AxiosInstance} from "axios"
 
 const Api:AxiosInstance = axios.create({
-  baseURL:"http://54.196.204.166",
+  baseURL:import.meta.env.VITE_BACKEND_URL,
   withCredentials:true
 })
 
