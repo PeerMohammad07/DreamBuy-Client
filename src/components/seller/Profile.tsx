@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { MdOutlineBookmarkAdded } from "react-icons/md";
 import ChangePassword from "../common/ChangePassword";
 import { useForm } from "react-hook-form";
-import { getMyProperty, updateSeller } from "../../api/sellerApi";
+import { updateSeller } from "../../api/sellerApi";
 import { toast } from "react-toastify";
 import { sellerLogin } from "../../Redux/slice/sellerAuthSlice";
 import { useExpandContext } from "../../Context/ExpandContext";
@@ -34,7 +34,6 @@ const Profile = () => {
   const [verificationModal, setVerificationModal] = useState(false);
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-  const [noOfProperties, setNoofProperies] = useState<number>(0)
   const dispatch = useDispatch()
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<editFormData>()
@@ -76,15 +75,6 @@ const Profile = () => {
     }
   };
 
-  const fetchProperty = async () => {
-    const response = await getMyProperty(seller?._id, dispatch)
-    const properties = response?.data
-    setNoofProperies(properties.length)
-  }
-
-  useEffect(() => {
-    fetchProperty()
-  }, [])
 
   const onSubmit = async () => {
     try {
