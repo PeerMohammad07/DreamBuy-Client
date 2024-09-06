@@ -14,6 +14,7 @@ import { FaBath, FaBed } from 'react-icons/fa';
 import { FaLocationDot } from "react-icons/fa6";
 import { toast } from "react-hot-toast"
 import { TbHomePlus } from "react-icons/tb";
+import CardLoading from "../../components/common/LoadingSkelton/CardLoading";
 
 const PropertyManagement = () => {
   const [properties, setProperties] = useState<IProperty[]>([])
@@ -75,9 +76,13 @@ const PropertyManagement = () => {
     <>
       <div className="bg-gray-900 min-h-screen py-8 px-4 sm:px-10">
         <h1 className="text-white font-bold text-3xl text-center mb-6">My Property</h1>
-
         {/* Property Cards */}
-        {loading ? <>...Loading</> :<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {loading ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pe-16">
+           <CardLoading/>
+           <CardLoading/>
+           <CardLoading/>
+          </div>
+           :<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {properties&& properties.length > 0 ? (
             properties.map((property) => (
               <div
@@ -146,7 +151,6 @@ const PropertyManagement = () => {
           ) : (
             <div className="flex flex-col items-center p-8 bg-white shadow-lg rounded-lg">
               <div className="mb-4">
-                {/* Illustration/Icon */}
                 <TbHomePlus size={50} className="text-gray-500" />
               </div>
               <h2 className="text-2xl font-semibold mb-2">No Properties Listed Yet</h2>

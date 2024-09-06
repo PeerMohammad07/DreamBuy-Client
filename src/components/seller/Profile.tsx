@@ -34,7 +34,7 @@ const Profile = () => {
   const [verificationModal, setVerificationModal] = useState(false);
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-  const [noOfProperties,setNoofProperies] = useState<number>(0)
+  const [noOfProperties, setNoofProperies] = useState<number>(0)
   const dispatch = useDispatch()
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<editFormData>()
@@ -54,7 +54,7 @@ const Profile = () => {
     return () => {
       setExpanded(true);
     };
-  }, [setExpanded,matches]);
+  }, [setExpanded, matches]);
 
   function handleCloseModal() {
     setVerificationModal(false);
@@ -82,9 +82,9 @@ const Profile = () => {
     setNoofProperies(properties.length)
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchProperty()
-  },[])
+  }, [])
 
   const onSubmit = async () => {
     try {
@@ -102,37 +102,29 @@ const Profile = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center xl:min-h-screen sm:h-auto p-4">
-        <div className="flex flex-col items-center bg-white rounded-lg shadow-lg w-full max-w-4xl md:flex-row md:items-start md:p-6">
-          <div className="flex flex-col items-center w-full md:w-1/3 md:items-center space-y-4">
+      <div className="flex flex-col items-center p-4 min-h-screen bg-gray-900">
+        <div className="flex flex-col items-center bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 space-y-6">
+
+          <div className="flex flex-col items-center space-y-2">
             <img
               src={seller?.image}
               alt="Profile"
-              className="w-24 h-24 rounded-full object-cover"
+              className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 bg-gray-200"
             />
-            <div className="pt-10">
-            <div className="hidden md:flex w-32 h-32 border-4 border-blue-500 bg-gray-200 rounded-full  flex-col items-center justify-center">
-              <span className="text-sm text-center">No of Properties</span>
-              <h1 className="text-3xl font-bold">{noOfProperties}</h1>
-            </div>
-            </div>
           </div>
-          <div className="flex flex-col w-full md:w-2/3 md:pl-6">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="relative px-1 w-full mb-3 group">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Username:
-                </label>
+
+          <div className="w-full space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+
+              <div className="relative">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-900">Username:</label>
                 <input
                   type="text"
                   defaultValue={seller?.name}
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600"
                   placeholder="Name..."
                   {...register("name", {
-                    required: "name field is required",
+                    required: "Name field is required",
                     minLength: {
                       value: 4,
                       message: "Name must be at least 4 characters long",
@@ -140,18 +132,11 @@ const Profile = () => {
                     onChange: (e) => setValue("name", e.target.value.trim()),
                   })}
                 />
-                {errors.name?.type === "required" && (
-                  <h1 className="text-red-600">{errors.name.message}</h1>
-                )}
-                {errors.name?.message === "Name must be at least 4 characters long" && (
-                  <h1 className="text-red-600">{errors.name.message}</h1>
-                )}
+                {errors.name && <p className="text-red-600">{errors.name.message}</p>}
               </div>
-              <div className="relative px-1 w-full mb-3 group">
-                <label
-                  htmlFor="email"
-                  className="flex items-center text-sm font-medium text-gray-900 dark:text-white"
-                >
+
+              <div className="relative">
+                <label htmlFor="email" className="flex items-center text-sm font-medium text-gray-900">
                   Email:
                   <div
                     className="relative ml-2"
@@ -159,10 +144,8 @@ const Profile = () => {
                     onMouseLeave={() => setIsTooltipVisible(false)}
                   >
                     {isTooltipVisible && (
-                      <div
-                        className="absolute z-10 w-48 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-100 transition-opacity duration-300"
-                        style={{ bottom: "100%", left: "50%", transform: "translateX(-50%) translateY(-8px)" }}
-                      >
+                      <div className="absolute z-10 w-48 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-100 transition-opacity duration-300"
+                        style={{ bottom: "100%", left: "50%", transform: "translateX(-50%) translateY(-8px)" }}>
                         Email cannot be edited
                         <div
                           className="absolute left-1/2 transform -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-gray-900"
@@ -170,7 +153,7 @@ const Profile = () => {
                         ></div>
                       </div>
                     )}
-                    <button className="text-white font-medium rounded-lg text-sm px-2 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button className="text-white font-medium rounded-lg text-sm px-1 py-1 bg-blue-200 hover:bg-blue-500">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" id="information">
                         <path fill="none" d="M0 0h24v24H0z"></path>
                         <path d="M11 18h2v-6h-2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-10h2V6h-2z"></path>
@@ -184,24 +167,20 @@ const Profile = () => {
                   id="floating_email"
                   defaultValue={seller?.email}
                   readOnly
-                  className="block py-2.5 px-0 w-full text-sm text-gray-600 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600"
                   placeholder="Email..."
                 />
               </div>
-              <div className="relative px-1 z-0 w-full mb-3 group">
-                <label
-                  htmlFor="phone"
-                  className="block  text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Phone No:
-                </label>
+
+              <div className="relative">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-900">Phone No:</label>
                 <input
                   type="text"
                   defaultValue={seller?.phone}
-                  className="block py-2.5  w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600"
                   placeholder="Phone..."
                   {...register("phone", {
-                    required: "phone field is required",
+                    required: "Phone field is required",
                     minLength: {
                       value: 10,
                       message: "Phone number must be exactly 10 digits",
@@ -217,25 +196,18 @@ const Profile = () => {
                     onChange: (e) => setValue("phone", e.target.value.trim()),
                   })}
                 />
-                {errors.phone && <h1 className="text-red-600">{errors.phone.message}</h1>}
+                {errors.phone && <p className="text-red-600">{errors.phone.message}</p>}
               </div>
-              <div className="relative z-0 w-full mb-3 group flex items-center space-x-3">
-                <label
-                  htmlFor="kycStatus"
-                  className="block text-sm font-medium text-gray-900 dark:text-white px-1"
-                  style={{ minWidth: "100px" }}
-                >
-                  KYC Status:
-                </label>
+
+              <div className="flex items-center space-x-3">
+                <label htmlFor="kycStatus" className="block text-sm font-medium text-gray-900">KYC Status:</label>
                 <input
                   type="text"
                   name="kycStatus"
                   value={seller?.kycVerified}
                   readOnly
-                  className={`py-2 px-3 w-full text-sm border rounded-md focus:outline-none ${getKycStatusClass(
-                    seller?.kycVerified || ""
-                  )}`}
-                  placeholder="Kyc Status..."
+                  className={`py-2 px-3 w-full text-sm border rounded-md ${getKycStatusClass(seller?.kycVerified || "")}`}
+                  placeholder="KYC Status..."
                 />
                 <KycVerificationModal
                   open={verificationModal}
@@ -264,19 +236,20 @@ const Profile = () => {
                   </button>
                 )}
               </div>
+
               <div className="flex justify-center space-x-2">
                 <button
                   type="submit"
-                  className="text-white bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2"
+                  className="text-white bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5"
                 >
                   Edit
                 </button>
                 <button
                   type="button"
                   onClick={() => setChangePasswordModal(true)}
-                  className="text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:bg-gradient-to-br focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2"
+                  className="text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5"
                 >
-                  Edit password
+                  Edit Password
                 </button>
               </div>
             </form>
@@ -284,6 +257,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
 
     </>
   );

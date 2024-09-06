@@ -17,10 +17,10 @@ interface ChatSideBarProps {
   conversations: IConversation[];
   role: string | undefined;
   loading: boolean
-  onlineUsers : any[]
+  onlineUsers: any[]
 }
 
-const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, role, loading ,onlineUsers}) => {
+const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, role, loading, onlineUsers }) => {
   const userData = role === 'user'
     ? useSelector((prevState: rootState) => prevState.user.userData)
     : role === 'seller'
@@ -71,17 +71,29 @@ const ChatSideBar: React.FC<ChatSideBarProps> = ({ conversations, role, loading 
             <div key={id} onClick={() => {
               dispatch(setCurrentUserId(id))
             }}>
-              <ChatBox id={id}  role={role} isOnline={userOnline(id)} />
+              <ChatBox id={id} role={role} isOnline={userOnline(id)} />
             </div>
           ))
         ) : (
           <div className="text-center text-gray-500">No results found...</div>
         )}
-        {loading && <div className="text-center text-gray-500"><Skeleton variant="circular">
+        {loading && 
+        <>
+          <div className="text-center text-gray-500">
+            <Skeleton variant="circular">
           <Avatar />
-        </Skeleton> <Skeleton width="100%">
-            <Typography>.</Typography>
-          </Skeleton></div>}
+          </Skeleton>
+           <Skeleton width="100%">
+            <Typography></Typography>
+          </Skeleton>
+          <Skeleton variant="circular">
+          <Avatar />
+          </Skeleton> <Skeleton width="100%">
+            <Typography></Typography>
+          </Skeleton>
+        </div>
+        </>
+        }
       </div>
     </div>
   );
