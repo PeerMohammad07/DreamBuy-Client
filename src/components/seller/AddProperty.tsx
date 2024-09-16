@@ -170,7 +170,6 @@ const AddProperty = () => {
         Array.from(data.images).map(fileToBase64)
       );
 
-      console.log(data)
       const obj = {
         ...data,
         features: inputValue,

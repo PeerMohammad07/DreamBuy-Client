@@ -45,7 +45,7 @@ const register = ({ showModal, setShowModal }: OtpComponentProps) => {
       if (axios.isAxiosError(error)) {
         console.log("cav");
 
-        if (error.response?.data.message == "seller already exist with this email") {
+        if (error.response?.data.message == "Seller already exist with this email") {
           toast.error(error.response.data.message)
         }
       }

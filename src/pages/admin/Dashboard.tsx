@@ -136,47 +136,58 @@ const Dashboard = () => {
 
   return (
     <div className='bg-gray-50'>
-      <div className='ps-10 pt-5'>
-        <h1 className="text-3xl text-gray-700 font-extrabold font-rounded">Dashboard</h1>
-        <p className='text-sm pt-2'>Whole data about your business here</p>
-      </div>
-      <DashboardCount countData={countData} />
-      <div className='flex justify-center gap-10 pt-5'>
-        <div className='w-1/3 pt-10'>
-          <Pie data={pieData} width={250} height={120} />
-          <div className="flex gap-6 pt-4 justify-center ps-5">
-            <span className="flex items-center gap-2">
-              <span style={{ backgroundColor: '#e82e2e' }} className='block w-3 h-3 rounded-full'></span>
-               Users
-            </span>
-            <span className="flex items-center gap-2">
-              <span style={{ backgroundColor: '#35e6d4' }} className='block w-3 h-3 rounded-full'></span>
-              Sellers
-            </span>
-            <span className="flex items-center gap-2">
-              <span style={{ backgroundColor: '#058515' }} className='block w-3 h-3 rounded-full'></span>
-               Premium
-            </span>
-          </div>
+  <div className='ps-4 pt-5 md:ps-10'>
+    <h1 className="text-2xl md:text-3xl text-gray-700 font-extrabold font-rounded">Dashboard</h1>
+    <p className='text-xs md:text-sm pt-2'>Whole data about your business here</p>
+  </div>
+
+  <DashboardCount countData={countData} />
+
+  <div className='flex flex-col md:flex-row justify-center gap-10 pt-5'>
+    {/* Pie Chart */}
+    <div className='w-full md:w-1/3 pt-10 flex justify-center'>
+      <div>
+        <Pie data={pieData} width={250} height={120} />
+        <div className="flex gap-6 pt-4 justify-center ps-5">
+          <span className="flex items-center gap-2">
+            <span style={{ backgroundColor: '#e82e2e' }} className='block w-3 h-3 rounded-full'></span>
+            Users
+          </span>
+          <span className="flex items-center gap-2">
+            <span style={{ backgroundColor: '#35e6d4' }} className='block w-3 h-3 rounded-full'></span>
+            Sellers
+          </span>
+          <span className="flex items-center gap-2">
+            <span style={{ backgroundColor: '#058515' }} className='block w-3 h-3 rounded-full'></span>
+            Premium
+          </span>
         </div>
-
-        {/* Monthly Revenue Line Chart */}
-        <div className='w-2/3 flex justify-center'>
-          <Line data={revenueData} width={300} height={150} />
-        </div>
-      </div>
-
-      {/* User and Seller Growth Line Chart */}
-      <h1 className='font-rounded text-center text-2xl pb-5 pt-8'>Users and Sellers Growth Rate</h1>
-      <div className='flex justify-center pt-5'>
-        <Line data={growthData} width={500} height={200} />
-      </div>
-
-      <div className='flex justify-around pt-5'>
-        <DashboardTable data={countData.mostUsedAmenities} role={"amenities"} />
-        <DashboardTable data={countData.mostUsedCategorys} role={"categories"} />
       </div>
     </div>
+
+    {/* Monthly Revenue Line Chart */}
+    <div className='w-full md:w-2/3 flex justify-center'>
+      <Line data={revenueData} width={300} height={150} />
+    </div>
+  </div>
+
+  {/* Users and Sellers Growth Line Chart */}
+  <h1 className='font-rounded text-center text-xl md:text-2xl pb-5 pt-8'>Users and Sellers Growth Rate</h1>
+  <div className='flex justify-center pt-5'>
+    <Line data={growthData} width={500} height={200} />
+  </div>
+
+  {/* Tables */}
+  <div className='flex flex-col md:flex-row justify-around pt-5'>
+    <div className='w-full md:w-1/2 px-4'>
+      <DashboardTable data={countData.mostUsedAmenities} role={"amenities"} />
+    </div>
+    <div className='w-full md:w-1/2 px-4 mt-4 md:mt-0'>
+      <DashboardTable data={countData.mostUsedCategorys} role={"categories"} />
+    </div>
+  </div>
+</div>
+
   );
 };
 

@@ -15,8 +15,8 @@ interface counts {
   noOfSaleProperties: number
   noOfSellers: number
   noOfUsers: number
-  noOfPremiumUsers:number,
-  totalRevenue : [{sum:number}]
+  noOfPremiumUsers: number,
+  totalRevenue: [{ sum: number }]
 }
 
 interface props {
@@ -27,10 +27,10 @@ const DashboardCount: React.FC<props> = ({ countData }) => {
 
   return (
     <>
-      <div className="mx-10 my-5">
-        {countData &&
+      <div className="mx-4 sm:mx-6 lg:mx-10 my-5">
+        {countData && (
           <>
-            <div className="grid grid-cols-4 gap-10 pt-5 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-10 pt-5">
               <div className="shadow-xl bg-white p-4 rounded-lg flex items-center shakeDiv">
                 <div className="rounded-full bg-gray-600 p-3">
                   <LuUsers2 className="text-white text-2xl" />
@@ -41,7 +41,6 @@ const DashboardCount: React.FC<props> = ({ countData }) => {
                     <span className="text-xl">{countData.noOfUsers}</span>
                   </h1>
                   <p className="text-gray-400 text-sm">No of Users</p>
-
                 </div>
               </div>
 
@@ -55,7 +54,6 @@ const DashboardCount: React.FC<props> = ({ countData }) => {
                     <span className="text-xl">{countData.noOfSellers}</span>
                   </h1>
                   <p className="text-gray-400 text-sm">No of Sellers</p>
-
                 </div>
               </div>
 
@@ -69,7 +67,6 @@ const DashboardCount: React.FC<props> = ({ countData }) => {
                     <span className="text-xl">{countData.noOfAmenities}</span>
                   </h1>
                   <p className="text-gray-400 text-sm">No of Rent properties</p>
-
                 </div>
               </div>
 
@@ -83,14 +80,13 @@ const DashboardCount: React.FC<props> = ({ countData }) => {
                     <span className="text-xl">{countData.noOfRentProperties}</span>
                   </h1>
                   <p className="text-gray-400 text-sm">No of Sale properties</p>
-
                 </div>
               </div>
             </div>
 
-            {/* differnetiate */}
+            {/* differentiate */}
 
-            <div className="grid grid-cols-4 gap-10 pt-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-10 pt-5">
               <div className="shadow-xl bg-white p-4 rounded-lg flex items-center shakeDiv">
                 <div className="rounded-full bg-gray-600 p-3">
                   <MdCategory className="text-white text-2xl" />
@@ -114,13 +110,12 @@ const DashboardCount: React.FC<props> = ({ countData }) => {
                     <span className="text-xl">{countData.noOfCategories}</span>
                   </h1>
                   <p className="text-gray-400 text-sm">No of category</p>
-
                 </div>
               </div>
 
               <div className="shadow-xl bg-white p-4 rounded-lg flex items-center shakeDiv">
                 <div className="rounded-full bg-gray-600 p-3">
-                  <RiMoneyRupeeCircleFill  className="text-white text-2xl" />
+                  <RiMoneyRupeeCircleFill className="text-white text-2xl" />
                 </div>
                 <div className="ml-4">
                   <h1 className="text-lg font-rounded text-gray-700">Revenue</h1>
@@ -128,7 +123,6 @@ const DashboardCount: React.FC<props> = ({ countData }) => {
                     <span className="text-xl">{countData.totalRevenue[0].sum}</span>
                   </h1>
                   <p className="text-gray-400 text-sm">Total Revenue</p>
-
                 </div>
               </div>
 
@@ -142,13 +136,13 @@ const DashboardCount: React.FC<props> = ({ countData }) => {
                     <span className="text-xl">{countData.noOfPremiumUsers}</span>
                   </h1>
                   <p className="text-gray-400 text-sm">No of premium users</p>
-
                 </div>
               </div>
             </div>
           </>
-        }
+        )}
       </div>
+
     </>
   );
 };
